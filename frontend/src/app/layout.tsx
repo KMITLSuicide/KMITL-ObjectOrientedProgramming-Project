@@ -1,11 +1,5 @@
 import "~/src/styles/globals.css";
-
-import { Inter } from "next/font/google";
-
-const inter = Inter({
-    subsets: ["latin"],
-    variable: "--font-sans",
-});
+import { inter } from '~/src/styles/font';
 
 export const metadata = {
     title: "Create T3 App",
@@ -20,7 +14,7 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body className={`font-sans ${inter.variable}`}>{children}</body>
+            <body className={`font-sans ${inter.className}`}>{children}</body>
         </html>
     );
 }
