@@ -1,4 +1,5 @@
 import "~/src/styles/globals.css";
+import { ThemeProvider } from "~/src/components/theme-provider";
 import { inter } from '~/src/styles/font';
 
 export const metadata = {
@@ -14,7 +15,16 @@ export default function RootLayout({
 }) {
     return (
         <html lang="en">
-            <body className={`font-sans ${inter.className}`}>{children}</body>
+            <body className={`font-sans ${inter.className}`}>
+                <ThemeProvider
+                    attribute="class"
+                    defaultTheme="system"
+                    enableSystem
+                    disableTransitionOnChange
+                >
+                    {children}
+                </ThemeProvider>
+                </body>
         </html>
     );
 }

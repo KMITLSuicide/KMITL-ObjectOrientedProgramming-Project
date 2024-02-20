@@ -27,7 +27,11 @@
         "baseUrl": ".",
         "paths": {
             "~/*": ["./*"]
-        }
+        },
+
+        "types": [
+            "unplugin-icons/types/react",
+        ]
     },
     "include": [
         ".eslintrc.cjs",

@@ -1,4 +1,4 @@
-import NavBar from "../lib/navbar";
+import NavBar from "../components/navbar/navbar";
 
 export default function Index() {
     return(
