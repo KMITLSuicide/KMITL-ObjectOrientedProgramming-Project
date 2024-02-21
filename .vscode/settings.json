@@ -1,0 +1,7 @@
+{
+    "conventionalCommits.scopes": [
+        "frontend"
+    ],
+    "prettier.tabWidth": 2,
+    "editor.indentSize": 2
+}
