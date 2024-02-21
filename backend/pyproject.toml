@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "KMITL-ObjectOrientedProgramming-Project"
+name = "backend"
 version = "0.1.0"
 description = ""
 authors = ["Phuwit Puthipairoj <26784267+phuwit@users.noreply.github.com>"]
@@ -11,6 +11,7 @@ uvicorn = {extras = ["standard"], version = "^0.27.0.post1"}
 fastapi = "^0.109.2"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+python-multipart = "^0.0.9"
 
 
 [build-system]
