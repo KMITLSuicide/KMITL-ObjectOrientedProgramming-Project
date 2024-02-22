@@ -1,8 +1,8 @@
 from typing import Dict
 
 class Config:
-    def __init__(self, config: Dict):
-        self.config = config
+    def __init__(self, config_data: Dict):
+        self.config = config_data
 
     def __getitem__(self, key):
         return self.config[key]

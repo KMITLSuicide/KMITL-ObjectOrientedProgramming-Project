@@ -1,6 +1,6 @@
 from typing import Annotated
 from fastapi import Depends, APIRouter
-from ..lib.authentication import *
+from backend.lib.authentication import User, get_current_user
 
 
 router = APIRouter()
