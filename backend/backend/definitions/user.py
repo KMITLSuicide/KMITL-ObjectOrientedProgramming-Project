@@ -1,20 +1,41 @@
+from typing import List
+import uuid
+
+from backend.definitions.course import Course
+
+
 class User:
-    def __init__(
-        self, user_id_input, user_name_input, cart_input, orders_input, my_courses_input
-    ) -> None:
-        self.__user_id = user_id_input
-        self.__user_name = user_name_input
-        self.__cart = cart_input
-        self.__orders = orders_input
-        self.__my_courses = my_courses_input
+    def __init__(self, name: str) -> None:
+        self.__id = uuid.uuid4()
+        self.__name = name
+        self.__my_learnings: List[Course] = []
+        
+    def get_id(self):
+        return self.__id
+        
+    def get_name(self):
+        return self.__name
+        
+    def get_my_learnings(self):
+        return self.__my_learnings
+    
+    def add_my_learning(self, course: Course):
+        if(isinstance(course, Course)):
+            self.__my_learnings.append(course)
+            return True
+        return False
 
-    def buy_course(self, user_id_input, course_id_input, coupon_id_input):
-        pass
-
-
-class Teacher:
-    def __init__(self, my_teaching_course_input) -> None:
-        self.__my_teaching_course = my_teaching_course_input
-
-    def add_course(self, course_for_add_input):
-        pass
+    
+class Teacher(User):
+    def __init__(self, name: str) -> None:
+        super().__init__(name)
+        self.__my_teachings: List[Course] = []
+        
+    def get_my_teachings(self):
+        return self.__my_teachings
+    
+    def add_my_teaching(self, course: Course):
+        if(isinstance(course, Course)):
+            self.__my_teachings.append(course)
+            return True
+        return False
