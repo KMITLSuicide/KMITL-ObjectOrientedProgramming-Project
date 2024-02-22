@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.config import config
+from backend.config import APP_NAME, API_HOST, API_PORT, LOG_LEVEL
 from backend.routers import example, info, authentication
 
 app = FastAPI()
@@ -25,15 +25,15 @@ app.add_middleware(
 )
 
 if __name__ == "__main__":
-    print(config.app_name)
-    print(config.log_level)
-    print(config.api_host)
-    print(config.api_port)
+    print(APP_NAME)
+    print(LOG_LEVEL)
+    print(API_HOST)
+    print(API_PORT)
 
     uvicorn.run(
         "main:app",
-        host=config.api_host,
-        port=config.api_port,
-        log_level=config.log_level,
+        host=API_HOST,
+        port=API_PORT,
+        log_level=LOG_LEVEL,
         reload=True
     )
