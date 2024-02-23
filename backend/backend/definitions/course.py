@@ -160,7 +160,7 @@ class CourseCatergory:
             if course.get_id() == id:
                 return course
         return None
-    
+
     def search_course_by_name(self, name: str):
         matched_courses: List[Course] = []
         for course in self.__courses:

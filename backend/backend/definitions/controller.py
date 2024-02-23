@@ -4,6 +4,7 @@ from typing import List
 from backend.definitions.course import Course, CourseCatergory
 from backend.definitions.user import Teacher
 
+
 class Controller:
     def __init__(self) -> None:
         self.__categories: List[CourseCatergory] = []
@@ -49,7 +50,7 @@ class Controller:
             if category.get_name() == name:
                 return category
         return None
-    
+
     def add_teacher(self, teacher: Teacher):
         if isinstance(teacher, Teacher):
             self.__teachers.append(teacher)
