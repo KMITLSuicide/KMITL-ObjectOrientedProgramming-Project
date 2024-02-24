@@ -1,18 +1,19 @@
 from datetime import datetime, timezone, timedelta
-from typing import Annotated, Final
+from typing import Annotated, Dict, Final
 from pydantic import BaseModel
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
-from jose import JWTError, jwt
+from joserfc import jwt
+from joserfc.jwk import OKPKey
 
-from backend.config import PASSWORD_ENCRYPTION_ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from backend.secrets import PASSWORD_ENCRYPTION_SECRET
+from backend.config import JWT_ENCRYPTION_ALGORITHM
+from backend.secrets.key import get_key
 
 
-SECRET_KEY: Final[str] = PASSWORD_ENCRYPTION_SECRET
-ALGORITHM: Final[str] = PASSWORD_ENCRYPTION_ALGORITHM
+SECRET_KEY: Final[OKPKey] = get_key()
+JWT_HEADER: Final[Dict] = {"alg": JWT_ENCRYPTION_ALGORITHM}
 TOKEN_URL: Final[str] = 'token'
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=TOKEN_URL)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -72,13 +73,13 @@ def authenticate_user(db, username: str, password: str) -> UserInDB | bool:
 
 
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
-    to_encode = data.copy()
+    payload = data.copy()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    payload.update({"exp": expire})
+    encoded_jwt = jwt.encode(JWT_HEADER, payload, SECRET_KEY, algorithms=[JWT_ENCRYPTION_ALGORITHM])
     return encoded_jwt
 
 
@@ -100,16 +101,17 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=[JWT_ENCRYPTION_ALGORITHM])
+        payload = decoded_token.claims
         username: str = payload.get("sub", None)
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
-    except JWTError:
-        raise credentials_exception
+    except Exception as exc:
+        raise credentials_exception from exc
 
     if token_data.username is None:
-        raise credentials_exception
+        raise credentials_exception from None
     user = get_user(fake_users_db, username=token_data.username)
     if user is None:
         raise credentials_exception
