@@ -23,7 +23,7 @@ export default function CourseLearn({
         <Image className="rounded-md" src={courseData.images[0]?.url ?? '/notexture.png'} alt="course hero image" width={1024} height={720} />
 
         <div className="flex justify-between space-x-8">
-          <div className="flex bg-secondary justify-center items-center text-xl p-4 rounded-md">
+          <div className="flex bg-primary text-primary-foreground justify-center items-center text-xl p-4 rounded-md">
             <h3><b>{courseData.price.toLocaleString(Config.locale, {style: 'currency', currency: Config.currency, minimumFractionDigits: 0})}</b></h3>
           </div>
           <div className="flex justify-center items-center">
