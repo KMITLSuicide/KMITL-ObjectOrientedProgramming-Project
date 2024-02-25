@@ -1,8 +1,13 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from backend.definitions.controller import Controller
 from backend.config import APP_NAME, API_HOST, API_PORT, LOG_LEVEL
 from backend.routers import example, info, authentication
+
+
+controller = Controller()
 
 app = FastAPI()
 

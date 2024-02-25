@@ -8,9 +8,10 @@ from passlib.context import CryptContext
 from joserfc import jwt
 from joserfc.jwk import OKPKey
 
+from backend.definitions.controller import Controller
 from backend.config import JWT_ENCRYPTION_ALGORITHM
 from backend.secrets.key import get_key
-
+from backend.main import controller
 
 SECRET_KEY: Final[OKPKey] = get_key()
 JWT_HEADER: Final[Dict] = {"alg": JWT_ENCRYPTION_ALGORITHM}
@@ -81,17 +82,6 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     payload.update({"exp": expire})
     encoded_jwt = jwt.encode(JWT_HEADER, payload, SECRET_KEY, algorithms=[JWT_ENCRYPTION_ALGORITHM])
     return encoded_jwt
-
-
-# def fake_decode_token(token):
-#     # This doesn't provide any security at all
-#     # Check the next version
-#     user = get_user(fake_users_db, token)
-#     return user
-
-
-# def fake_hash_password(password: str):
-#     return "fakehashed" + password
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
