@@ -1,0 +1,9 @@
+{
+	"dependencies": {
+		"next-themes": "^0.2.1"
+	},
+	"devDependencies": {
+		"@svgr/core": "^8.1.0",
+		"@svgr/plugin-jsx": "^8.1.0"
+	}
+}
