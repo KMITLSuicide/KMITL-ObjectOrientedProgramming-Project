@@ -1,7 +1,7 @@
 {
     "conventionalCommits.scopes": [
+        "backend",
         "frontend"
     ],
-    "prettier.tabWidth": 2,
-    "editor.indentSize": 2
+    "python.analysis.typeCheckingMode": "basic",
 }
