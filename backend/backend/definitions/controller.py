@@ -96,3 +96,4 @@ class Controller:
             return user.get_latest_video_from_user()
         else:
             return f"Error: User with ID {user_id} not found "
+        
