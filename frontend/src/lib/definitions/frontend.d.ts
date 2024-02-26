@@ -1,2 +1,1 @@
-declare namespace Frontend{
-}
+declare namespace Frontend {}
