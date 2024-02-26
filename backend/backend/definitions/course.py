@@ -27,6 +27,7 @@ class QuizQuestion:
         return self.__correct
 
 
+
 class CourseMaterial:
     def __init__(self, name: str, description: str) -> None:
         self.__id: UUID4 = uuid.uuid4()
@@ -35,9 +36,30 @@ class CourseMaterial:
 
     def get_id(self):
         return self.__id
+class CourseMaterialVideo(CourseMaterial):
+    def __init__(self, url: str, name: str, description: str) -> None:
+        super().__init__(name, description)
+        self.__url: str = url
 
+    def set_url(self, url: str):
+        if isinstance(url, str):
+            self.__url = url
+            return True
+        return False
 
-class CourseMaterialImage(CourseMaterial):
+    def set_description(self, description: str):
+        if isinstance(description, str):
+            self.__description = description
+            return True
+        return False
+
+    def get_url(self):
+        return self.__url
+
+    def get_description(self):
+        return self.__description
+
+class CourseMaterialImage(CourseMaterial):#Question: Is CourseMaterialImage  video?
     def __init__(self, url: str, name: str, description: str) -> None:
         super().__init__(name, description)
         self.__url: str = url
@@ -84,7 +106,9 @@ class Course:
         self.__price: int = price
         self.__images: List[CourseMaterialImage] = []
         self.__quizes: List[CourseMaterialQuiz] = []
-
+        self.__videos: List[CourseMaterialVideo] = []
+        #Question from Taj to phak: Should I collect latest video to course?
+        self.__latest_video = None
     def set_name(self, name: str):
         if isinstance(name, str):
             self.__name = name
@@ -103,6 +127,13 @@ class Course:
             return True
         return False
 
+    #Tajdang commit
+    def set_latest_video(self, video: CourseMaterialVideo):
+        if(isinstance(video, CourseMaterialVideo)):
+            self.__latest_video = video
+            return True
+        return False
+    
     def add_image(self, image: CourseMaterialImage):
         if isinstance(image, CourseMaterialImage):
             self.__images.append(image)
@@ -112,6 +143,13 @@ class Course:
     def add_quiz(self, quiz: CourseMaterialQuiz):
         if isinstance(quiz, CourseMaterialQuiz):
             self.__quizes.append(quiz)
+            return True
+        return False
+
+    #Tajdang commit
+    def add_videos(self, video: CourseMaterialVideo):
+        if(isinstance(video, CourseMaterialVideo)):
+            self.__videos.append(video)
             return True
         return False
 
@@ -132,7 +170,11 @@ class Course:
 
     def get_quizes(self):
         return self.__quizes
-
+    
+    #Tajdang commit
+    def get_latest_video(self):
+        return self.__latest_video
+    
 
 class CourseCatergory:
     def __init__(self, name: str) -> None:
