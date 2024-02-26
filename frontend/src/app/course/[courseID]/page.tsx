@@ -12,7 +12,7 @@ import {
 import { Config } from "~/src/config";
 import { getFrontendCourseViewData } from "~/src/lib/data/course";
 
-export default function CourseLearn({
+export default function CourseView({
   params,
 }: {
   params: { courseID: string };
