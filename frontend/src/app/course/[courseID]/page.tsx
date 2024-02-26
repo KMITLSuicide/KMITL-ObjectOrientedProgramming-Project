@@ -23,7 +23,7 @@ export default function CourseLearn({
 
   return (
     <div className="flex w-full justify-center">
-      <div className="flex w-full max-w-screen-lg justify-center">
+      <div className="flex w-full max-w-screen-xl justify-center">
         <div className="flex flex-col w-3/5 space-y-4">
           <p className="bg-secondary w-fit p-2 px-4 rounded-full">
             {courseData.category.name}
@@ -39,30 +39,34 @@ export default function CourseLearn({
             <h2 className="text-xl"><b>In this course:</b></h2>
           </div>
 
-          <Collapsible
-            open={courseContentOpen}
-            onOpenChange={setCourseContentOpen}
-            className="w-max space-y-2"
-          >
-            <div className="flex items-center justify-between space-x-4 rounded-md border p-2 px-4">
-              <h4 className="text-sm font-semibold">Course contents</h4>
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-9 p-0">
-                  <ChevronsUpDown className="h-4 w-4" />
-                  <span className="sr-only">Toggle</span>
-                </Button>
-              </CollapsibleTrigger>
-            </div>
-            <CollapsibleContent className="space-y-2">
-              {courseData.images.map((element, index) => {
-                return (
-                  <div key={index} className="rounded-md px-4 text-sm">
-                    {element.name}
-                  </div>
-                );
-              })}
-            </CollapsibleContent>
-          </Collapsible>
+          <div>
+            <Collapsible
+              open={courseContentOpen}
+              onOpenChange={setCourseContentOpen}
+              className="w-max space-y-2"
+            >
+              <div className="flex items-center justify-between space-x-4 rounded-md border p-2 px-4">
+                <h4 className="text-sm font-semibold">Course contents</h4>
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" size="sm" className="w-9 p-0">
+                    <ChevronsUpDown className="h-4 w-4" />
+                    <span className="sr-only">Toggle</span>
+                  </Button>
+                </CollapsibleTrigger>
+              </div>
+              <CollapsibleContent className="space-y-2">
+                <ul className="list-decimal ml-10">
+                  {courseData.images.map((element, index) => {
+                    return (
+                      <li key={index} className="rounded-md px-2 text-sm">
+                        {element.name}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
 
           <Collapsible
             open={courseQuizOpen}
@@ -79,13 +83,15 @@ export default function CourseLearn({
               </CollapsibleTrigger>
             </div>
             <CollapsibleContent className="space-y-2">
-              {courseData.quizes.map((element, index) => {
-                return (
-                  <div key={index} className="rounded-md px-4 text-sm">
-                    {element.name}
-                  </div>
-                );
-              })}
+              <ul className="list-decimal ml-10">
+                {courseData.quizes.map((element, index) => {
+                  return (
+                    <li key={index} className="rounded-md px-2 text-sm">
+                      {element.name}
+                    </li>
+                  );
+                })}
+              </ul>
             </CollapsibleContent>
           </Collapsible>
         </div>
@@ -95,8 +101,9 @@ export default function CourseLearn({
               className="rounded-md"
               src={courseData.images[0]?.url ?? "/notexture.png"}
               alt="course hero image"
-              width={408}
-              height={230}
+              width={1920}
+              height={1080}
+              sizes="100%"
             />
 
             <div className="flex items-center justify-center rounded-md p-4 text-xl outline">
