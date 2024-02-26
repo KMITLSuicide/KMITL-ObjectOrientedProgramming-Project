@@ -1,13 +1,15 @@
 from pydantic import UUID4
 from typing import List
+from uuid import UUID
 
 from backend.definitions.course import Course, CourseCatergory
-from backend.definitions.user import Teacher
-
+from backend.definitions.user import Teacher#Question:why don't just collect user
+from backend.definitions.user import User
 class Controller:
     def __init__(self) -> None:
         self.__categories: List[CourseCatergory] = []
         self.__teachers: List[Teacher] = []
+        self.__users: List[User] = []#Question: is user going to collect to be Teacher
 
     def add_category(self, category: CourseCatergory):
         if isinstance(category, CourseCatergory):
@@ -55,6 +57,13 @@ class Controller:
             self.__teachers.append(teacher)
             return True
         return False
+    
+    #Tajdang commit
+    def add_user(self, user: User):
+        if isinstance(user, User):
+            self.__users.append(user)
+            return True
+        return False
 
     def get_all_teacher(self):
         return self.__teachers
@@ -65,3 +74,26 @@ class Controller:
             if name in teacher.get_name():
                 matched_teachers.append(teacher)
         return matched_teachers
+    
+    #Tajdang commit
+    def get_user_by_name(self, name: str):
+        matched_users: List[User] = []
+        for user in self.__users:
+            if name in user.get_name():
+                matched_users.append(user)
+        return matched_users 
+    
+    def get_user_by_id(self, user_id: UUID4):
+        for user in self.__users:
+            if user_id == user.get_id():
+                return user
+        return "Error: User not found"
+    
+    def study_latest_video_from_course(self, user_id: str):
+        user_id_uuid: UUID4 = UUID(user_id)
+        user = self.get_user_by_id(user_id_uuid)
+        if isinstance(user, User):
+            return user.get_latest_video_from_user()
+        else:
+            return f"Error: User with ID {user_id} not found "
+        
