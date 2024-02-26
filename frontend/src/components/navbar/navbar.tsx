@@ -14,7 +14,7 @@ export default function NavBar({
   return (
     <nav
       className={cn(
-        "flex h-12 items-center space-x-4 border-b bg-background px-4 lg:space-x-6",
+        "flex h-12 items-center space-x-4 border-b bg-background lg:space-x-6",
         className,
       )}
       {...props}

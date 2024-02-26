@@ -4,4 +4,6 @@
         "frontend"
     ],
     "python.analysis.typeCheckingMode": "basic",
+    "editor.tabSize": 2,
+    "editor.indentSize": "tabSize"
 }
