@@ -15,6 +15,8 @@ class Progress:
         self.__progress_quizes: List[ProgressQuiz] = []
         self.__latest_video = None
         self.initialize(course)
+    def get_progress_videos(self):
+        return self.__progress_videos
     def get_course(self):
         return self.__course
     
@@ -25,9 +27,10 @@ class Progress:
         return self.__name
     
     def search_video_by_name(self, name : str):
-        for progress_video in self.__progress_videos:
-            if progress_video.__name == name:
-                return progress_video
+        for video in self.__progress_videos:
+            if isinstance(video, ProgressVideo):
+                if video.get_name() == name:
+                    return video
         return None
 
     def initialize(self,course : Course):
@@ -40,7 +43,7 @@ class Progress:
     def set_latest_video(self, video : ProgressVideo):
         if not isinstance(video, ProgressVideo):
             return "Invalid, set_latest_video input is not ProgressVideo"
-        return self.__latest_video
+        self.__latest_video = video
 
 class ProgressQuiz(CourseMaterialQuiz):
     def __init__(self,quiz : CourseMaterialQuiz) -> None:

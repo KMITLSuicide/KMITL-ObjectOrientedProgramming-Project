@@ -20,8 +20,8 @@ class User:
     def get_latest_video_from_user(self):
         if self.__latest_progress == None:
             return None
-        latest_course = self.__latest_progress.get_course()
-        return latest_course.get_latest_video()
+        latest_progress_video = self.__latest_progress.get_latest_video()
+        return latest_progress_video
     def search_progress_by_name(self, name: str):
         for progress in self.__my_progresses:
             if(progress.get_name() == name):

@@ -181,9 +181,6 @@ class Course:
             if(video.__name == name):
                 return video
         return None
-
-    def get_latest_video(self):
-        return self.__latest_video
     
 
 class CourseCatergory:
