@@ -89,6 +89,19 @@ class Controller:
                 return user
         return "Error: User not found"
     
+    def get_teacher_by_name(self, name: str):
+        matched_teachers: List[Teacher] = []
+        for teacher in self.__teachers:
+            if name in teacher.get_name():
+                matched_teachers.append(teacher)
+        return matched_teachers
+    
+    def get_teacher_by_id(self, teacher_id: UUID4):
+        for teacher in self.__teachers:
+            if teacher_id == teacher.get_id():
+                return teacher
+        return "Error: Teacher not found"
+    
     def study_latest_video_from_course(self, user_name: str):
         user = self.get_user_by_name(user_name)[0]
         if isinstance(user, User):
