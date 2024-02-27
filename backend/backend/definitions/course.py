@@ -181,6 +181,8 @@ class Course:
 
     def add_review(self, review: CourseReview):
         if(isinstance(review, CourseReview)):
+            if(self.search_review_by_user(review.get_reviewer())):
+                return False
             self.__reviews.append(review)
             return True
         return False
@@ -209,6 +211,12 @@ class Course:
 
     def get_reviews(self):
         return self.__reviews
+    
+    def search_review_by_user(self, user: User):
+        for review in self.__reviews:
+            if (review.get_reviewer() == user):
+                return review
+        return None
 
 
 class CourseCatergory:

@@ -53,10 +53,14 @@ def create_review(
     
     user = controller.get_user_by_id(uuid.UUID(create_review_post_data.user_id))
     if not isinstance(user, User):
-        response.status_code = status.HTTP_400_BAD_REQUEST
+        response.status_code = status.HTTP_401_UNAUTHORIZED
         return "User ID not found"
     
     review = CourseReview(user, create_review_post_data.star, create_review_post_data.comment)
-    course.add_review(review)
+    review_adding_result = course.add_review(review)
+    
+    if (not review_adding_result):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Duplicate reviews"
 
     return course.get_reviews()
