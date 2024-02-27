@@ -11,6 +11,7 @@ app.include_router(example.router)
 app.include_router(info.router)
 app.include_router(authentication.router)
 app.include_router(create_course.router)
+app.include_router(study_latest_video.router)
 
 origins = [
     "http://localhost:3000",
