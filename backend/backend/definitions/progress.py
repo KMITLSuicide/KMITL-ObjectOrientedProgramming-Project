@@ -6,7 +6,6 @@ class ProgressVideo(CourseMaterialVideo):
         super().__init__(video.get_url(),video.get_name(),video.get_description())
         self.__learned = False
 
-
 class Progress:
     def __init__(self, course : Course) -> None:
         self.__course = course
@@ -26,6 +25,13 @@ class Progress:
     def get_name(self):
         return self.__name
     
+    def search_video_by_url(self, url : str):
+        for video in self.__progress_videos:
+            if isinstance(video, ProgressVideo):
+                if video.get_url() == url:
+                    return video
+        return None
+
     def search_video_by_name(self, name : str):
         for video in self.__progress_videos:
             if isinstance(video, ProgressVideo):
@@ -40,10 +46,12 @@ class Progress:
         for quiz in course.get_quizes():
             if(isinstance(quiz, CourseMaterialQuiz)):
                 self.__progress_quizes.append(ProgressQuiz(quiz))
+
     def set_latest_video(self, video : ProgressVideo):
         if not isinstance(video, ProgressVideo):
             return "Invalid, set_latest_video input is not ProgressVideo"
         self.__latest_video = video
+
 
 class ProgressQuiz(CourseMaterialQuiz):
     def __init__(self,quiz : CourseMaterialQuiz) -> None:
