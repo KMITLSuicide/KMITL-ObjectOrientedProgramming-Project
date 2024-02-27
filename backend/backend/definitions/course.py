@@ -1,5 +1,6 @@
+from __future__ import annotations
 import uuid
-from typing import List
+from typing import List, Literal
 from pydantic import UUID4
 
 
@@ -27,7 +28,6 @@ class QuizQuestion:
         return self.__correct
 
 
-
 class CourseMaterial:
     def __init__(self, name: str, description: str) -> None:
         self.__id: UUID4 = uuid.uuid4()
@@ -36,6 +36,14 @@ class CourseMaterial:
 
     def get_id(self):
         return self.__id
+    
+    def get_name(self):
+        return self.__name
+    
+    def get_description(self):
+        return self.__description
+
+
 class CourseMaterialVideo(CourseMaterial):
     def __init__(self, url: str, name: str, description: str) -> None:
         super().__init__(name, description)
@@ -98,6 +106,22 @@ class CourseMaterialQuiz(CourseMaterial):
         return self.__questions
 
 
+class CourseReview:
+    def __init__(self, reviewer: User, star: Literal[1, 2, 3, 4, 5], comment: str) -> None:
+        self.__reviewer = reviewer
+        self.__star = star
+        self.__comment = comment
+        
+    def get_reviewer(self):
+        return self.__reviewer
+
+    def get_star(self):
+        return self.__star
+
+    def get_comment(self):
+        return self.__comment
+
+
 class Course:
     def __init__(self, name: str, description: str, price: int) -> None:
         self.__id: UUID4 = uuid.uuid4()
@@ -107,8 +131,10 @@ class Course:
         self.__images: List[CourseMaterialImage] = []
         self.__quizes: List[CourseMaterialQuiz] = []
         self.__videos: List[CourseMaterialVideo] = []
+        self.__reviews: List[CourseReview] = []
         #Question from Taj to phak: Should I collect latest video to course?
         self.__latest_video = None
+    
     def set_name(self, name: str):
         if isinstance(name, str):
             self.__name = name
@@ -153,6 +179,12 @@ class Course:
             return True
         return False
 
+    def add_review(self, review: CourseReview):
+        if(isinstance(review, CourseReview)):
+            self.__reviews.append(review)
+            return True
+        return False
+
     def get_id(self):
         return self.__id
 
@@ -170,11 +202,14 @@ class Course:
 
     def get_quizes(self):
         return self.__quizes
-    
+
     #Tajdang commit
     def get_latest_video(self):
         return self.__latest_video
-    
+
+    def get_reviews(self):
+        return self.__reviews
+
 
 class CourseCatergory:
     def __init__(self, name: str) -> None:
@@ -209,3 +244,4 @@ class CourseCatergory:
             if course.get_name().find(name):
                 matched_courses.append(course)
         return matched_courses
+
