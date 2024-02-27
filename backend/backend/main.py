@@ -3,13 +3,14 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.config import config
-from backend.routers import example, info, authentication
+from backend.routers import example, info, authentication, create_course
 
 app = FastAPI()
 
 app.include_router(example.router)
 app.include_router(info.router)
 app.include_router(authentication.router)
+app.include_router(create_course.router)
 
 origins = [
     "http://localhost:3000",

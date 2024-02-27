@@ -1,7 +1,6 @@
 import uuid
-import uvicorn
 from typing import List, Literal, Union, Annotated
-from fastapi import FastAPI, Response, status, Body
+from fastapi import APIRouter, Response, status, Body
 from pydantic import BaseModel, UUID4
 
 from backend.definitions.controller import Controller
@@ -14,9 +13,10 @@ from backend.definitions.course import (
     CourseMaterialQuiz,
     CourseMaterialVideo,
 )
-from backend.main import controller
+from backend.controller_instance import controller
 
-app = FastAPI()
+
+router = APIRouter()
 
 
 class CreateUserData(BaseModel):
@@ -24,23 +24,27 @@ class CreateUserData(BaseModel):
     type: Union[Literal["User"], Literal["Teacher"]]
 
 
-@app.post("/user")
+@router.post("/user/create")
 def create_user(
     create_user_data: Annotated[
         CreateUserData,
         Body(
-            examples=[{"name": "Example"}],
+            examples=[{"name": "Example", "type": "User"}],
         ),
     ]
 ):
 
     if create_user_data.type == "User":
         user = User(create_user_data.name)
+        controller.add_user(user)
     elif create_user_data.type == "Teacher":
         user = Teacher(create_user_data.name)
+        controller.add_teacher(user)
+
+    return user
 
 
-@app.get("/category")
+@router.get("/category")
 def get_all_categories():
     return controller.get_all_categories()
 
@@ -49,7 +53,7 @@ class PostCategoryData(BaseModel):
     name: str
 
 
-@app.post("/category")
+@router.post("/category")
 def new_category(
     post_category_data: Annotated[
         PostCategoryData,
@@ -61,36 +65,36 @@ def new_category(
 ):
     category = CourseCatergory(post_category_data.name)
     controller.add_category(category)
-    return category.get_id()
+    return category
 
 
-@app.get("/category/{category_id}")
+@router.get("/category/{category_id}")
 def get_category_by_id(category_id: str):
     category = controller.search_category_by_id(uuid.UUID(category_id))
     return category
 
 
-@app.get("/course")
+@router.get("/course")
 def get_all_course():
     return controller.get_all_courses()
 
 
 class PostCourseData(BaseModel):
-    user_id: str
+    teacher_id: str
     name: str
     description: str
     price: int
     category_id: str
 
 
-@app.post("/course")
+@router.post("/course")
 def new_course(
     post_course_data: Annotated[
         PostCourseData,
         Body(
             examples=[
                 {
-                    "user_id": "afeabc96-80f6-4508-82e4-e8a429e86547",
+                    "teacher_id": "afeabc96-80f6-4508-82e4-e8a429e86547",
                     "name": "Example",
                     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                     "price": 100,
@@ -108,11 +112,19 @@ def new_course(
     if not category:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "Category not found"
+
+    teacher = controller.get_teacher_by_id(uuid.UUID(post_course_data.teacher_id))
+    if not isinstance(teacher, Teacher):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Teacher not found"
+
+    teacher.add_my_teaching(course)
     category.add_course(course)
-    return course.get_id()
+
+    return course
 
 
-@app.get("/course/{course_id}")
+@router.get("/course/{course_id}")
 def get_course_by_id(course_id: str):
     course = controller.search_course_by_id(uuid.UUID(course_id))
     return course
@@ -128,7 +140,7 @@ class AddImageToCoursePostData(CourseMaterialPostData):
     description: str
 
 
-@app.post("/course/{course_id}/image")
+@router.post("/course/{course_id}/image")
 def add_image_to_course(
     course_id: str,
     add_image_to_course_data: Annotated[
@@ -156,7 +168,7 @@ class AddQuizToCoursePostData(CourseMaterialPostData):
     questions: List[QuizQuestionPostData]
 
 
-@app.post("/course/{course_id}/quiz")
+@router.post("/course/{course_id}/quiz")
 def add_quiz_to_course(
     course_id: str,
     add_image_to_course_data: Annotated[
@@ -173,10 +185,6 @@ def add_quiz_to_course(
 ):
     course = controller.search_course_by_id(uuid.UUID(course_id))
     return course
-
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, log_level="info")
 
 
 controller.add_category(CourseCatergory("fgiohklfsghklj"))
