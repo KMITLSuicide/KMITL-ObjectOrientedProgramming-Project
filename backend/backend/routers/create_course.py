@@ -12,6 +12,7 @@ from backend.definitions.course import (
     CourseMaterialImage,
     CourseMaterialQuiz,
     CourseMaterialVideo,
+    QuizQuestion,
 )
 from backend.controller_instance import controller
 
@@ -137,7 +138,6 @@ class CourseMaterialPostData(BaseModel):
 
 class AddImageToCoursePostData(CourseMaterialPostData):
     url: str
-    description: str
 
 
 @router.post("/course/{course_id}/image")
@@ -149,13 +149,22 @@ def add_image_to_course(
             examples=[
                 {
                     "url": "https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png",
+                    "name": "FastAPI Logo",
                     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                 }
             ],
         ),
     ],
+    response: Response,
 ):
     course = controller.search_course_by_id(uuid.UUID(course_id))
+    if not isinstance(course, Course):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Teacher not found"
+
+    image = CourseMaterialImage(add_image_to_course_data.url, add_image_to_course_data.name, add_image_to_course_data.description)
+    course.add_image(image)
+    
     return course
 
 
@@ -171,19 +180,39 @@ class AddQuizToCoursePostData(CourseMaterialPostData):
 @router.post("/course/{course_id}/quiz")
 def add_quiz_to_course(
     course_id: str,
-    add_image_to_course_data: Annotated[
+    add_quiz_to_course_data: Annotated[
         AddQuizToCoursePostData,
         Body(
             examples=[
                 {
-                    "url": "https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png",
+                    "name": "Which language is FASTApi built with",
                     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                    "questions": [
+                        {
+                            "question": "Python",
+                            "correct": True
+                        },
+                        {
+                            "question": "Rust",
+                            "correct": False
+                        }
+                    ]
                 }
             ],
         ),
     ],
+    response: Response
 ):
     course = controller.search_course_by_id(uuid.UUID(course_id))
+    if not isinstance(course, Course):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Teacher not found"
+
+    quiz = CourseMaterialQuiz(add_quiz_to_course_data.name, add_quiz_to_course_data.description)
+    for question in add_quiz_to_course_data.questions:
+        quiz.add_question(QuizQuestion(question.question, question.correct))
+    course.add_quiz(quiz)
+
     return course
 
 
