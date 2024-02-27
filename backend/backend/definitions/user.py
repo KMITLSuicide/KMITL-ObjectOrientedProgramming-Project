@@ -34,7 +34,7 @@ class User:
     def set_latest_progress(self, progress : Progress):
         self.__latest_progress = progress
 
-    
+
 class Teacher(User):
     def __init__(self, name: str) -> None:
         super().__init__(name)
@@ -48,3 +48,7 @@ class Teacher(User):
             self.__my_teachings.append(course)
             return True
         return False
+    
+    #V commit
+    def get_teacher_name(self):
+        return self.__name

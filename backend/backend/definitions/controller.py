@@ -5,11 +5,16 @@ from uuid import UUID
 from backend.definitions.course import Course, CourseCatergory
 from backend.definitions.user import Teacher#Question:why don't just collect user
 from backend.definitions.user import User
+
+#V commit
+from backend.definitions.order import Coupon,CouponCourse,CouponTeacher
+
 class Controller:
     def __init__(self) -> None:
         self.__categories: List[CourseCatergory] = []
         self.__teachers: List[Teacher] = []
         self.__users: List[User] = []#Question: is user going to collect to be Teacher
+        self.__coupons: List[Coupon] = [] #V commit
 
     def add_category(self, category: CourseCatergory):
         if isinstance(category, CourseCatergory):
@@ -97,3 +102,39 @@ class Controller:
         else:
             return f"Error: User with ID {user_id} not found "
         
+    #V commit
+    def search_teacher_by_course(self, course : Course):
+        for teacher in self.__teachers:
+            if course in teacher.__my_teachings:
+                return teacher
+        return "Error: Teacher who create this course not found"
+    
+    #V commit
+    def validate_coupon(self, coupon_id: str, course : Course, teacher : Teacher):
+        #validate
+        if coupon_id != None and course != None and teacher != None:
+            #search coupon
+            for coupon in self.__coupons :
+                if coupon.get_coupon_id() == coupon_id:
+                    #check course
+                    if(isinstance(coupon, CouponCourse)):
+                        if(coupon.get_course() == course):
+                            return coupon.get_discount()
+                    #check teacher
+                    if(isinstance(coupon, CouponTeacher)):
+                        if(coupon.get_teacher() == teacher):
+                            return coupon.get_discount()
+                    else:
+                        return f"Error: Coupon ID {coupon.get_coupon_id()} not match with {course.get_name()} or {teacher.get_teacher_name()}"
+            return f"Error: Coupon ID {coupon_id} not found"
+        else:
+            return "Error: Coupon ID or Course or Teacher is invalid"
+        
+    # def buy_course(self, user_id, course_id, coupon_id): #check out
+    #     course = self.search_course_by_id(course_id)
+    #     if isinstance(course, Course):
+    #         teacher = self.search_teacher_by_course(course)
+    #         if isinstance(teacher, Teacher):
+    #             discount = 0
+    #             if coupon_id != None:
+    #                 discount = self.validate_coupon(coupon_id, course, teacher)
