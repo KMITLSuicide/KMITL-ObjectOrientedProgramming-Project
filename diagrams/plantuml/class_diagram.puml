@@ -1,0 +1,143 @@
+@startuml Udemy Class Diagram
+
+class Controller {
+    -users
+    -coupons
+    -payment_methods
+    -categories
+    -course_progresses
+    +validate_coupon()
+    +list_payment_method()
+}
+
+class User {
+    -id 
+    -name
+    -cart
+    -orders
+    -my_courses
+    +buy_course()
+    +delete_user()
+    +update_profile()
+}
+
+class Teacher {
+    -my_teaching_course
+    +add_course()
+}
+
+class Course {
+    -category
+    +view_courses()
+    +update_course()
+    +delete_course()
+}
+
+class Category {
+    -courses
+    +get_courses()
+}
+
+class Progress {
+    -last_learned
+    -course
+}
+
+class ProgressVideo {
+    -learned: bool
+    -video
+}
+
+class ProgressQuiz {
+    -learned: bool
+    -quiz
+}
+
+class Video {
+    +update()
+}
+
+class Quiz {
+    -question
+    -choices
+}
+
+class Cart {
+    -courses
+    +add_course()
+    +remove_course()
+}
+
+class Payment {
+    -status
+    -amount
+    -country
+    -type
+}
+
+class Order {
+    -courses
+}
+
+class Coupon {
+    -amount
+}
+
+class CouponCourse {
+    -course
+}
+
+class CouponTeacher {
+    -teacher
+}
+
+class Review {
+    -star
+    -text
+}
+
+Controller o-- User
+Controller *-- Coupon
+Controller o-- Category
+User <|-- Teacher
+User *-- Cart
+User --> Order
+Order --> Coupon
+Order --> Payment
+Coupon <|-- CouponCourse
+Coupon <|-- CouponTeacher
+Teacher *-- Course
+Progress o-- ProgressVideo
+Progress o-- ProgressQuiz
+Progress --> Course
+Progress --o User
+Video <|-- ProgressVideo
+Quiz <|-- ProgressQuiz
+Course *-- Video
+Course *-- Quiz
+Course *-- Review
+Category o-- Course
+
+' Controller "1" o-- "0..*" User
+' Controller "1" *-- "0..*" Coupon
+' Controller "1" o-- "0..*" Category
+' User <|-- "0..*" Teacher
+' User "1" *-- "0..*" Cart
+' User "1" --> "0..*" Order
+' Order "1" --> "0..*" Coupon
+' Order "1" --> "0..*" Payment
+' Coupon <|-- "0..*" CouponCourse
+' Coupon <|-- "0..*" CouponTeacher
+' Teacher "1" *-- "0..*" Course
+' Progress "1" o-- "0..*" ProgressVideo
+' Progress "1" o-- "0..*" ProgressQuiz
+' Progress "1" --> "0..*" Course
+' Progress "1" --o "0..*" User
+' Video <|-- ProgressVideo
+' Quiz <|-- ProgressQuiz
+' Course "1" *-- "0..*" Video
+' Course "1" *-- "0..*" Quiz
+' Course "1" *-- "0..*" Review
+' Category "1" o-- "0..*" Course
+
+@enduml
