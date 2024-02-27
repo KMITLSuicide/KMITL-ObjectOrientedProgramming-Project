@@ -89,11 +89,10 @@ class Controller:
                 return user
         return "Error: User not found"
     
-    def study_latest_video_from_course(self, user_id: str):
-        user_id_uuid: UUID4 = UUID(user_id)
-        user = self.get_user_by_id(user_id_uuid)
+    def study_latest_video_from_course(self, user_name: str):
+        user = self.get_user_by_name(user_name)[0]
         if isinstance(user, User):
             return user.get_latest_video_from_user()
         else:
-            return f"Error: User with ID {user_id} not found "
+            return f"Error: User with ID {user_name} not found "
         
