@@ -76,10 +76,10 @@ class Controller:
         return matched_teachers
     
     #Tajdang commit
-    def get_user_by_name(self, name: str):
+    def get_users_by_name(self, name: str):
         matched_users: List[User] = []
         for user in self.__users:
-            if name in user.get_name():
+            if name == user.get_name():
                 matched_users.append(user)
         return matched_users 
     
@@ -89,11 +89,49 @@ class Controller:
                 return user
         return "Error: User not found"
     
-    def study_latest_video_from_course(self, user_id: str):
-        user_id_uuid: UUID4 = UUID(user_id)
-        user = self.get_user_by_id(user_id_uuid)
+    def get_teacher_by_name(self, name: str):
+        matched_teachers: List[Teacher] = []
+        for teacher in self.__teachers:
+            if name in teacher.get_name():
+                matched_teachers.append(teacher)
+        return matched_teachers
+    
+    def get_teacher_by_id(self, teacher_id: UUID4):
+        for teacher in self.__teachers:
+            if teacher_id == teacher.get_id():
+                return teacher
+        return "Error: Teacher not found"
+    
+    def study_latest_video_from_course(self, user_name: str):
+        if self.get_users_by_name(user_name) == []: 
+            return None#Name Not found
+        user = self.get_users_by_name(user_name)[0]
         if isinstance(user, User):
             return user.get_latest_video_from_user()
         else:
-            return f"Error: User with ID {user_id} not found "
+            return f"Error: User with ID {user_name} not found "
         
+    #From Taj, cannot view by url because string is too long
+    def view_video_by_url(self, user_name: str, url: str):
+        if self.get_users_by_name(user_name) == []: 
+            return None#Name Not found
+        user = self.get_users_by_name(user_name)[0]
+        if user == None:
+            return "Error: Your username was not found"
+        if isinstance(user,User):
+            return user.view_video_by_url(url)
+        
+    def view_video_by_name(self, user_name:str, video_name: str):
+        if self.get_users_by_name(user_name) == []: 
+            return None#Name Not found
+        user = self.get_users_by_name(user_name)[0]
+        if isinstance(user,User):
+            return user.view_video_by_name(video_name)
+
+
+    def view_my_learning(self, user_name:str):
+        if self.get_users_by_name(user_name) == []: 
+            return None#Name Not found
+        user = self.get_users_by_name(user_name)[0]
+        if isinstance(user,User):
+            return user.view_my_learning()
