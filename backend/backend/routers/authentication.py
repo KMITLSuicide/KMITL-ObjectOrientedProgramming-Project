@@ -1,5 +1,7 @@
 from datetime import timedelta
 from typing import Annotated
+from fastapi import Depends, APIRouter
+from backend.lib.authentication import User, get_current_user
 
 from fastapi import Depends, APIRouter, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm

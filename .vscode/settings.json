@@ -1,7 +1,10 @@
 {
     "conventionalCommits.scopes": [
         "backend",
-        "frontend"
+        "frontend",
+        "diagrams"
     ],
     "python.analysis.typeCheckingMode": "basic",
+    "editor.tabSize": 2,
+    "editor.indentSize": "tabSize"
 }

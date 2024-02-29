@@ -2,18 +2,19 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.definitions.controller import Controller
-from backend.config import APP_NAME, API_HOST, API_PORT, LOG_LEVEL
-from backend.routers import example, info, authentication
-
-
-controller = Controller()
+from backend.backend.config import APP_NAME, API_HOST, API_PORT, LOG_LEVEL
+from backend.routers import example, info, authentication, review, create_course, view_my_learning, view_video, study_latest_video
 
 app = FastAPI()
 
 app.include_router(example.router)
 app.include_router(info.router)
 app.include_router(authentication.router)
+app.include_router(create_course.router)
+app.include_router(view_my_learning.router)
+app.include_router(view_video.router)
+app.include_router(study_latest_video.router)
+app.include_router(review.router)
 
 origins = [
     "http://localhost:3000",
