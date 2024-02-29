@@ -1,4 +1,4 @@
-import CourseLearnSidebar, { SidebarCategory, SidebarItem } from "~/src/components/course/sidebar";
+import CourseLearnSidebar, { type SidebarCategory, type SidebarItem } from "~/src/components/course/sidebar";
 import { getFrontendCourseViewData } from "~/src/lib/data/course";
 
 export default function CourseLearnLayout({
@@ -8,6 +8,7 @@ export default function CourseLearnLayout({
   children: React.ReactNode,
   params: { courseID: string }
 }) {
+  
   const courseData =  getFrontendCourseViewData(params.courseID);
   
   const sidebarImagesItems = courseData.images.map((element): SidebarItem => {
@@ -38,9 +39,13 @@ export default function CourseLearnLayout({
         <div className="w-4/5 bg-secondary p-6 rounded-xl">
           {children}
         </div>
-        <div className="w-1/5 p-6">
-          <p>im a sidebar</p>
-          <CourseLearnSidebar sidebarCategories={sidebarCategories} />
+        <div className="w-1/5">
+            <h3 className="text-xl py-2 px-4 bg-primary rounded-lg">
+              <b>
+                {courseData.name}
+              </b>
+            </h3>
+            <CourseLearnSidebar className="px-5" sidebarCategories={sidebarCategories} />
         </div>
       </div>
     </div>

@@ -22,7 +22,7 @@ export default function CourseLearnSidebar({
   sidebarCategories,
 }: SidebarProps) {
   return (
-    <div className={cn("pb-12", className)}>
+    <ScrollArea className={cn("pb-12", className)}>
       <div className="space-y-4 py-4">
         {sidebarCategories.map((category, i) => {
           const sidebarItems = category.sidebarItems.map((item, j) => {
@@ -39,14 +39,14 @@ export default function CourseLearnSidebar({
           });
           return (
             <div key={i} className="py-2">
-              <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
+              <h2 className="mb-2 text-lg font-semibold tracking-tight">
                 {category.name}
               </h2>
-              <div className="space-y-1 px-2">{sidebarItems}</div>
+              <div className="space-y-1">{sidebarItems}</div>
             </div>
           );
         })}
       </div>
-    </div>
+    </ScrollArea>
   );
 }
