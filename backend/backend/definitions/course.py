@@ -2,7 +2,7 @@ from __future__ import annotations
 import uuid
 from typing import List, Literal
 from pydantic import UUID4
-
+from backend.definitions.user import User
 
 class QuizQuestion:
     def __init__(self, question: str, correct: bool) -> None:
@@ -218,7 +218,7 @@ class Course:
         return None
     
 
-class CourseCatergory:
+class CourseCategory:
     def __init__(self, name: str) -> None:
         self.__id: UUID4 = uuid.uuid4()
         self.__name: str = name
