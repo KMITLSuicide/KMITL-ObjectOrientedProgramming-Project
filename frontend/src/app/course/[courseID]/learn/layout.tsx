@@ -1,4 +1,5 @@
 import CourseLearnSidebar, { type SidebarCategory, type SidebarItem } from "~/src/components/course/sidebar";
+import { ScrollArea } from "~/src/components/ui/scroll-area";
 import { getFrontendCourseViewData } from "~/src/lib/data/course";
 
 export default function CourseLearnLayout({
@@ -34,12 +35,12 @@ export default function CourseLearnLayout({
 ]
 
   return(
-    <div className="flex w-full justify-center">
+    <div className="flex h-full w-full justify-center">
       <div className="flex w-full max-w-screen-xl space-x-6">
-        <div className="w-4/5 bg-secondary p-6 rounded-xl">
+        <ScrollArea className="h-full w-4/5 bg-secondary p-6 rounded-xl">
           {children}
-        </div>
-        <div className="w-1/5">
+        </ScrollArea>
+        <div className="w-1/5 h-full">
             <h3 className="text-xl py-2 px-4 bg-primary rounded-lg">
               <b>
                 {courseData.name}
