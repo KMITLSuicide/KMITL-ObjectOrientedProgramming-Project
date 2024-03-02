@@ -1,44 +1,25 @@
+from __future__ import annotations
 from datetime import datetime, timezone, timedelta
-from typing import Annotated, Dict, Final
-from pydantic import BaseModel
+from typing import Annotated, Dict, Final, Literal
+from pydantic import BaseModel, EmailStr
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from passlib.context import CryptContext
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError, InvalidHashError
 from joserfc import jwt
 from joserfc.jwk import OKPKey
+from joserfc.errors import BadSignatureError
 
-from backend.definitions.controller import Controller
 from backend.config import JWT_ENCRYPTION_ALGORITHM
 from backend.secrets.key import get_key
-from backend.main import controller
+from backend.controller_instance import controller
 
 SECRET_KEY: Final[OKPKey] = get_key()
 JWT_HEADER: Final[Dict] = {"alg": JWT_ENCRYPTION_ALGORITHM}
-TOKEN_URL: Final[str] = 'token'
+TOKEN_URL: Final[str] = 'login'
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=TOKEN_URL)
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-fake_users_db = {
-    "johndoe": {
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
-        "disabled": False,
-    }
-}
-
-class User(BaseModel):
-    username: str
-    full_name: str | None = None
-    email: str | None = None
-    disabled: bool | None = None
-
-
-class UserInDB(User):
-    hashed_password: str
+password_hasher = PasswordHasher()
 
 
 class Token(BaseModel):
@@ -46,30 +27,34 @@ class Token(BaseModel):
     token_type: str
 
 
-class TokenData(BaseModel):
-    username: str | None = None
+class RegisterPostData(BaseModel):
+    type: Literal['user', 'teacher']
+    name: str
+    email: EmailStr
+    password: str
 
 
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+def verify_password(plain_password, correct_hash):
+    try:
+        password_hasher.verify(hash=correct_hash, password=plain_password)
+        return True
+    except VerifyMismatchError:
+        return False
+    except InvalidHashError:
+        return False
 
 
 def get_password_hash(password):
-    return pwd_context.hash(password)
+    password_hash = password_hasher.hash(password)
+    return password_hash
 
 
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
-        return UserInDB(**user_dict)
-
-
-def authenticate_user(db, username: str, password: str) -> UserInDB | bool:
-    user = get_user(db, username)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
+def authenticate_user(email: EmailStr, password: str):
+    user = controller.search_user_by_email(email)
+    if user is None:
+        return None
+    if not verify_password(password, user.get_hashed_password()):
+        return None
     return user
 
 
@@ -93,23 +78,16 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         decoded_token = jwt.decode(token, SECRET_KEY, algorithms=[JWT_ENCRYPTION_ALGORITHM])
         payload = decoded_token.claims
-        username: str = payload.get("sub", None)
-        if username is None:
+        email: EmailStr = payload.get("sub", None)
+        if email is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
-    except Exception as exc:
+        # token_data = TokenData(username=username)
+    except BadSignatureError as exc:
         raise credentials_exception from exc
 
-    if token_data.username is None:
+    if email is None:
         raise credentials_exception from None
-    user = get_user(fake_users_db, username=token_data.username)
+    user = controller.search_user_by_email(email)
     if user is None:
         raise credentials_exception
     return user
-
-async def get_current_active_user(
-    current_user: Annotated[User, Depends(get_current_user)]
-):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user

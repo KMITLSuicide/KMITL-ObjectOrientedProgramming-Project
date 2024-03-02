@@ -9,14 +9,14 @@ from backend.definitions.user import User
 
 router = APIRouter()
 
-user = User('user')
-controller.add_user(user)
-print('user id', user.get_id())
-category = CourseCatergory('category')
-course = Course('course', 'desc', 10000)
-print('course id', course.get_id())
-category.add_course(course)
-controller.add_category(category)
+# user = User('user')
+# controller.add_user(user)
+# print('user id', user.get_id())
+# category = CourseCatergory('category')
+# course = Course('course', 'desc', 10000)
+# print('course id', course.get_id())
+# category.add_course(course)
+# controller.add_category(category)
 
 @router.get("/course/{course_id}/review")
 def get_reviews(course_id: str, response: Response):
