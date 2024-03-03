@@ -1,54 +1,59 @@
-import CourseLearnSidebar, { type SidebarCategory, type SidebarItem } from "~/src/components/course/sidebar";
+import CourseLearnSidebar, {
+  type SidebarCategory,
+  type SidebarItem,
+} from "~/src/components/course/sidebar";
 import { ScrollArea } from "~/src/components/ui/scroll-area";
 import { getFrontendCourseViewData } from "~/src/lib/data/course";
 
 export default function CourseLearnLayout({
   children,
-  params
+  params,
 }: {
-  children: React.ReactNode,
-  params: { courseID: string }
+  children: React.ReactNode;
+  params: { courseID: string };
 }) {
-  
-  const courseData =  getFrontendCourseViewData(params.courseID);
-  
+  const courseData = getFrontendCourseViewData(params.courseID);
+
   const sidebarImagesItems = courseData.images.map((element): SidebarItem => {
-    return({
+    return {
       name: element.name,
-      link: `/course/${params.courseID}/learn/image/${element.id}`
-    });
+      link: `/course/${params.courseID}/learn/image/${element.id}`,
+    };
   });
   const sidebarQuizItems = courseData.quizes.map((element): SidebarItem => {
-    return({
+    return {
       name: element.name,
-      link: `/course/${params.courseID}/learn/quiz/${element.id}`
-    });
+      link: `/course/${params.courseID}/learn/quiz/${element.id}`,
+    };
   });
 
-  const sidebarCategories: SidebarCategory[] = [{
-    name: 'Images',
-    sidebarItems: sidebarImagesItems
-  }, {
-    name: 'Quizes',
-    sidebarItems: sidebarQuizItems
-  }
-]
+  const sidebarCategories: SidebarCategory[] = [
+    {
+      name: "Images",
+      sidebarItems: sidebarImagesItems,
+    },
+    {
+      name: "Quizes",
+      sidebarItems: sidebarQuizItems,
+    },
+  ];
 
-  return(
+  return (
     <div className="flex h-full w-full justify-center">
       <div className="flex w-full max-w-screen-xl space-x-6">
-        <ScrollArea className="h-full w-4/5 bg-secondary p-6 rounded-xl">
+        <ScrollArea className="h-full w-4/5 rounded-xl bg-secondary p-6">
           {children}
         </ScrollArea>
-        <div className="w-1/5 h-full">
-            <h3 className="text-xl py-2 px-4 bg-primary rounded-lg">
-              <b>
-                {courseData.name}
-              </b>
-            </h3>
-            <CourseLearnSidebar className="px-5" sidebarCategories={sidebarCategories} />
+        <div className="h-full w-1/5">
+          <h3 className="rounded-lg bg-primary px-4 py-2 text-xl">
+            <b>{courseData.name}</b>
+          </h3>
+          <CourseLearnSidebar
+            className="px-5"
+            sidebarCategories={sidebarCategories}
+          />
         </div>
       </div>
     </div>
-  )
+  );
 }

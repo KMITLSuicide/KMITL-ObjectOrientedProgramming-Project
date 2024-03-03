@@ -20,7 +20,7 @@ import { RadioGroup, RadioGroupItem } from "~/src/components/ui/radio-group";
 import { Toaster } from "~/src/components/ui/toaster";
 
 const FormSchema = z.object({
-  type: z.union([z.literal('user'), z.literal('teacher')]),
+  type: z.union([z.literal("user"), z.literal("teacher")]),
   name: z.string().min(5, {
     message: "Your name must be at least 5 character",
   }),
@@ -30,7 +30,7 @@ const FormSchema = z.object({
   password: z.string().min(8, {
     message: "Password must be at least 8 character",
   }),
-})
+});
 
 export default function Register() {
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -41,8 +41,8 @@ export default function Register() {
       email: "",
       password: "",
     },
-  })
-  
+  });
+
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
     toast({
@@ -52,50 +52,49 @@ export default function Register() {
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
-    })
+    });
   }
-   
-  return(
-    <div className="flex items-center justify-center w-full h-full">
-      <div className="h-fit w-fit p-8 bg-secondary rounded-lg space-y-4">
-        <h1 className="font-extrabold text-2xl">Register</h1>
+
+  return (
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="h-fit w-fit space-y-4 rounded-lg bg-secondary p-8">
+        <h1 className="text-2xl font-extrabold">Register</h1>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-          <FormField
-          control={form.control}
-          name="type"
-          render={({ field }) => (
-            <FormItem className="space-y-3">
-              <FormLabel>Are you a...</FormLabel>
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="flex flex-row space-x-4"
-                >
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="user" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Learner
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem className="flex items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <RadioGroupItem value="teacher" />
-                    </FormControl>
-                    <FormLabel className="font-normal">
-                      Teacher
-                    </FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-2/3 space-y-6"
+          >
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Are you a...</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                      className="flex flex-row space-x-4"
+                    >
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="user" />
+                        </FormControl>
+                        <FormLabel className="font-normal">Learner</FormLabel>
+                      </FormItem>
+                      <FormItem className="flex items-center space-x-3 space-y-0">
+                        <FormControl>
+                          <RadioGroupItem value="teacher" />
+                        </FormControl>
+                        <FormLabel className="font-normal">Teacher</FormLabel>
+                      </FormItem>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
@@ -139,15 +138,14 @@ export default function Register() {
               )}
             />
             <Button type="submit">Register</Button>
-            <Button variant='link' asChild>
-              <Link href='/account/login'>Log in</Link>
+            <Button variant="link" asChild>
+              <Link href="/account/login">Log in</Link>
             </Button>
           </form>
         </Form>
-
       </div>
 
       <Toaster />
     </div>
-  )
+  );
 }

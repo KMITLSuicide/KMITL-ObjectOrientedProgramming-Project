@@ -25,7 +25,7 @@ const FormSchema = z.object({
   password: z.string().min(8, {
     message: "Password must be at least 8 character",
   }),
-})
+});
 
 export default function LogIn() {
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -34,8 +34,8 @@ export default function LogIn() {
       email: "",
       password: "",
     },
-  })
-  
+  });
+
   function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({
       title: "You submitted the following values:",
@@ -44,16 +44,19 @@ export default function LogIn() {
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
-    })
+    });
   }
-   
-  return(
-    <div className="flex items-center justify-center w-full h-full">
-      <div className="h-fit w-fit p-8 bg-secondary rounded-lg space-y-4">
-        <h1 className="font-extrabold text-2xl">Log in</h1>
+
+  return (
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="h-fit w-fit space-y-4 rounded-lg bg-secondary p-8">
+        <h1 className="text-2xl font-extrabold">Log in</h1>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-2/3 space-y-6"
+          >
             <FormField
               control={form.control}
               name="email"
@@ -81,14 +84,13 @@ export default function LogIn() {
               )}
             />
             <Button type="submit">Log in</Button>
-            <Button variant='link' asChild>
-              <Link href='/account/register'>Register</Link>
+            <Button variant="link" asChild>
+              <Link href="/account/register">Register</Link>
             </Button>
           </form>
         </Form>
-
       </div>
       <Toaster />
     </div>
-  )
+  );
 }
