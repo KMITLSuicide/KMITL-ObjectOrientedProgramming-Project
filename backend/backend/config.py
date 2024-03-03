@@ -1,20 +1,9 @@
-from typing import Dict
+from typing import Final
 
-class Config:
-    def __init__(self, config: Dict):
-        self.config = config
 
-    def __getitem__(self, key):
-        return self.config[key]
-
-    def __getattr__(self, key):
-        return self.config[key]
-
-config = {
-    "app_name": "KMITL-ObjectOrientedProgramming-Project",
-    "log_level": "debug",
-    "api_host" : "127.0.0.1",
-    "api_port" : 4000
-    }
-
-config = Config(config)
+APP_NAME: Final[str] = "KMITL-ObjectOrientedProgramming-Project"
+LOG_LEVEL: Final[str] = "debug"
+API_HOST: Final[str] = "127.0.0.1"
+API_PORT: Final[int] = 4000
+JWT_ENCRYPTION_ALGORITHM: Final[str] = "EdDSA"
+ACCESS_TOKEN_EXPIRE_MINUTES: Final[int] = 120

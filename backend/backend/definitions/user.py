@@ -1,16 +1,21 @@
-from typing import List, Union
 import uuid
+from typing import List, Union
+
+from pydantic import EmailStr
 
 from backend.definitions.course import Course
 from backend.definitions.progress import Progress
+
 
 class User:
     # Constants
     FETCH_SEARCH_MAX = 10
 
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, email: EmailStr, hashed_password: str) -> None:
         self.__id = uuid.uuid4()
         self.__name = name
+        self.__email = email
+        self.__hashed_password = hashed_password
         self.__my_progresses: List[Progress] = []
         self.__latest_progress: Union[Progress, None] = None
 
@@ -19,6 +24,12 @@ class User:
         
     def get_name(self):
         return self.__name
+    
+    def get_email(self):
+        return self.__email
+    
+    def get_hashed_password(self):
+        return self.__hashed_password
 
     def get_latest_video_from_user(self):
         if self.__latest_progress is None:
@@ -55,8 +66,8 @@ class User:
         return None#"Video not found please check your input"
 
 class Teacher(User):
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
+    def __init__(self, name: EmailStr, email: EmailStr, hashed_password: EmailStr) -> None:
+        super().__init__(name, email, hashed_password)
         self.__my_teachings: List[Course] = []
         
     def get_my_teachings(self):
