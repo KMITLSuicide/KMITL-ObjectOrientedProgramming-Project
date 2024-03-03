@@ -139,12 +139,12 @@ export default function Register() {
               )}
             />
             <Button type="submit">Register</Button>
+            <Button variant='link' asChild>
+              <Link href='/account/login'>Log in</Link>
+            </Button>
           </form>
         </Form>
 
-        <Button variant='link' asChild>
-          <Link href='/account/login'>Log in</Link>
-        </Button>
       </div>
 
       <Toaster />

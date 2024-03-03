@@ -81,12 +81,12 @@ export default function LogIn() {
               )}
             />
             <Button type="submit">Log in</Button>
+            <Button variant='link' asChild>
+              <Link href='/account/register'>Register</Link>
+            </Button>
           </form>
         </Form>
 
-        <Button variant='link' asChild>
-          <Link href='/account/register'>Register</Link>
-        </Button>
       </div>
       <Toaster />
     </div>
