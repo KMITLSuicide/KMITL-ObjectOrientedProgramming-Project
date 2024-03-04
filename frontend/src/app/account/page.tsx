@@ -4,6 +4,9 @@ import api from "~/src/lib/data/api";
 import { toast } from "~/src/components/ui/use-toast";
 import { Suspense, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { Toaster } from "~/src/components/ui/toaster";
+import { ToastAction } from "~/src/components/ui/toast";
+import Link from "next/link";
 
 interface AccountData {
   _User__id: string;
@@ -43,8 +46,11 @@ export default function AccountPage() {
     if (accountData === null) {
       toast({
         title: "Failed to get account data",
-        description: "Please try again later",
+        description: "Please log in to view your account data.",
         variant: 'destructive',
+        action: <ToastAction altText="Log in" asChild>
+          <Link href="/authentication/login">Log in</Link>
+          </ToastAction>
       });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,6 +84,8 @@ export default function AccountPage() {
           </tbody>
         </table>
       </Suspense>
+
+      <Toaster />
     </div>
   </div>);
 }
