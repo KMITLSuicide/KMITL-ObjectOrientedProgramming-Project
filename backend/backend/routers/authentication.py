@@ -72,14 +72,6 @@ async def register(
     return Token(access_token=access_token, token_type="bearer")
 
 
-
-@router.get("/users/me", tags=route_tags)
-async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
+@router.get("/account", tags=route_tags)
+async def get_my_account_info(current_user: Annotated[User, Depends(get_current_user)]):
     return current_user
-
-
-@router.get("/users/me/items/", tags=route_tags)
-async def read_own_items(
-    current_user: Annotated[User, Depends(get_current_user)]
-):
-    return [{"item_id": "Foo", "owner": current_user.get_email()}]

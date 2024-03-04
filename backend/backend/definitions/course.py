@@ -2,7 +2,6 @@ from __future__ import annotations
 import uuid
 from typing import List, Literal
 from pydantic import UUID4
-from backend.definitions.user import User
 
 class QuizQuestion:
     def __init__(self, question: str, correct: bool) -> None:

@@ -2,7 +2,7 @@ from __future__ import annotations
 from argon2 import PasswordHasher
 
 from backend.definitions.controller import Controller
-from backend.definitions.course import Course, CourseCatergory
+from backend.definitions.course import Course, CourseCategory
 from backend.definitions.user import Teacher, User
 
 password_hasher = PasswordHasher()
@@ -51,7 +51,7 @@ def seed(controller: Controller):
     }
 
     for name in teachers_name:
-        controller.add_teacher(
+        controller.add_user(
             Teacher(
                 name=name,
                 email=f"{name}@example.com",
@@ -69,7 +69,7 @@ def seed(controller: Controller):
         )
 
     for category, courses in courses.items():
-        category = CourseCatergory(name=category)
+        category = CourseCategory(name=category)
         for course in courses:
             category.add_course(course)
         controller.add_category(category)
