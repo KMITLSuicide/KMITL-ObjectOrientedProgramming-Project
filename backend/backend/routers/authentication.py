@@ -73,12 +73,12 @@ async def register(
 
 
 
-@router.get("/users/me", tags=route_tags)
+@router.get("/account", tags=route_tags)
 async def read_users_me(current_user: Annotated[User, Depends(get_current_user)]):
     return current_user
 
 
-@router.get("/users/me/items/", tags=route_tags)
+@router.get("/account/items/", tags=route_tags)
 async def read_own_items(
     current_user: Annotated[User, Depends(get_current_user)]
 ):

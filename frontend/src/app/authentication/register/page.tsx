@@ -18,6 +18,8 @@ import {
 import Link from "next/link";
 import { RadioGroup, RadioGroupItem } from "~/src/components/ui/radio-group";
 import { Toaster } from "~/src/components/ui/toaster";
+import { register } from "~/src/lib/data/authentication";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   type: z.union([z.literal("user"), z.literal("teacher")]),
@@ -33,6 +35,7 @@ const FormSchema = z.object({
 });
 
 export default function Register() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -43,16 +46,23 @@ export default function Register() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    const registerStatus = await register(data);
+
+    if(registerStatus) {
+      toast({
+        title: "Register success",
+        description: "You have successfully registered",
+      });
+      router.push("/account");
+    } else {
+      toast({
+        title: "Register failed",
+        description: "Please check your account details and try again",
+        variant: 'destructive',
+      });
+    }
   }
 
   return (
@@ -139,7 +149,7 @@ export default function Register() {
             />
             <Button type="submit">Register</Button>
             <Button variant="link" asChild>
-              <Link href="/account/login">Log in</Link>
+              <Link href="/authentication/login">Log in</Link>
             </Button>
           </form>
         </Form>

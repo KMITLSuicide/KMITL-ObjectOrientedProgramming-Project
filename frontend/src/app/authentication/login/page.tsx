@@ -17,34 +17,34 @@ import {
   FormMessage,
 } from "~/src/components/ui/form";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { LoginSchema, login } from "~/src/lib/data/authentication";
 
-const FormSchema = z.object({
-  email: z.string().email({
-    message: "Invalid email.",
-  }),
-  password: z.string().min(8, {
-    message: "Password must be at least 8 character",
-  }),
-});
+
+const FormSchema = LoginSchema;
 
 export default function LogIn() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      email: "",
+      username: "",
       password: "",
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const loginStatus = await login(data);
+
+    if(loginStatus) {
+      router.push("/account");
+    } else {
+      toast({
+        title: "Login failed",
+        description: "Please check your credentials and try again",
+        variant: 'destructive',
+      });
+    }
   }
 
   return (
@@ -59,7 +59,7 @@ export default function LogIn() {
           >
             <FormField
               control={form.control}
-              name="email"
+              name="username"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
@@ -85,7 +85,7 @@ export default function LogIn() {
             />
             <Button type="submit">Log in</Button>
             <Button variant="link" asChild>
-              <Link href="/account/register">Register</Link>
+              <Link href="/authentication/register">Register</Link>
             </Button>
           </form>
         </Form>
