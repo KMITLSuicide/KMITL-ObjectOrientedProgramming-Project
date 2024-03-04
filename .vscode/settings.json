@@ -12,5 +12,4 @@
         "--disable=missing-class-docstring",
         "--disable=missing-function-docstring"
     ]
-
 }
