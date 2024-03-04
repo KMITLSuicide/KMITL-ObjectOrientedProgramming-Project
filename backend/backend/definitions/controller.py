@@ -68,8 +68,15 @@ class Controller:
             return True
         return False
 
+    def get_all_user(self):
+        all_user: List[User] = []
+        for user in self.__users:
+            if isinstance(user, User):
+                all_user.append(user)
+        return all_user
+
     def get_all_teacher(self):
-        all_teacher = []
+        all_teacher: List[Teacher] = []
         for user in self.__users:
             if isinstance(user, Teacher):
                 all_teacher.append(user)

@@ -1,3 +1,4 @@
+from enum import Enum
 import uuid
 from typing import List, Annotated
 from fastapi import APIRouter, Response, status, Body
@@ -14,6 +15,7 @@ from backend.controller_instance import controller
 
 
 router = APIRouter()
+route_tags: List[str | Enum] = ['course create']
 
 
 class PostCourseData(BaseModel):
@@ -24,7 +26,7 @@ class PostCourseData(BaseModel):
     category_id: str
 
 
-@router.post("/course")
+@router.post("/course", tags=route_tags)
 def new_course(
     post_course_data: Annotated[
         PostCourseData,
@@ -70,7 +72,7 @@ class AddImageToCoursePostData(CourseMaterialPostData):
     url: str
 
 
-@router.post("/course/{course_id}/image")
+@router.post("/course/{course_id}/image", tags=route_tags)
 def add_image_to_course(
     course_id: str,
     add_image_to_course_data: Annotated[
@@ -111,7 +113,7 @@ class AddQuizToCoursePostData(CourseMaterialPostData):
     questions: List[QuizQuestionPostData]
 
 
-@router.post("/course/{course_id}/quiz")
+@router.post("/course/{course_id}/quiz", tags=route_tags)
 def add_quiz_to_course(
     course_id: str,
     add_quiz_to_course_data: Annotated[
