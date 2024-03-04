@@ -14,6 +14,7 @@ from backend.routers import (
     study_latest_video,
     course,
     category,
+    user,
 )
 
 app = FastAPI()
@@ -28,6 +29,7 @@ app.include_router(study_latest_video.router)
 app.include_router(review.router)
 app.include_router(course.router)
 app.include_router(category.router)
+app.include_router(user.router)
 
 origins = ["http://localhost:3000", "https://localhost:3000", "*"]
 

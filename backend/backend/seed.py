@@ -54,7 +54,7 @@ def seed(controller: Controller):
     for name in teachers_name:
         controller.add_user(
             Teacher(
-                name=name,
+                name=name.capitalize(),
                 email=f"{name}@example.com",
                 hashed_password=password_hasher.hash("password"),
             )
@@ -63,14 +63,19 @@ def seed(controller: Controller):
     for name in users_name:
         controller.add_user(
             User(
-                name=name,
+                name=name.capitalize(),
                 email=f"{name}@example.com",
                 hashed_password=password_hasher.hash("password"),
             )
         )
 
-    for category, courses in courses.items():
+    for category_index, (category, courses) in enumerate(courses.items()):
         category = CourseCategory(name=category)
         for course in courses:
             category.add_course(course)
+            teacher_index = category_index % len(teachers_name)
+            matched_teachers = controller.search_teacher_by_name(teachers_name[teacher_index].capitalize())
+            teacher = matched_teachers[0] if matched_teachers else None
+            if isinstance(teacher, Teacher):
+                teacher.add_my_teaching(course)
         controller.add_category(category)
