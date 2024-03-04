@@ -7,7 +7,7 @@ from backend.definitions.controller import Controller
 from backend.definitions.user import User, Teacher
 from backend.definitions.course import (
     Course,
-    CourseCatergory,
+    CourseCategory,
     CourseMaterial,
     CourseMaterialImage,
     CourseMaterialQuiz,
@@ -40,7 +40,8 @@ def create_user(
         controller.add_user(user)
     elif create_user_data.type == "Teacher":
         user = Teacher(create_user_data.name)
-        controller.add_teacher(user)
+        
+        controller.add_user(user)
 
     return user
 
@@ -64,7 +65,7 @@ def new_category(
     ],
     response: Response,
 ):
-    category = CourseCatergory(post_category_data.name)
+    category = CourseCategory(post_category_data.name)
     controller.add_category(category)
     return category
 
@@ -216,4 +217,4 @@ def add_quiz_to_course(
     return course
 
 
-controller.add_category(CourseCatergory("fgiohklfsghklj"))
+controller.add_category(CourseCategory("fgiohklfsghklj"))
