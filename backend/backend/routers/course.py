@@ -14,6 +14,7 @@ route_tags: List[str | Enum] = ["course"]
 def get_all_course():
     return controller.get_all_courses()
 
+
 @router.get("/course/{course_id}", tags=route_tags)
 def get_course_by_id(course_id: str):
     course = controller.search_course_by_id(uuid.UUID(course_id))

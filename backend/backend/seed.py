@@ -7,6 +7,7 @@ from backend.definitions.user import Teacher, User
 
 password_hasher = PasswordHasher()
 
+
 def seed(controller: Controller):
     teachers_name = ["gertrude", "harry", "irene"]
     users_name = ["alice", "bob", "charlie", "david", "eve", "frank"]
@@ -55,7 +56,7 @@ def seed(controller: Controller):
             Teacher(
                 name=name,
                 email=f"{name}@example.com",
-                hashed_password=password_hasher.hash('password'),
+                hashed_password=password_hasher.hash("password"),
             )
         )
 
@@ -64,7 +65,7 @@ def seed(controller: Controller):
             User(
                 name=name,
                 email=f"{name}@example.com",
-                hashed_password=password_hasher.hash('password'),
+                hashed_password=password_hasher.hash("password"),
             )
         )
 

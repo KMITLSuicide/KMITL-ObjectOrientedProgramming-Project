@@ -14,6 +14,7 @@ route_tags: List[str | Enum] = ["category"]
 def get_all_categories():
     return controller.get_all_categories()
 
+
 @router.get("/category/{category_id}", tags=route_tags)
 def get_category_by_id(category_id: str):
     category = controller.search_category_by_id(uuid.UUID(category_id))

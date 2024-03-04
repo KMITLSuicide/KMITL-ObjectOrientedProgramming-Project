@@ -15,7 +15,7 @@ from backend.controller_instance import controller
 
 
 router = APIRouter()
-route_tags: List[str | Enum] = ['course create']
+route_tags: List[str | Enum] = ["course create"]
 
 
 class PostCourseData(BaseModel):

@@ -2,12 +2,12 @@ from backend.controller_instance import controller
 from backend.definitions.course import Course, CourseCategory, CourseReview
 from backend.definitions.user import User
 
-user_list = [User("Tajdang"), User('user')]
+user_list = [User("Tajdang"), User("user")]
 
 # category and course in that category
 category_list = [CourseCategory("category")]
 
-course_list = [Course('course1', 'desc', 10000),Course("course2", "desc", 20000)]
+course_list = [Course("course1", "desc", 10000), Course("course2", "desc", 20000)]
 for user in user_list:
     print(f"{user.get_name()}: {user.get_id()}")
     controller.add_user(user)

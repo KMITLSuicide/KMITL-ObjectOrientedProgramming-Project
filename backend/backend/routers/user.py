@@ -13,6 +13,7 @@ route_tags: List[str | Enum] = ["user"]
 def get_all_user():
     return controller.get_all_user()
 
+
 @router.get("/teacher", tags=route_tags)
 def get_all_teacher():
     return controller.get_all_teacher()
