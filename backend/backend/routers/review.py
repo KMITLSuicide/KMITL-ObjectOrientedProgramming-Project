@@ -9,8 +9,6 @@ from backend.definitions.user import User
 
 router = APIRouter()
 
-
-
 @router.get("/course/{course_id}/review")
 def get_reviews(course_id: str, response: Response):
     course = controller.search_course_by_id(uuid.UUID(course_id))

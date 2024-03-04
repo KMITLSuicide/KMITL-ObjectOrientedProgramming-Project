@@ -9,6 +9,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "~/src/components/ui/collapsible";
+import { ScrollArea } from "~/src/components/ui/scroll-area";
 import { Config } from "~/src/config";
 import { getFrontendCourseViewData } from "~/src/lib/data/course";
 
@@ -22,7 +23,7 @@ export default function CourseView({
   const courseData = getFrontendCourseViewData(params.courseID);
 
   return (
-    <div className="flex w-full justify-center">
+    <div className="flex h-full w-full justify-center">
       <div className="flex w-full max-w-screen-xl justify-center">
         <div className="flex flex-col w-3/5 space-y-4">
           <p className="bg-secondary w-fit p-2 px-4 rounded-full">

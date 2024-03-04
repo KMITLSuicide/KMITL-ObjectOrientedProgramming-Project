@@ -5,6 +5,8 @@ from uuid import UUID
 from backend.definitions.course import Course, CourseCategory
 from backend.definitions.user import Teacher#Question:why don't just collect user
 from backend.definitions.user import User
+
+
 class Controller:
     _instance = None
 
@@ -143,3 +145,12 @@ class Controller:
         user = self.get_user_by_id(user_id)
         if isinstance(user,User):
             return user.view_my_learning()
+        
+    def search_user_by_email(self, email: str):
+        for user in self.__users:
+            if email == user.get_email():
+                return user
+            
+        for user in self.__teachers:
+            if email == user.get_email():
+                return user
