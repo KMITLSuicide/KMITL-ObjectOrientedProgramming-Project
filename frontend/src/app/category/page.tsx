@@ -5,7 +5,6 @@ import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import {
-  type CategoryData,
   getCategoryDataFromAPI,
 } from "~/src/lib/data/category";
 import { cn } from "~/src/lib/utils";
@@ -23,10 +22,11 @@ import {
   PopoverTrigger,
 } from "~/src/components/ui/popover";
 import { useRouter } from "next/navigation";
+import { type CourseCategory } from "~/src/lib/definitions/course";
 
 export default function CategoryChoosePage() {
   const [categoryData, setCategoryData] = useState<
-    CategoryData[] | null | undefined
+  CourseCategory[] | null | undefined
   >(undefined);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");

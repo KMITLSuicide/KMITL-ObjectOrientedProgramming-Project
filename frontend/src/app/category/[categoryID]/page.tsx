@@ -2,15 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { type CategoryData, getCategoryDataWithIDFromAPI } from "~/src/lib/data/category";
+import { getCategoryDataWithIDFromAPI } from "~/src/lib/data/category";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
+  // CardFooter,
   CardHeader,
   CardTitle,
 } from "~/src/components/ui/card";
+import { type CourseCategory } from "~/src/lib/definitions/course";
 
 export default function CategoryIDPage({
   params,
@@ -18,7 +19,7 @@ export default function CategoryIDPage({
   params: { categoryID: string };
 }) {
   const [categoryIDData, setCategoryIDData] = useState<
-    CategoryData | null | undefined
+    CourseCategory | null | undefined
   >(undefined);
   const router = useRouter();
 
@@ -35,56 +36,19 @@ export default function CategoryIDPage({
     <div className="flex justify-center w-full">
       <div className="w-full max-w-screen-lg space-y-4">
         <h1 className="font-bold text-3xl">{categoryIDData?._CourseCategory__name}</h1>
-        <div className="flex flex-wrap justify-between">
+        <div className="grid grid-cols-4 gap-4">
           {categoryIDData?._CourseCategory__courses?.map((course) => {
             return (
-              <Card className="w-1/5 m-4" key={course._Course__id}>
+              <Card className="w-full" key={course._Course__id}>
                 <CardHeader>
                   <CardTitle>{course._Course__name}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription>{course._Course__description}</CardDescription>
                 </CardContent>
-                {/* <CardFooter className="flex justify-between">
-                </CardFooter> */}
               </Card>
             );
           })}
-          {categoryIDData?._CourseCategory__courses?.map((course) => {
-            return (
-              <Card className="w-1/5 m-4" key={course._Course__id}>
-                <CardHeader>
-                  <CardTitle>{course._Course__name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription>{course._Course__description}</CardDescription>
-                </CardContent>
-                {/* <CardFooter className="flex justify-between">
-                </CardFooter> */}
-              </Card>
-            );
-          })}
-
-          <Card className="w-1/5 m-4">
-            <CardHeader>
-              <CardTitle>name</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>description</CardDescription>
-            </CardContent>
-            {/* <CardFooter className="flex justify-between">
-            </CardFooter> */}
-          </Card>
-          <Card className="w-1/5 m-4">
-            <CardHeader>
-              <CardTitle>name</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CardDescription>description</CardDescription>
-            </CardContent>
-            {/* <CardFooter className="flex justify-between">
-            </CardFooter> */}
-          </Card>
         </div>
         {/* <code>
           {JSON.stringify(categoryIDData, null, 2)}

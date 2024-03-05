@@ -1,25 +1,24 @@
-import { User } from "./user";
-interface CourseQuestion {
+export interface CourseQuestion {
   _QuizQuestion__question: string;
   _QuizQuestion__correct: string;
 }
-interface CourseMaterial {
+export interface CourseMaterial {
   _CourseMaterial__id: string;
   _CourseMaterial__name: string;
   _CourseMaterial__name: string;
 }
 
-interface CourseMaterialImage extends CourseMaterial {
+export interface CourseMaterialImage extends CourseMaterial {
   _CourseMaterialImage__url: string;
 }
 
-interface CourseMaterialQuiz extends CourseMaterial {
+export interface CourseMaterialQuiz extends CourseMaterial {
   _CourseMaterialQuiz__questions: CourseQuestion[];
 }
-interface CourseMaterialVideo extends CourseMaterial{
+export interface CourseMaterialVideo extends CourseMaterial{
   _CourseMaterialImage__url: string;
 }
-interface CourseReview
+export interface CourseReview
 {
   _CourseReview__reviewer: User;
   _CourseReview__star: number;
@@ -36,7 +35,7 @@ export interface Course {
   _Course__latest_video : null | CourseMaterialVideo;
 }
 
-interface CourseCategory {
+export interface CourseCategory {
   _CourseCategory__id: string;
   _CourseCategory__name: string;
   _CourseCategory__courses: Course[];

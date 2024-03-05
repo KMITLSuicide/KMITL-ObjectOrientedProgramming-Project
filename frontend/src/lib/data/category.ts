@@ -1,14 +1,9 @@
 import api from "~/src/lib/data/api";
-import { CourseData } from "./course";
-export interface CategoryData {
-  _CourseCategory__id: string;
-  _CourseCategory__name: string;
-  _CourseCategory__courses: CourseData[];
-};
+import { type CourseCategory } from "~/src/lib/definitions/course";
 
 export async function getCategoryDataFromAPI() {
   try {
-    const response = await api.get<CategoryData[]>('/category');
+    const response = await api.get<CourseCategory[]>('/category');
 
     if (response.status == 200) {
       return response.data;
@@ -23,7 +18,7 @@ export async function getCategoryDataFromAPI() {
 
 export async function getCategoryDataWithIDFromAPI(categoryID: string) {
   try {
-    const response = await api.get<CategoryData>(`/category/${categoryID}`);
+    const response = await api.get<CourseCategory>(`/category/${categoryID}`);
 
     if (response.status == 200) {
       return response.data;
