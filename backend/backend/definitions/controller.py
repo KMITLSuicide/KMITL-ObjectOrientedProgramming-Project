@@ -160,6 +160,6 @@ class Controller:
             if email == user.get_email():
                 return user
 
-        for user in self.__teachers:
+        for user in self.get_all_teacher():
             if email == user.get_email():
                 return user
