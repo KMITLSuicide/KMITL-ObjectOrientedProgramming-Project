@@ -42,15 +42,15 @@ class Controller:
                 return matched_course
         return None
 
+    def get_all_categories(self):
+        return self.__categories
+
     def search_course_by_name(self, name: str):
         matched_courses: List[Course] = []
         for course in self.get_all_courses():
             if name in course.get_name():
                 matched_courses.append(course)
         return matched_courses
-
-    def get_all_categories(self):
-        return self.__categories
 
     def search_category_by_id(self, uuid: UUID4):
         for category in self.__categories:
@@ -59,17 +59,31 @@ class Controller:
         return None
 
     def search_category_by_name(self, name: str):
+        matched_category: List[CourseCatergory] = []
         for category in self.__categories:
-            if category.get_name() == name:
-                return category
-        return None
-
-    # Tajdang commit
+            if name in category.get_name():
+                matched_category.append(category)
+        return matched_category
+    
+    def add_teacher(self, teacher: Teacher):
+        if isinstance(teacher, Teacher):
+            self.__teachers.append(teacher)
+            return True
+        return False
+    
+    #Tajdang commit
     def add_user(self, user: User):
         if isinstance(user, User):
             self.__users.append(user)
             return True
         return False
+
+    def get_all_user(self):
+        all_user: List[User] = []
+        for user in self.__users:
+            if isinstance(user, User):
+                all_user.append(user)
+        return all_user
 
     def get_all_user(self):
         all_user: List[User] = []

@@ -16,13 +16,17 @@ from backend.routers import (
     course,
     category,
     user,
-)
+), search, add_course_to_cart, list_course_on_home_page, list_everything
 
 app = FastAPI()
 
 app.include_router(example.router)
 app.include_router(info.router)
 app.include_router(authentication.router)
+app.include_router(search.router)
+app.include_router(add_course_to_cart.router)
+app.include_router(list_course_on_home_page.router)
+app.include_router(list_everything.router)
 app.include_router(course_create.router)
 app.include_router(view_my_learning.router)
 app.include_router(view_video.router)
