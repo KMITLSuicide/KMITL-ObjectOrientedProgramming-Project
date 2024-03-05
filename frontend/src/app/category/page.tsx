@@ -28,8 +28,8 @@ export default function CategoryChoosePage() {
   const [categoryData, setCategoryData] = useState<
     CategoryData[] | null | undefined
   >(undefined);
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
   const router = useRouter();
 
   useEffect(() => {
