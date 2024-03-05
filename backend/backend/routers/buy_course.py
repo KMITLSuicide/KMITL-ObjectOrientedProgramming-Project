@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Body
-from backend.definitions.course import *
+from backend.controller_instance import controller
 router = APIRouter()
 
-@router.get("/buy_course/")
-async def buy_course():
-    return "course"
-course = Course("Tajdang sud lhor", "This course you will leran how to scam", 300000)
+@router.get("/buy_course/{user_name}/{status}/{course_id}/{coupon_id}")
+async def buy_course(user_name, status, course_id, coupon_id):
+    result = controller.buy_course(user_name, status, course_id, coupon_id)
+    return result

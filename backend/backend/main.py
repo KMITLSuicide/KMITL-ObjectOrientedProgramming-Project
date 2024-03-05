@@ -2,7 +2,8 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend.backend.config import config
+# from backend.backend.config import config
+from backend.config import config
 from backend.routers import example, info, authentication, review, create_course, view_my_learning, view_video, study_latest_video,buy_course
 
 app = FastAPI()

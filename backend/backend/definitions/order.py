@@ -1,6 +1,14 @@
-from backend.definitions.user import User, Teacher
+# from backend.definitions.user import User, Teacher
 from backend.definitions.course import Course
-from backend.definitions.order import Payment
+# from backend.definitions.order import Payment
+
+class Payment:
+    def __init__(self, payment_method) -> None:        
+        self.__payment_method = payment_method
+        
+    def get_payment(self):
+        return self.__payment_method
+
 
 class Order:#บิล
     def __init__(self, address, payment:Payment, course:Course, discount, status) -> None:
@@ -47,10 +55,3 @@ class CouponTeacher(Coupon):
     def get_teacher(self):
         return self.__teacher
 
-
-class Payment:
-    def __init__(self, payment_method) -> None:        
-        self.__payment_method = payment_method
-        
-    def get_payment(self):
-        return self.__payment_method

@@ -3,7 +3,7 @@ import uuid
 
 from backend.definitions.course import Course
 from backend.definitions.progress import Progress
-from backend.definitions.order import Order
+# from backend.definitions.order import Order
 
 class User:
     # Constants
