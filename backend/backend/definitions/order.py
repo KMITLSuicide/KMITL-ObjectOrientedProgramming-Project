@@ -1,9 +1,16 @@
-class Order:
-    def __init__(self) -> None:
-        pass
+from backend.definitions.user import User
+from backend.definitions.course import Course
 
-    def create_payment(self):
-        pass
+class Order:
+    def __init__(self, address, payment, course:Course, status) -> None:
+        self.__address = address
+        self.__payment = payment
+        self.__course = course
+        self.__status = status
+
+    def create_payment(self, status, amount, country, user, payment_method):
+        payment = Payment(status, amount, country, user, payment_method)
+        return payment
 
 
 class Coupon:
@@ -28,8 +35,12 @@ class CouponTeacher:
 
 
 class Payment:
-    def __init__(self, status_input, amount_input, country_input, type_input) -> None:
-        self.__status = status_input
-        self.__amount = amount_input
-        self.__country = country_input
-        self.__type = type_input
+    def __init__(self, status, amount, country, user:User, payment_method) -> None:
+        self.__status = status
+        self.__amount = amount
+        self.__country = country
+        self.__user = user        
+        self.__payment_method = payment_method
+        
+    def show_payment(self, status, amount, country, user:User, payment_method):
+        return f"Status:{status} Amount:{amount} Country:{country} User:{user.get_name()} Payment:{payment_method}"
