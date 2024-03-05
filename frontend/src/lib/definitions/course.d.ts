@@ -13,10 +13,10 @@ interface CourseMaterialImage extends CourseMaterial {
   _CourseMaterialImage__url: string;
 }
 
-interface CourseMaterialQuiz extends CourseMaterial {
+export interface CourseMaterialQuiz extends CourseMaterial {
   _CourseMaterialQuiz__questions: CourseQuestion[];
 }
-interface CourseMaterialVideo extends CourseMaterial{
+export interface CourseMaterialVideo extends CourseMaterial{
   _CourseMaterialImage__url: string;
 }
 interface CourseReview

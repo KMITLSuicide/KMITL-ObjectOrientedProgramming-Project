@@ -16,6 +16,7 @@ from backend.routers import (
     course,
     category,
     user,
+    user_post
 )
 
 app = FastAPI()
@@ -31,6 +32,7 @@ app.include_router(review.router)
 app.include_router(course.router)
 app.include_router(category.router)
 app.include_router(user.router)
+app.include_router(user_post.router)
 
 origins = ["http://localhost:3000", "https://localhost:3000", "*"]
 

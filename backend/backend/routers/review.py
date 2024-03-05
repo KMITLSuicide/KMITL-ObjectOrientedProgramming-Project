@@ -34,7 +34,7 @@ def create_review(
         Body(
             examples=[
                 {
-                    "user_id": "afeabc96-80f6-4508-82e4-e8a429e86547",
+                    "user_id": "d931c01b-71fa-4df8-93c6-71f05ee077dd",
                     "star": 5,
                     "comment": "very bestest course ever",
                 }
