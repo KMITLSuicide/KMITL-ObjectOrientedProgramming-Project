@@ -4,12 +4,12 @@ import { ScrollArea } from "~/src/components/ui/scroll-area";
 import Link from "next/link";
 
 export interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
-  sidebarCategories: SidebarCategory[]
+  sidebarCategories: SidebarCategory[];
 }
 
 export interface SidebarCategory {
   name: string;
-  sidebarItems: SidebarItem[]
+  sidebarItems: SidebarItem[];
 }
 
 export interface SidebarItem {
