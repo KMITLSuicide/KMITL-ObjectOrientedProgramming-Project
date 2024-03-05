@@ -9,13 +9,13 @@ from backend.controller_instance import controller
 
 router = APIRouter()
 
-@router.get("/user/{user_name}")
-def get_user(user_name: str):
-    return controller.get_users_by_name(user_name)
+# @router.get("/user/{user_name}")
+# def get_user(user_name: str):
+#     return controller.get_users_by_name(user_name)
 
-@router.get("/course/{course_name}")
-def get_course(course_name: str):
-    return controller.search_course_by_name(course_name)
+# @router.get("/course/{course_name}")
+# def get_course(course_name: str):
+#     return controller.search_course_by_name(course_name)
 
     
 @router.post('/user/{user_id}/cart/')

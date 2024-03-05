@@ -116,24 +116,24 @@ def seed(controller: Controller):
         ],
         "images": [
             {
-                "url": f"{FRONTEND_URL}/course/default-materials/image1.mp4",
+                "url": "/course/default-materials/image1.jpg",
                 "name": "Default Image 1",
                 "description": "Default Image 1 Description",
             },
             {
-                "url": f"{FRONTEND_URL}/course/default-materials/image2.mp4",
+                "url": "/course/default-materials/image2.jpg",
                 "name": "Default Image 2",
                 "description": "Default Image 2 Description",
             },
         ],
         "videos": [
             {
-                "url": f"{FRONTEND_URL}/course/default-materials/video1.mp4",
+                "url": "/course/default-materials/video1.mp4",
                 "name": "Default Video 1",
                 "description": "Default Video 1 Description",
             },
             {
-                "url": f"{FRONTEND_URL}/course/default-materials/video2.webm",
+                "url": "/course/default-materials/video2.webm",
                 "name": "Default Video 2",
                 "description": "Default Video 2 Description",
             },
