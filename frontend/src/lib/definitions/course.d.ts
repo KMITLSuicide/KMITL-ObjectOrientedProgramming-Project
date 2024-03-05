@@ -1,23 +1,23 @@
 import { User } from "./user";
 interface CourseQuestion {
-  question: string;
-  correct: string;
+  _QuizQuestion__question: string;
+  _QuizQuestion__correct: string;
 }
 interface CourseMaterial {
-  id: string;
-  name: string;
-  description: string;
+  _CourseMaterial__id: string;
+  _CourseMaterial__name: string;
+  _CourseMaterial__name: string;
 }
 
 interface CourseMaterialImage extends CourseMaterial {
-  url: string;
+  _CourseMaterialImage__url: string;
 }
 
 interface CourseMaterialQuiz extends CourseMaterial {
-  questions: CourseQuestion[];
+  _CourseMaterialQuiz__questions: CourseQuestion[];
 }
 interface CourseMaterialVideo extends CourseMaterial{
-
+  _CourseMaterialImage__url: string;
 }
 interface CourseReview
 {
@@ -25,7 +25,6 @@ interface CourseReview
   _CourseReview__star: number;
   _CourseReview__comment: string
 }
-interface CourseMaterialVideo{}
 export interface Course {
   _Course__id: string;
   _Course__name: string;
