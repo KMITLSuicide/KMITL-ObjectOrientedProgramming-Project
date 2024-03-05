@@ -40,7 +40,7 @@ export default function CategoryIDPage({
           {categoryIDData?._CourseCategory__courses?.map((course) => {
             return (
               <Card
-                className="w-full cursor-pointer"
+                className="w-full cursor-pointer hover:bg-secondary "
                 key={course._Course__id}
                 onClick={() => router.push(`/course/${course._Course__id}`)}
               >
