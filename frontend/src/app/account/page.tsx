@@ -17,7 +17,7 @@ interface AccountData {
   _User__latest_progress: null | any;
 };
 
-async function getAccountData() {
+async function getAccountDataFromAPI() {
   try {
     const response = await api.get<AccountData>('/account');
 
@@ -33,16 +33,19 @@ async function getAccountData() {
 }
 
 export default function AccountPage() {
-  const [accountData, setAccountData] = useState<AccountData | null>(null);
+  const [accountData, setAccountData] = useState<AccountData | null | undefined>(undefined);
 
   useEffect(() => {
     async function fetchData() {
-      const data = await getAccountData();
-      console.log(data);
-      setAccountData(data);
+      const apiData = await getAccountDataFromAPI();
+      setAccountData(apiData);
     }
     void fetchData();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (accountData === null) {
       toast({
         title: "Failed to get account data",
@@ -53,8 +56,8 @@ export default function AccountPage() {
           </ToastAction>
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    console.log(accountData); // Move the console.log statement here
+  }, [accountData]);
 
   return(
   <div className="flex w-full h-full justify-center items-center">
