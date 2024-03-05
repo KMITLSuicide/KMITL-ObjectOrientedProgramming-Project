@@ -9,6 +9,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "~/src/components/ui/collapsible";
+import { ScrollArea } from "~/src/components/ui/scroll-area";
 import { Config } from "~/src/config";
 import { getFrontendCourseViewData } from "~/src/lib/data/course";
 
@@ -22,10 +23,10 @@ export default function CourseView({
   const courseData = getFrontendCourseViewData(params.courseID);
 
   return (
-    <div className="flex w-full justify-center">
+    <div className="flex h-full w-full justify-center">
       <div className="flex w-full max-w-screen-xl justify-center">
-        <div className="flex flex-col w-3/5 space-y-4">
-          <p className="bg-secondary w-fit p-2 px-4 rounded-full">
+        <div className="flex w-3/5 flex-col space-y-4">
+          <p className="w-fit rounded-full bg-secondary p-2 px-4">
             {courseData.category.name}
           </p>
 
@@ -36,7 +37,9 @@ export default function CourseView({
           <p className="text-lg">{courseData.description}</p>
 
           <div className="flex w-full flex-col justify-normal space-y-3">
-            <h2 className="text-xl"><b>In this course:</b></h2>
+            <h2 className="text-xl">
+              <b>In this course:</b>
+            </h2>
           </div>
 
           <div>
@@ -55,7 +58,7 @@ export default function CourseView({
                 </CollapsibleTrigger>
               </div>
               <CollapsibleContent className="space-y-2">
-                <ul className="list-decimal ml-10">
+                <ul className="ml-10 list-decimal">
                   {courseData.images.map((element, index) => {
                     return (
                       <li key={index} className="rounded-md px-2 text-sm">
@@ -83,7 +86,7 @@ export default function CourseView({
               </CollapsibleTrigger>
             </div>
             <CollapsibleContent className="space-y-2">
-              <ul className="list-decimal ml-10">
+              <ul className="ml-10 list-decimal">
                 {courseData.quizes.map((element, index) => {
                   return (
                     <li key={index} className="rounded-md px-2 text-sm">
@@ -95,7 +98,7 @@ export default function CourseView({
             </CollapsibleContent>
           </Collapsible>
         </div>
-        <div className="flex w-2/5 h-fit p-4 bg-secondary rounded-lg">
+        <div className="flex h-fit w-2/5 rounded-lg bg-secondary p-4">
           <div className="flex flex-col items-center justify-center space-y-4">
             <Image
               className="rounded-md"
@@ -119,12 +122,8 @@ export default function CourseView({
             </div>
 
             <div className="flex w-full justify-center space-x-6">
-              <Button variant='outline'>
-                Add to cart
-              </Button>
-              <Button variant='default'>
-                Buy now!
-              </Button>
+              <Button variant="outline">Add to cart</Button>
+              <Button variant="default">Buy now!</Button>
             </div>
           </div>
         </div>

@@ -2,21 +2,32 @@ from pydantic import UUID4
 from typing import List
 from uuid import UUID
 
-from backend.definitions.course import Course, CourseCatergory
-from backend.definitions.user import Teacher#Question:why don't just collect user
+from backend.definitions.course import Course, CourseCategory
+from backend.definitions.user import Teacher  # Question:why don't just collect user
 from backend.definitions.user import User
 from backend.definitions.order import Coupon, CouponCourse, CouponTeacher, Order, Payment
 from backend.definitions.progress import Progress
 
+
 class Controller:
+    _instance = None
+
+    def __new__(cls):
+        if not cls._instance:
+            cls._instance = super(Controller, cls).__new__(cls)
+            cls._instance.__categories = []
+            cls._instance.__users = []
+        return cls._instance
+
     def __init__(self) -> None:
-        self.__categories: List[CourseCatergory] = []
-        self.__teachers: List[Teacher] = []
-        self.__users: List[User] = []#Question: is user going to collect to be Teacher
+        self.__categories: List[CourseCategory] = []
+        self.__users: List[User] = (
+            []
+        )  # Question: is user going to collect to be Teacher
         self.__coupons: List[Coupon] = []
 
-    def add_category(self, category: CourseCatergory):
-        if isinstance(category, CourseCatergory):
+    def add_category(self, category: CourseCategory):
+        if isinstance(category, CourseCategory):
             self.__categories.append(category)
             return True
         return False
@@ -34,15 +45,15 @@ class Controller:
                 return matched_course
         return None
 
+    def get_all_categories(self):
+        return self.__categories
+
     def search_course_by_name(self, name: str):
         matched_courses: List[Course] = []
         for course in self.get_all_courses():
             if name in course.get_name():
                 matched_courses.append(course)
         return matched_courses
-
-    def get_all_categories(self):
-        return self.__categories
 
     def search_category_by_id(self, uuid: UUID4):
         for category in self.__categories:
@@ -51,10 +62,11 @@ class Controller:
         return None
 
     def search_category_by_name(self, name: str):
+        matched_category: List[CourseCatergory] = []
         for category in self.__categories:
-            if category.get_name() == name:
-                return category
-        return None
+            if name in category.get_name():
+                matched_category.append(category)
+        return matched_category
     
     def add_teacher(self, teacher: Teacher):
         if isinstance(teacher, Teacher):
@@ -69,75 +81,95 @@ class Controller:
             return True
         return False
 
+    def get_all_user(self):
+        all_user: List[User] = []
+        for user in self.__users:
+            if isinstance(user, User):
+                all_user.append(user)
+        return all_user
+
+    def get_all_user(self):
+        all_user: List[User] = []
+        for user in self.__users:
+            if isinstance(user, User):
+                all_user.append(user)
+        return all_user
+
     def get_all_teacher(self):
-        return self.__teachers
+        all_teacher: List[Teacher] = []
+        for user in self.__users:
+            if isinstance(user, Teacher):
+                all_teacher.append(user)
+        return all_teacher
 
     def search_teacher_by_name(self, name: str):
         matched_teachers: List[Teacher] = []
-        for teacher in self.__teachers:
+        for teacher in self.get_all_teacher():
+            if not isinstance(teacher, Teacher):
+                return "Error, get_all_teacher func doesnt work"
             if name in teacher.get_name():
                 matched_teachers.append(teacher)
         return matched_teachers
-    
-    #Tajdang commit
+
+    # Tajdang commit
     def get_users_by_name(self, name: str):
         matched_users: List[User] = []
         for user in self.__users:
             if name == user.get_name():
                 matched_users.append(user)
-        return matched_users 
-    
+        return matched_users
+
     def get_user_by_id(self, user_id: UUID4):
         for user in self.__users:
             if user_id == user.get_id():
                 return user
         return "Error: User not found"
-    
+
     def get_teacher_by_name(self, name: str):
         matched_teachers: List[Teacher] = []
-        for teacher in self.__teachers:
+        for teacher in self.get_all_teacher():
+            if not isinstance(teacher, Teacher):
+                return "Error, get_all_teacher func doesnt work"
             if name in teacher.get_name():
                 matched_teachers.append(teacher)
         return matched_teachers
-    
+
     def get_teacher_by_id(self, teacher_id: UUID4):
-        for teacher in self.__teachers:
+        for teacher in self.get_all_teacher():
+            if not isinstance(teacher, Teacher):
+                return "Error, get_all_teacher func doesnt work"
             if teacher_id == teacher.get_id():
                 return teacher
         return "Error: Teacher not found"
-    
-    def study_latest_video_from_course(self, user_name: str):
-        if self.get_users_by_name(user_name) == []: 
-            return None#Name Not found
-        user = self.get_users_by_name(user_name)[0]
+
+    def study_latest_video_from_course(self, user_id: UUID4):
+        if self.get_user_by_id(user_id) == None:
+            return f"Error user with user id {user_id} is not found "
+        user = self.get_user_by_id(user_id)
         if isinstance(user, User):
+            print(user.get_id())
             return user.get_latest_video_from_user()
-        else:
-            return f"Error: User with ID {user_name} not found "
-        
-    #From Taj, cannot view by url because string is too long
-    def view_video_by_url(self, user_name: str, url: str):
-        if self.get_users_by_name(user_name) == []: 
-            return None#Name Not found
-        user = self.get_users_by_name(user_name)[0]
-        if user == None:
-            return "Error: Your username was not found"
-        if isinstance(user,User):
+
+    # From Taj, cannot view by url because string is too long
+    def view_video_by_url(self, user_id: UUID4, url: str):
+        if self.get_user_by_id(user_id) == None:
+            return f"Error user with user id {user_id} is not found "
+        user = self.get_user_by_id(user_id)
+        if isinstance(user, User):
             return user.view_video_by_url(url)
-        
-    def view_video_by_name(self, user_name:str, video_name: str):
-        if self.get_users_by_name(user_name) == []: 
-            return None#Name Not found
-        user = self.get_users_by_name(user_name)[0]
-        if isinstance(user,User):
+
+    def view_video_by_name(self, user_id: UUID4, video_name: str):
+        if self.get_user_by_id(user_id) == None:
+            return f"Error user with user id {user_id} is not found "
+        user = self.get_user_by_id(user_id)
+        if isinstance(user, User):
             return user.view_video_by_name(video_name)
 
-
-    def view_my_learning(self, user_name:str):
-        if self.get_users_by_name(user_name) == []: 
-            return None#Name Not found
-        user = self.get_users_by_name(user_name)[0]
-        if isinstance(user,User):
+    def view_my_learning(self, user_id: UUID4):
+        if self.get_user_by_id(user_id) == None:
+            return f"Error user with user id {user_id} is not found "
+        user = self.get_user_by_id(user_id)
+        if isinstance(user, User):
             return user.view_my_learning()
         
     def buy_course(self, user_name, status:bool, course_id, coupon_id):
@@ -208,3 +240,12 @@ class Controller:
             if user.get_id() == user_id:
                 return user
         return None
+
+    def search_user_by_email(self, email: str):
+        for user in self.__users:
+            if email == user.get_email():
+                return user
+
+        for user in self.__teachers:
+            if email == user.get_email():
+                return user
