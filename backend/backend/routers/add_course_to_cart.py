@@ -2,25 +2,12 @@ from typing import List, Union
 from fastapi import APIRouter, Body
 from pydantic import UUID4
 
-from backend.definitions.course import Course, CourseCatergory
+from backend.definitions.course import Course
 from backend.definitions.user import User, Teacher
 from backend.definitions.controller import Controller
 from backend.controller_instance import controller
 
 router = APIRouter()
-
-user_A = User('A')
-controller.add_user(user_A)
-
-user_B = User('B')
-controller.add_user(user_B)
-
-user_C = User('C')
-controller.add_user(user_C)
-
-OOP = Course('OOP', 'Easy', 499)
-Cal = Course('Cal', 'Medium', 399)
-Circuit = Course('Circuit', 'Hard', 299)
 
 @router.get("/user/{user_name}")
 def get_user(user_name: str):
