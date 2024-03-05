@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# from backend.backend.config import config
 
 from backend.config import APP_NAME, API_HOST, API_PORT, LOG_LEVEL
 from backend.routers import (
@@ -13,10 +14,15 @@ from backend.routers import (
     view_my_learning,
     view_video,
     study_latest_video,
+    buy_course,
     course,
     category,
     user,
-), search, add_course_to_cart, list_course_on_home_page, list_everything
+    search,
+    add_course_to_cart,
+    list_course_on_home_page,
+    list_everything,
+)
 
 app = FastAPI()
 
@@ -35,6 +41,7 @@ app.include_router(review.router)
 app.include_router(course.router)
 app.include_router(category.router)
 app.include_router(user.router)
+app.include_router(buy_course.router)
 
 origins = ["http://localhost:3000", "https://localhost:3000", "*"]
 

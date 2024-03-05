@@ -19,6 +19,9 @@ class User:
         self.__my_progresses: List[Progress] = []
         self.__cart: Cart = Cart()
         self.__latest_progress: Union[Progress, None] = None
+        self.__address = None
+        self.__payment_method = None
+        self.__orders: List[Order] = []
 
     def get_id(self):
         return self.__id
@@ -78,6 +81,21 @@ class User:
             if video != None:
                 return video
         return None  # "Video not found please check your input"
+
+    def set_address(self, address):
+        self.__address = address
+
+    def set_pament_method(self, payment_method):
+        self.__payment_method = payment_method
+
+    def get_address(self):
+        return self.__address
+
+    def get_payment_method(self):
+        return self.__payment_method
+
+    def get_orders(self):
+        return self.__orders
 
 
 class Teacher(User):
