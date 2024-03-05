@@ -1,9 +1,15 @@
 {
     "conventionalCommits.scopes": [
         "backend",
-        "frontend"
+        "frontend",
+        "diagrams"
     ],
     "python.analysis.typeCheckingMode": "basic",
     "editor.tabSize": 2,
-    "editor.indentSize": "tabSize"
+    "editor.indentSize": "tabSize",
+    "pylint.args": [
+        "--disable=missing-module-docstring",
+        "--disable=missing-class-docstring",
+        "--disable=missing-function-docstring"
+    ]
 }
