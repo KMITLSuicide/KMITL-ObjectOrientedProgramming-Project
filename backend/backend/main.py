@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 
-from backend.backend.config import APP_NAME, API_HOST, API_PORT, LOG_LEVEL
+from backend.config import APP_NAME, API_HOST, API_PORT, LOG_LEVEL
 from backend.routers import (
     course_create,
     example,
