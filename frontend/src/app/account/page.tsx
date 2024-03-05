@@ -1,36 +1,12 @@
 'use client';
 
-import api from "~/src/lib/data/api";
 import { toast } from "~/src/components/ui/use-toast";
 import { Suspense, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Toaster } from "~/src/components/ui/toaster";
 import { ToastAction } from "~/src/components/ui/toast";
 import Link from "next/link";
-
-interface AccountData {
-  _User__id: string;
-  _User__name: string;
-  _User__email: string;
-  _User__hashed_password: string;
-  _User__my_progresses: any[];
-  _User__latest_progress: null | any;
-};
-
-async function getAccountDataFromAPI() {
-  try {
-    const response = await api.get<AccountData>('/account');
-
-    if (response.status == 200) {
-      return response.data;
-    } else {
-      return null;
-    }
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
+import { type AccountData, getAccountDataFromAPI } from "~/src/lib/data/account";
 
 export default function AccountPage() {
   const [accountData, setAccountData] = useState<AccountData | null | undefined>(undefined);
