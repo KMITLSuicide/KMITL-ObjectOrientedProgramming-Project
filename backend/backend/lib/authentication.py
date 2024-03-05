@@ -17,7 +17,7 @@ from backend.controller_instance import controller
 
 SECRET_KEY: Final[OKPKey] = get_key()
 JWT_HEADER: Final[Dict] = {"alg": JWT_ENCRYPTION_ALGORITHM}
-TOKEN_URL: Final[str] = 'login'
+TOKEN_URL: Final[str] = "login"
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=TOKEN_URL)
 password_hasher = PasswordHasher()
 
@@ -28,7 +28,7 @@ class Token(BaseModel):
 
 
 class RegisterPostData(BaseModel):
-    type: Literal['user', 'teacher']
+    type: Literal["user", "teacher"]
     name: str
     email: EmailStr
     password: str
@@ -65,7 +65,9 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=15)
     payload.update({"exp": expire})
-    encoded_jwt = jwt.encode(JWT_HEADER, payload, SECRET_KEY, algorithms=[JWT_ENCRYPTION_ALGORITHM])
+    encoded_jwt = jwt.encode(
+        JWT_HEADER, payload, SECRET_KEY, algorithms=[JWT_ENCRYPTION_ALGORITHM]
+    )
     return encoded_jwt
 
 
@@ -76,7 +78,9 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        decoded_token = jwt.decode(token, SECRET_KEY, algorithms=[JWT_ENCRYPTION_ALGORITHM])
+        decoded_token = jwt.decode(
+            token, SECRET_KEY, algorithms=[JWT_ENCRYPTION_ALGORITHM]
+        )
         payload = decoded_token.claims
         email: EmailStr = payload.get("sub", None)
         if email is None:

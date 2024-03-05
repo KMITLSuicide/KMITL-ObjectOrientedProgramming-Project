@@ -8,7 +8,6 @@ private = key.as_pem(private=True)
 
 with open("key.pub", "w", encoding="utf-8") as f:
     f.write(public.decode())
-    
+
 with open("key.pem", "w", encoding="utf-8") as f:
     f.write(private.decode())
-    

@@ -21,13 +21,13 @@ class User:
 
     def get_id(self):
         return self.__id
-        
+
     def get_name(self):
         return self.__name
-    
+
     def get_email(self):
         return self.__email
-    
+
     def get_hashed_password(self):
         return self.__hashed_password
 
@@ -47,34 +47,38 @@ class User:
         self.__latest_progress = progress
 
     def add_progress(self, progress: Progress):
-        self.__my_progresses.append(progress)   
+        self.__my_progresses.append(progress)
 
     def view_my_learning(self):
         # Fetch at most FETCH_SEARCH_MAX progress items
-        return self.__my_progresses[:User.FETCH_SEARCH_MAX]
-    
-    def view_video_by_url(self, url : str):
+        return self.__my_progresses[: User.FETCH_SEARCH_MAX]
+
+    def view_video_by_url(self, url: str):
         for progress in self.__my_progresses:
             video = progress.search_video_by_url(url)
             if video != None:
                 return video
+
     def view_video_by_name(self, name: str):
         for progress in self.__my_progresses:
             video = progress.search_video_by_name(name)
             if video != None:
                 return video
-        return None#"Video not found please check your input"
+        return None  # "Video not found please check your input"
+
 
 class Teacher(User):
-    def __init__(self, name: EmailStr, email: EmailStr, hashed_password: EmailStr) -> None:
+    def __init__(
+        self, name: EmailStr, email: EmailStr, hashed_password: EmailStr
+    ) -> None:
         super().__init__(name, email, hashed_password)
         self.__my_teachings: List[Course] = []
-        
+
     def get_my_teachings(self):
         return self.__my_teachings
-    
+
     def add_my_teaching(self, course: Course):
-        if(isinstance(course, Course)):
+        if isinstance(course, Course):
             self.__my_teachings.append(course)
             return True
         return False
