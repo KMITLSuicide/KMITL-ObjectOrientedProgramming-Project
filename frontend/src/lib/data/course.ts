@@ -1,16 +1,3 @@
-export interface CourseData {
-  _Course__id: string;
-  _Course__name: string;
-  _Course__description: string;
-  _Course__price: number;
-  _Course__images: any[];
-  _Course__quizes: any[];
-  _Course__videos: any[];
-  _Course__reviews: any[];
-  _Course__latest_video: any;
-}
-
-
 export function getFrontendCourseViewData(courseID: string): Frontend.Course {
   const imageNumber = (courseID.charCodeAt(0) % 6) + 1;
   const quizNumber = courseID.charCodeAt(0);
