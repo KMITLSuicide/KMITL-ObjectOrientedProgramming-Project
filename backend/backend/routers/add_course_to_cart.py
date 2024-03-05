@@ -2,25 +2,28 @@ from typing import List, Union
 from fastapi import APIRouter, Body
 from pydantic import UUID4
 
-from backend.definitions.course import Course, CourseCatergory
+from backend.definitions.course import Course, CourseCategory
 from backend.definitions.user import User, Teacher
 from backend.definitions.controller import Controller
 from backend.controller_instance import controller
 
+from argon2 import PasswordHasher
+password_hasher = PasswordHasher()
+
 router = APIRouter()
 
-user_A = User('A')
+user_A = User('A', 'A@example.com', password_hasher.hash("password"))
 controller.add_user(user_A)
 
-user_B = User('B')
+user_B = User('B', 'B@example.com', password_hasher.hash("password"))
 controller.add_user(user_B)
 
-user_C = User('C')
+user_C = User('C', 'C@example.com', password_hasher.hash("password"))
 controller.add_user(user_C)
 
-OOP = Course('OOP', 'Easy', 499)
-Cal = Course('Cal', 'Medium', 399)
-Circuit = Course('Circuit', 'Hard', 299)
+OOP = Course('OOP', 'Easy', 499, 'Thana')
+Cal = Course('Cal', 'Medium', 399, 'Sakchai')
+Circuit = Course('Circuit', 'Hard', 299, 'Sorapong')
 
 @router.get("/user/{user_name}")
 def get_user(user_name: str):

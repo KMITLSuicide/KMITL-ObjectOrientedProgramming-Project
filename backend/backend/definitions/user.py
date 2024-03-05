@@ -5,6 +5,7 @@ from pydantic import EmailStr
 
 from backend.definitions.course import Course
 from backend.definitions.progress import Progress
+from backend.definitions.order import Order
 
 
 class User:
@@ -76,7 +77,7 @@ class User:
     def set_address(self, address):
         self.__address = address
 
-    def set_pament_method(self, payment_method):
+    def set_payment_method(self, payment_method):
         self.__payment_method = payment_method
 
     def get_address(self):

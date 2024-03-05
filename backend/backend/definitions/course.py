@@ -103,7 +103,7 @@ class CourseMaterialQuiz(CourseMaterial):
 
 class CourseReview:
     def __init__(
-        self, reviewer: User, star: Literal[1, 2, 3, 4, 5], comment: str
+        self, reviewer, star: Literal[1, 2, 3, 4, 5], comment: str
     ) -> None:
         self.__reviewer = reviewer
         self.__star = star
@@ -121,7 +121,7 @@ class CourseReview:
 
 class Course:
     def __init__(
-        self, name: str, description: str, price: int, teacher: "Teacher"
+        self, name: str, description: str, price: int, teacher
     ) -> None:
         self.__id: UUID4 = uuid.uuid4()
         self.__name: str = name
@@ -218,7 +218,7 @@ class Course:
     def get_reviews(self):
         return self.__reviews
 
-    def search_review_by_user(self, user: User):
+    def search_review_by_user(self, user):
         for review in self.__reviews:
             if review.get_reviewer() == user:
                 return review

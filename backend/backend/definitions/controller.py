@@ -25,6 +25,7 @@ class Controller:
             []
         )  # Question: is user going to collect to be Teacher
         self.__coupons: List[Coupon] = []
+        self.__teachers: List[Teacher] = []
 
     def add_category(self, category: CourseCategory):
         if isinstance(category, CourseCategory):
@@ -62,7 +63,7 @@ class Controller:
         return None
 
     def search_category_by_name(self, name: str):
-        matched_category: List[CourseCatergory] = []
+        matched_category: List[CourseCategory] = []
         for category in self.__categories:
             if name in category.get_name():
                 matched_category.append(category)

@@ -1,32 +1,34 @@
 from typing import List, Union
 from fastapi import APIRouter, Body
 
-from backend.definitions.course import Course, CourseCatergory
+from backend.definitions.course import Course, CourseCategory
 from backend.definitions.user import User, Teacher
 from backend.definitions.controller import Controller
 from backend.controller_instance import controller
 
+from argon2 import PasswordHasher
+password_hasher = PasswordHasher()
 
 router = APIRouter()
 
-category_programming = CourseCatergory('Programming')
-programming_course = Course('OOP', 'Easy', 499)
+category_programming = CourseCategory('Programming')
+programming_course = Course('OOP', 'Easy', 499, 'Thana')
 category_programming.add_course(programming_course)
 controller.add_category(category_programming)
 
-category_math = CourseCatergory('Math')
-math_course = Course('Calculus', 'Medium', 399)
+category_math = CourseCategory('Math')
+math_course = Course('Calculus', 'Medium', 399, 'Sakchai')
 category_math.add_course(math_course)
 controller.add_category(category_math)
 
-category_physics = CourseCatergory('Physics')
-physics_course = Course('Circuit', 'Hard', 299)
+category_physics = CourseCategory('Physics')
+physics_course = Course('Circuit', 'Hard', 299, 'Surapong')
 category_physics.add_course(physics_course)
 controller.add_category(category_physics)
 
-controller.add_teacher(Teacher('Thana'))
-controller.add_teacher(Teacher('Sakchai'))
-controller.add_teacher(Teacher('Sorapong'))
+controller.add_teacher(Teacher('Thana', 'Thana@example.com', password_hasher.hash("password")))
+controller.add_teacher(Teacher('Sakchai', 'Sakchai@example.com', password_hasher.hash("password")))
+controller.add_teacher(Teacher('Sorapong', 'Sorapong@example.com', password_hasher.hash("password")))
 
 @router.get("/")
 def hello():
