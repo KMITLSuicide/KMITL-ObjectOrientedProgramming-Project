@@ -30,15 +30,15 @@ class Controller:
                 return matched_course
         return None
 
+    def get_all_categories(self):
+        return self.__categories
+    
     def search_course_by_name(self, name: str):
         matched_courses: List[Course] = []
         for course in self.get_all_courses():
             if name in course.get_name():
                 matched_courses.append(course)
         return matched_courses
-
-    def get_all_categories(self):
-        return self.__categories
 
     def search_category_by_id(self, uuid: UUID4):
         for category in self.__categories:
@@ -47,10 +47,11 @@ class Controller:
         return None
 
     def search_category_by_name(self, name: str):
+        matched_category: List[CourseCatergory] = []
         for category in self.__categories:
-            if category.get_name() == name:
-                return category
-        return None
+            if name in category.get_name():
+                matched_category.append(category)
+        return matched_category
     
     def add_teacher(self, teacher: Teacher):
         if isinstance(teacher, Teacher):
@@ -64,6 +65,9 @@ class Controller:
             self.__users.append(user)
             return True
         return False
+    
+    def get_all_user(self):
+        return self.__users
 
     def get_all_teacher(self):
         return self.__teachers

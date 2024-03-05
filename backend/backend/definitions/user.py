@@ -12,6 +12,7 @@ class User:
         self.__id = uuid.uuid4()
         self.__name = name
         self.__my_progresses: List[Progress] = []
+        self.__cart: Cart = Cart()
         self.__latest_progress: Union[Progress, None] = None
 
     def get_id(self):
@@ -19,7 +20,18 @@ class User:
         
     def get_name(self):
         return self.__name
-
+        
+    def get_my_learnings(self):
+        return self.__my_learnings
+    
+    def get_cart(self):
+        return self.__cart
+    
+    def add_my_learning(self, course: Course):
+        if(isinstance(course, Course)):
+            self.__my_learnings.append(course)
+            return True
+        return False
     def get_latest_video_from_user(self):
         if self.__latest_progress is None:
             return None
@@ -67,3 +79,16 @@ class Teacher(User):
             self.__my_teachings.append(course)
             return True
         return False
+    
+class Cart:
+    def __init__(self):
+        self.__courses = []
+
+    def get_courses(self):
+        return self.__courses
+    
+    def add_course(self, course):
+        self.__courses.append(course)
+
+    def remove_course(self, course):
+        self.__courses.remove(course)
