@@ -3,6 +3,9 @@ import uuid
 from typing import List, Literal
 from pydantic import UUID4
 
+# from backend.definitions.controller import Controller
+# from backend.controller_instance import controller
+
 
 class QuizQuestion:
     def __init__(self, question: str, correct: bool) -> None:
@@ -117,7 +120,9 @@ class CourseReview:
 
 
 class Course:
-    def __init__(self, name: str, description: str, price: int, teacher: "Teacher") -> None:
+    def __init__(
+        self, name: str, description: str, price: int, teacher: "Teacher"
+    ) -> None:
         self.__id: UUID4 = uuid.uuid4()
         self.__name: str = name
         self.__description: str = description
@@ -193,7 +198,7 @@ class Course:
 
     def get_price(self):
         return self.__price
-    
+
     def get_teacher(self):
         return self.__teacher
 
@@ -221,7 +226,7 @@ class Course:
 
     def search_video_by_name(self, name: str):
         for video in self.__videos:
-            if video.__name == name:
+            if video.get_name() == name:
                 return video
         return None
 
@@ -247,9 +252,9 @@ class CourseCategory:
     def get_courses(self):
         return self.__courses
 
-    def search_course_by_id(self, id: UUID4) -> Course | None:
+    def search_course_by_id(self, _id: UUID4) -> Course | None:
         for course in self.__courses:
-            if course.get_id() == id:
+            if course.get_id() == _id:
                 return course
         return None
 

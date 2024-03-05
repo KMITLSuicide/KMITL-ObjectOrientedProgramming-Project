@@ -17,7 +17,11 @@ class User:
         self.__email = email
         self.__hashed_password = hashed_password
         self.__my_progresses: List[Progress] = []
+        self.__cart: Cart = Cart()
         self.__latest_progress: Union[Progress, None] = None
+        self.__address = None
+        self.__payment_method = None
+        self.__orders: List[Order] = []
 
     def get_id(self):
         return self.__id
@@ -30,6 +34,9 @@ class User:
 
     def get_hashed_password(self):
         return self.__hashed_password
+
+    def get_cart(self):
+        return self.__cart
 
     def get_latest_video_from_user(self):
         if self.__latest_progress is None:
@@ -66,6 +73,21 @@ class User:
                 return video
         return None  # "Video not found please check your input"
 
+    def set_address(self, address):
+        self.__address = address
+
+    def set_pament_method(self, payment_method):
+        self.__payment_method = payment_method
+
+    def get_address(self):
+        return self.__address
+
+    def get_payment_method(self):
+        return self.__payment_method
+
+    def get_orders(self):
+        return self.__orders
+
 
 class Teacher(User):
     def __init__(
@@ -81,4 +103,17 @@ class Teacher(User):
         if isinstance(course, Course):
             self.__my_teachings.append(course)
             return True
-        return False
+
+
+class Cart:
+    def __init__(self):
+        self.__courses = []
+
+    def get_courses(self):
+        return self.__courses
+
+    def add_course(self, course):
+        self.__courses.append(course)
+
+    def remove_course(self, course):
+        self.__courses.remove(course)
