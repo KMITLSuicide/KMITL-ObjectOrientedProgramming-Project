@@ -1,46 +1,56 @@
-from backend.definitions.user import User
+from backend.definitions.user import User, Teacher
 from backend.definitions.course import Course
+from backend.definitions.order import Payment
 
-class Order:
-    def __init__(self, address, payment, course:Course, status) -> None:
+class Order:#บิล
+    def __init__(self, address, payment:Payment, course:Course, discount, status) -> None:
         self.__address = address
         self.__payment = payment
         self.__course = course
+        self.__price = course.get_price()
+        self.__discount = discount
+        self.__amount = self.__price - self.__discount
         self.__status = status
+        
+    def get_order(self):
+        return self.__address, self.__payment, self.__course, self.__price, self.__discount, self.__amount, self.__status
 
-    def create_payment(self, status, amount, country, user, payment_method):
-        payment = Payment(status, amount, country, user, payment_method)
+    def create_payment(self, payment_method):
+        payment = Payment(payment_method)
         return payment
 
 
 class Coupon:
-    def __init__(self, course_input) -> None:
-        self.__course = course_input
-
-    def check_course(self, coupon_id_input, course_input):
-        pass
-
-    def check_teacher(self, coupon_id_input, teacher_input):
-        pass
-
-
-class CouponCourse:
-    def __init__(self, course_input) -> None:
-        self.__course = course_input
+    def __init__(self, coupon_id, discount) -> None:
+        self.__coupon_id = coupon_id
+        self.__discount = discount
+        
+    def get_id(self):
+        return self.__coupon_id    
+        
+    def get_discount(self):
+        return self.__discount
 
 
-class CouponTeacher:
-    def __init__(self, teacher_input) -> None:
-        self.__teacher = teacher_input
+class CouponCourse(Coupon):
+    def __init__(self, course) -> None:
+        self.__course = course
+        
+    def get_course(self):
+        return self.__course
+
+
+class CouponTeacher(Coupon):
+    def __init__(self, teacher) -> None:
+        self.__teacher = teacher
+        
+    def get_teacher(self):
+        return self.__teacher
 
 
 class Payment:
-    def __init__(self, status, amount, country, user:User, payment_method) -> None:
-        self.__status = status
-        self.__amount = amount
-        self.__country = country
-        self.__user = user        
+    def __init__(self, payment_method) -> None:        
         self.__payment_method = payment_method
         
-    def show_payment(self, status, amount, country, user:User, payment_method):
-        return f"Status:{status} Amount:{amount} Country:{country} User:{user.get_name()} Payment:{payment_method}"
+    def get_payment(self):
+        return self.__payment_method

@@ -5,11 +5,15 @@ from uuid import UUID
 from backend.definitions.course import Course, CourseCatergory
 from backend.definitions.user import Teacher#Question:why don't just collect user
 from backend.definitions.user import User
+from backend.definitions.order import Coupon, CouponCourse, CouponTeacher, Order, Payment
+from backend.definitions.progress import Progress
+
 class Controller:
     def __init__(self) -> None:
         self.__categories: List[CourseCatergory] = []
         self.__teachers: List[Teacher] = []
         self.__users: List[User] = []#Question: is user going to collect to be Teacher
+        self.__coupons: List[Coupon] = []
 
     def add_category(self, category: CourseCatergory):
         if isinstance(category, CourseCatergory):
@@ -135,3 +139,58 @@ class Controller:
         user = self.get_users_by_name(user_name)[0]
         if isinstance(user,User):
             return user.view_my_learning()
+        
+    def buy_course(self, user:User, status:bool, course_id, coupon_id):
+        if status == True:
+            course = self.search_course_by_id(course_id)
+            coupon = self.search_coupon_by_id(coupon_id)
+            if course != None and coupon != None:
+                teacher = self.search_teacher_by_course(course)
+                if teacher != None:
+                    if self.validate_coupon(coupon, course, teacher):
+                        discount = coupon.get_discount()
+                        self.create_order(user, course, discount, status)
+                        progress = Progress(course)
+                        user.add_progress(progress)
+                        return "Success"
+                    return "Erorr: Coupon is invalid"
+                return "Error: Teacher not found"
+            return "Error: Course or Coupon not found"
+        return "Error: You haven't paid for course yet"
+        
+    def search_coupon_by_id(self, coupon_id):
+        for coupon in self.__coupons:
+            if coupon.get_id() == coupon_id:
+                return coupon
+        return None
+    
+    def validate_coupon(self, coupon:Coupon, course:Course, teacher:Teacher):
+        if coupon != None:
+            if isinstance(coupon, CouponCourse):
+                if coupon.get_course() == course:
+                    return True                
+            if isinstance(coupon, CouponTeacher):
+                if coupon.get_teacher() == teacher:
+                    return True
+            return False
+        return False
+
+    def search_teacher_by_course(self, course:Course):
+        for teacher in self.__teachers:
+            if course in teacher.get_my_teachings():
+                return teacher
+        return None
+    
+    def create_order(self, user:User, course, discount, status):
+        address = user.get_address()
+        payment = user.get_payment_method()
+        if payment != None:
+            order = Order(address, payment, course, discount, status)
+            user.get_orders().append(order)
+        
+    
+    def search_user_by_id(self, user_id):
+        for user in self.__users:
+            if user.get_id() == user_id:
+                return user
+        return None
