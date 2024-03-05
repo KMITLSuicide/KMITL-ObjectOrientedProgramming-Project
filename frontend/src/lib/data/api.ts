@@ -15,15 +15,16 @@ import { env } from '~/src/env';
 // );
 
 function getHeaders(): AxiosHeaders {
-  const token = localStorage.getItem('token');
-  if (token) {
-    const headers: AxiosHeaders = new AxiosHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    })
-    return headers;
-  } else {
-    return new AxiosHeaders();
+  if (typeof window !== 'undefined') {
+    const token = window.localStorage.getItem('token');
+    if (token) {
+      const headers: AxiosHeaders = new AxiosHeaders({
+        'Authorization': `Bearer ${token}`
+      })
+      return headers;
+    }
   }
+  return new AxiosHeaders();
 }
 
 

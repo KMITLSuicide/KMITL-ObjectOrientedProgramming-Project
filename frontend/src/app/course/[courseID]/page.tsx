@@ -11,7 +11,42 @@ import {
 } from "~/src/components/ui/collapsible";
 import { ScrollArea } from "~/src/components/ui/scroll-area";
 import { Config } from "~/src/config";
-import { getFrontendCourseViewData } from "~/src/lib/data/course";
+
+export function getFrontendCourseViewData(courseID: string) {
+  const imageNumber = (courseID.charCodeAt(0) % 6) + 1;
+  const quizNumber = courseID.charCodeAt(0);
+  return {
+    id: courseID,
+    name: "course name",
+    description: "course description",
+    category: {
+      courses: [],
+      id: "category id",
+      name: "category name",
+    },
+    price: 10000,
+    images: [
+      {
+        id: courseID + `image-${imageNumber}`,
+        name: "image name",
+        description: "image description",
+        url: `/course/react/image-${imageNumber}.png`,
+      },
+    ],
+    quizes: [
+      {
+        id: courseID + `quiz-${quizNumber}`,
+        name: "quiz name",
+        description: "quiz description",
+        questions: [
+          {
+            question: `quiz-${quizNumber}`,
+          },
+        ],
+      },
+    ],
+  };
+}
 
 export default function CourseView({
   params,
