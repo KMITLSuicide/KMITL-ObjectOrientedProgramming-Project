@@ -39,7 +39,11 @@ export default function CategoryIDPage({
         <div className="grid grid-cols-4 gap-4">
           {categoryIDData?._CourseCategory__courses?.map((course) => {
             return (
-              <Card className="w-full" key={course._Course__id}>
+              <Card
+                className="w-full cursor-pointer"
+                key={course._Course__id}
+                onClick={() => router.push(`/course/${course._Course__id}`)}
+              >
                 <CardHeader>
                   <CardTitle>{course._Course__name}</CardTitle>
                 </CardHeader>
