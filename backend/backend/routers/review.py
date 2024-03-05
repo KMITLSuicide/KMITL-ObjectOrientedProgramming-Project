@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from fastapi import APIRouter, Body, Response, status
 
 from backend.controller_instance import controller
-from backend.definitions.course import Course, CourseCategory, CourseReview
+from backend.definitions.course import Course, CourseReview
 from backend.definitions.user import User
 
 router = APIRouter()

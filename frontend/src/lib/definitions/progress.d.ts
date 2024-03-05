@@ -8,7 +8,7 @@ export interface Progress {
 }
 interface ProgressVideo extends CourseMaterialVideo
 {
-
+  
 }
 interface ProgressQuiz extends CourseMaterialQuiz
 {

@@ -31,3 +31,5 @@ def enroll_course(
   user.add_progress(new_progress)
   user.set_latest_progress(new_progress)
   return user
+
+

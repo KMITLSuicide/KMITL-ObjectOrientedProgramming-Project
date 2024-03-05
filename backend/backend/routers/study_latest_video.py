@@ -1,14 +1,15 @@
+from enum import Enum
 from pydantic import UUID4
 from uuid import UUID
-from fastapi import APIRouter, Body
-from backend.controller_instance import controller
-from backend.definitions.progress import Progress, ProgressVideo, ProgressQuiz
-from backend.definitions.course import Course, CourseCategory, CourseMaterialVideo
-
+from typing import List, Annotated
+from fastapi import APIRouter, Response, status, Body, Depends
+from backend.definitions.user import User
+from backend.lib.authentication import get_current_user
 router = APIRouter()
 
+route_tags: List[str | Enum] = ["user"]
 
-@router.get("/study_latest_video/{user_id}")
-async def study_latest_course(user_id: UUID4):
-    latest_video = controller.study_latest_video_from_course(user_id)
-    return {"latest_video": latest_video}
+@router.get("/user/study_latest_video", tags=route_tags)
+async def study_latest_course(current_user: Annotated[User, Depends(get_current_user)]):
+    latest_video = current_user.get_latest_video_from_user()
+    return latest_video

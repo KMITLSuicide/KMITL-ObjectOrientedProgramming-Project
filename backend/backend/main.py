@@ -10,7 +10,6 @@ from backend.routers import (
     info,
     authentication,
     review,
-    view_my_learning,
     view_video,
     study_latest_video,
     course,
@@ -25,7 +24,7 @@ app.include_router(example.router)
 app.include_router(info.router)
 app.include_router(authentication.router)
 app.include_router(course_create.router)
-app.include_router(view_my_learning.router)
+# app.include_router(view_my_learning.router)
 app.include_router(view_video.router)
 app.include_router(study_latest_video.router)
 app.include_router(review.router)

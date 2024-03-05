@@ -125,35 +125,6 @@ class Controller:
                 return teacher
         return "Error: Teacher not found"
 
-    def study_latest_video_from_course(self, user_id: UUID4):
-        if self.get_user_by_id(user_id) == None:
-            return f"Error user with user id {user_id} is not found "
-        user = self.get_user_by_id(user_id)
-        if isinstance(user, User):
-            print(user.get_id())
-            return user.get_latest_video_from_user()
-
-    # From Taj, cannot view by url because string is too long
-    def view_video_by_url(self, user_id: UUID4, url: str):
-        if self.get_user_by_id(user_id) == None:
-            return f"Error user with user id {user_id} is not found "
-        user = self.get_user_by_id(user_id)
-        if isinstance(user, User):
-            return user.view_video_by_url(url)
-
-    def view_video_by_name(self, user_id: UUID4, video_name: str):
-        if self.get_user_by_id(user_id) == None:
-            return f"Error user with user id {user_id} is not found "
-        user = self.get_user_by_id(user_id)
-        if isinstance(user, User):
-            return user.view_video_by_name(video_name)
-
-    def view_my_learning(self, user_id: UUID4):
-        if self.get_user_by_id(user_id) == None:
-            return f"Error user with user id {user_id} is not found "
-        user = self.get_user_by_id(user_id)
-        if isinstance(user, User):
-            return user.view_my_learning()
 
     def search_user_by_email(self, email: str):
         for user in self.__users:
