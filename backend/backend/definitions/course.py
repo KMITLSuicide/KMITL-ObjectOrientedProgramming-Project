@@ -117,11 +117,12 @@ class CourseReview:
 
 
 class Course:
-    def __init__(self, name: str, description: str, price: int) -> None:
+    def __init__(self, name: str, description: str, price: int, teacher: "Teacher") -> None:
         self.__id: UUID4 = uuid.uuid4()
         self.__name: str = name
         self.__description: str = description
         self.__price: int = price
+        self.__teacher: teacher
         self.__images: List[CourseMaterialImage] = []
         self.__quizes: List[CourseMaterialQuiz] = []
         self.__videos: List[CourseMaterialVideo] = []
@@ -192,6 +193,9 @@ class Course:
 
     def get_price(self):
         return self.__price
+    
+    def get_teacher(self):
+        return self.__teacher
 
     def get_images(self):
         return self.__images
