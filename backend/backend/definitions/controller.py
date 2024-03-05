@@ -70,7 +70,7 @@ class Controller:
     
     def add_teacher(self, teacher: Teacher):
         if isinstance(teacher, Teacher):
-            self.__teachers.append(teacher)
+            self.__users.append(teacher)
             return True
         return False
     
@@ -80,13 +80,6 @@ class Controller:
             self.__users.append(user)
             return True
         return False
-
-    def get_all_user(self):
-        all_user: List[User] = []
-        for user in self.__users:
-            if isinstance(user, User):
-                all_user.append(user)
-        return all_user
 
     def get_all_user(self):
         all_user: List[User] = []
@@ -243,9 +236,5 @@ class Controller:
 
     def search_user_by_email(self, email: str):
         for user in self.__users:
-            if email == user.get_email():
-                return user
-
-        for user in self.__teachers:
             if email == user.get_email():
                 return user
