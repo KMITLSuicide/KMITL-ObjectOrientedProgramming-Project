@@ -11,7 +11,7 @@ class Payment:
 
 
 class Order:#บิล
-    def __init__(self, address, payment:Payment, course:Course, discount, status) -> None:
+    def __init__(self, address, payment:Payment, course:Course, discount, status:bool) -> None:
         self.__address = address
         self.__payment = payment
         self.__course = course
