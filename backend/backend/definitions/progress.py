@@ -13,6 +13,12 @@ class ProgressVideo(CourseMaterialVideo):
         self.__learned = False
 
 
+class ProgressQuiz(CourseMaterialQuiz):
+    def __init__(self, quiz: CourseMaterialQuiz) -> None:
+        super().__init__(quiz.get_name(), quiz.get_description())
+        self.__learned = False
+
+
 class Progress:
     def __init__(self, course: Course) -> None:
         self.__course = course
@@ -60,9 +66,3 @@ class Progress:
         if not isinstance(video, ProgressVideo):
             return "Invalid, set_latest_video input is not ProgressVideo"
         self.__latest_video = video
-
-
-class ProgressQuiz(CourseMaterialQuiz):
-    def __init__(self, quiz: CourseMaterialQuiz) -> None:
-        super().__init__(quiz.get_name(), quiz.get_description())
-        self.__learned = False

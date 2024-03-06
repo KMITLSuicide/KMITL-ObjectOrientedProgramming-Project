@@ -11,12 +11,15 @@ from backend.definitions.course import (
     CourseMaterialImage,
     CourseMaterialVideo,
 )
-from backend.definitions.user import Teacher, User
+from backend.definitions.progress import Progress
+from backend.definitions.user import User, Teacher
+from typing import Dict, List, Any
 
 password_hasher = PasswordHasher()
 
 
 def seed(controller: Controller):
+    # print('seeding...')
     teachers_name = ["gertrude", "harry", "irene"]
     users_name = ["alice", "bob", "charlie", "david", "eve", "frank"]
 
@@ -95,7 +98,7 @@ def seed(controller: Controller):
         ],
     }
 
-    materials = {
+    default_materials = {
         "quizes": [
             {
                 "name": "Default Quiz 1",
@@ -158,9 +161,44 @@ def seed(controller: Controller):
             )
         )
 
+    def create_course_materials(course: Course, materials):
+        for material_type, materials_list in materials.items():
+            if material_type == "quizes":
+                for material in materials_list:
+                    quiz = CourseMaterialQuiz(
+                        name=material["name"],
+                        description=material["description"],
+                    )
+                    for question in material["questions"]:
+                        quiz.add_question(
+                            QuizQuestion(
+                                question["question"],
+                                question["correct"],
+                            )
+                        )
+                    course.add_quiz(quiz)
+            elif material_type == "images":
+                for material in materials_list:
+                    course.add_image(
+                        CourseMaterialImage(
+                            material["url"],
+                            material["name"],
+                            material["description"],
+                        )
+                    )
+            elif material_type == "videos":
+                for material in materials_list:
+                    course.add_videos(
+                        CourseMaterialVideo(
+                            material["url"],
+                            material["name"],
+                            material["description"],
+                        )
+                    )
+
     for category_index, (category, courses_list) in enumerate(courses.items()):
         category = CourseCategory(name=category)
-        for course_dict in courses_list:
+        for course_index, course_dict in enumerate(courses_list):
             teacher_index = category_index % len(teachers_name)
             matched_teachers = controller.search_teacher_by_name(
                 teachers_name[teacher_index].capitalize()
@@ -175,37 +213,13 @@ def seed(controller: Controller):
                 )
                 teacher.add_my_teaching(course)
                 category.add_course(course)
+                create_course_materials(course, default_materials)
 
-                for material_type, materials_list in materials.items():
-                    for material in materials_list:
-                        if material_type == "quizes":
-                            quiz = CourseMaterialQuiz(
-                                name=material["name"],
-                                description=material["description"],
-                            )
-                            for question in material["questions"]:
-                                quiz.add_question(
-                                    QuizQuestion(
-                                        question["question"],
-                                        question["correct"],
-                                    )
-                                )
-                            course.add_quiz(quiz)
-                        elif material_type == "images":
-                            course.add_image(
-                                CourseMaterialImage(
-                                    material["url"],
-                                    material["name"],
-                                    material["description"],
-                                )
-                            )
-                        elif material_type == "videos":
-                            course.add_videos(
-                                CourseMaterialVideo(
-                                    material["url"],
-                                    material["name"],
-                                    material["description"],
-                                )
-                            )
-
+                user_index = course_index % len(users_name)
+                matched_users = controller.search_user_by_name(
+                    users_name[user_index].capitalize()
+                )
+                user = matched_users[0] if matched_users else None
+                if isinstance(user, User):
+                    user.add_progress(Progress(course))
         controller.add_category(category)

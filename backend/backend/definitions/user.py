@@ -88,6 +88,12 @@ class User:
     def get_orders(self):
         return self.__orders
 
+    def have_access_to_course(self, course: Course):
+        for progress in self.__my_progresses:
+            if progress.get_course() == course:
+                return True
+        return False
+
 
 class Teacher(User):
     def __init__(
