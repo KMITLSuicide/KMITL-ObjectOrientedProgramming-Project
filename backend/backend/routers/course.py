@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import List
 import uuid
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from backend.controller_instance import controller
 from backend.definitions.api_data_model import CourseInfo
@@ -19,7 +19,10 @@ def get_all_course():
 @router.get("/course/{course_id}", tags=route_tags)
 def get_course_info(course_id: str):
     course = controller.search_course_by_id(uuid.UUID(course_id))
+    if course is None:
+        return HTTPException(status_code=404, detail="Course not found")
     category = controller.search_category_by_course(course)
+
     course_materials_images: list[str] = []
     course_materials_quizes: list[str] = []
     course_materials_videos: list[str] = []
