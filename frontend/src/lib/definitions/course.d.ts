@@ -40,3 +40,12 @@ export interface CourseCategory {
   _CourseCategory__name: string;
   _CourseCategory__courses: Course[];
 }
+
+interface CourseCardData {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  rating: number;
+  banner_image: string;
+}
