@@ -7,3 +7,4 @@ class CourseCardData(BaseModel):
     description: str
     price: float
     rating: float
+    banner_image: str

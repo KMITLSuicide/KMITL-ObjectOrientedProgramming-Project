@@ -47,6 +47,7 @@ class CourseMaterial:
         return self.__description
 
 
+
 class CourseMaterialVideo(CourseMaterial):
     def __init__(self, url: str, name: str, description: str) -> None:
         super().__init__(name, description)
@@ -134,6 +135,7 @@ class Course:
         self.__reviews: List[CourseReview] = []
         # Question from Taj to phak: Should I collect latest video to course?
         self.__latest_video = None
+        self.__banner_image_url: str = "/course/default-image.jpg"
 
     def set_name(self, name: str):
         if isinstance(name, str):
@@ -217,6 +219,9 @@ class Course:
 
     def get_reviews(self):
         return self.__reviews
+
+    def get_banner_image_url(self):
+        return self.__banner_image_url
 
     def search_review_by_user(self, user: User):
         for review in self.__reviews:

@@ -1,10 +1,11 @@
 from enum import Enum
 from typing import List
 import uuid
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from backend.controller_instance import controller
+from backend.definitions.course import CourseCategory
 from backend.definitions.api_data_model import CourseCardData
 
 
@@ -36,6 +37,9 @@ class CategoryInfo(BaseModel):
 @router.get("/category/{category_id}", tags=route_tags)
 def get_category_by_id(category_id: str):
     category = controller.search_category_by_id(uuid.UUID(category_id))
+    if category is None:
+        raise HTTPException(status_code=404, detail="Category not found")
+
     return_data = CategoryInfo(
         id=str(category.get_id()), name=category.get_name(), courses=[]
     )
@@ -46,7 +50,8 @@ def get_category_by_id(category_id: str):
                 name=course.get_name(),
                 description=course.get_description(),
                 price=course.get_price(),
-                rating=course.get_rating(),
+                rating=0,
+                banner_image=course.get_banner_image_url(),
             )
         )
     return return_data
