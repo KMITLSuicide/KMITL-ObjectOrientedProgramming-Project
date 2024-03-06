@@ -6,10 +6,11 @@ import { Loader2 } from "lucide-react";
 import { Toaster } from "~/src/components/ui/toaster";
 import { ToastAction } from "~/src/components/ui/toast";
 import Link from "next/link";
-import { type AccountData, getAccountDataFromAPI } from "~/src/lib/data/account";
+import { getAccountDataFromAPI } from "~/src/lib/data/account";
+import { type AccountInfo } from "~/src/lib/definitions/account";
 
 export default function AccountPage() {
-  const [accountData, setAccountData] = useState<AccountData | null | undefined>(undefined);
+  const [accountData, setAccountData] = useState<AccountInfo | null | undefined>(undefined);
 
   useEffect(() => {
     async function fetchData() {
@@ -32,7 +33,7 @@ export default function AccountPage() {
           </ToastAction>
       });
     }
-    console.log(accountData); // Move the console.log statement here
+    console.log(accountData);
   }, [accountData]);
 
   return(
@@ -44,21 +45,29 @@ export default function AccountPage() {
       }>
         <table className="border-separate border-spacing-x-2">
           <tbody>
+          <tr>
+            <th className="text-end">Type</th>
+            {accountData && (
+              <td>
+                {accountData.type === 'user' ? (
+                  'Learner'
+                ) : accountData.type === 'teacher' ? (
+                  'Teacher'
+                ) : null}
+              </td>
+            )}
+          </tr>
             <tr>
               <th className="text-end">ID</th>
-              {accountData && <td>{accountData._User__id}</td>}
+              {accountData && <td>{accountData.id}</td>}
             </tr>
             <tr>
               <th className="text-end">Name</th>
-              {accountData && <td>{accountData._User__name}</td>}
+              {accountData && <td>{accountData.name}</td>}
             </tr>
             <tr>
               <th className="text-end">Email</th>
-              {accountData && <td>{accountData._User__email}</td>}
-            </tr>
-            <tr>
-              <th className="text-end">Hashed Password</th>
-              {accountData && <td>{accountData._User__hashed_password}</td>}
+              {accountData && <td>{accountData.email}</td>}
             </tr>
           </tbody>
         </table>
