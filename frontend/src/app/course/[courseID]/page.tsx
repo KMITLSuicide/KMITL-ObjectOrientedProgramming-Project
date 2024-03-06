@@ -9,7 +9,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "~/src/components/ui/collapsible";
-import { ScrollArea } from "~/src/components/ui/scroll-area";
 import { Config } from "~/src/config";
 
 export function getFrontendCourseViewData(courseID: string) {
