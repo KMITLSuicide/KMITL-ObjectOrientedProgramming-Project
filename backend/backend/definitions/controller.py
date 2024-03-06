@@ -67,13 +67,13 @@ class Controller:
             if name in category.get_name():
                 matched_category.append(category)
         return matched_category
-    
+
     def add_teacher(self, teacher: Teacher):
         if isinstance(teacher, Teacher):
             self.__users.append(teacher)
             return True
         return False
-    
+
     #Tajdang commit
     def add_user(self, user: User):
         if isinstance(user, User):
@@ -226,8 +226,7 @@ class Controller:
         if payment != None:
             order = Order(address, payment, course, discount, status)
             user.get_orders().append(order)
-        
-    
+
     def search_user_by_id(self, user_id):
         for user in self.__users:
             if user.get_id() == user_id:
@@ -238,3 +237,9 @@ class Controller:
         for user in self.__users:
             if email == user.get_email():
                 return user
+
+    def search_category_by_course(self, course: Course):
+        for category in self.__categories:
+            if course in category.get_courses():
+                return category
+        return None

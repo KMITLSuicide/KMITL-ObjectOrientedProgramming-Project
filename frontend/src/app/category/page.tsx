@@ -5,7 +5,7 @@ import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import {
-  getCategoryDataFromAPI,
+  getCategoryNamesFromAPI,
 } from "~/src/lib/data/category";
 import { cn } from "~/src/lib/utils";
 import { Button } from "~/src/components/ui/button";
@@ -22,11 +22,11 @@ import {
   PopoverTrigger,
 } from "~/src/components/ui/popover";
 import { useRouter } from "next/navigation";
-import { type CourseCategory } from "~/src/lib/definitions/course";
+import { type CategoryNames } from "~/src/lib/definitions/category";
 
 export default function CategoryChoosePage() {
   const [categoryData, setCategoryData] = useState<
-  CourseCategory[] | null | undefined
+  CategoryNames[] | null | undefined
   >(undefined);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
@@ -34,7 +34,7 @@ export default function CategoryChoosePage() {
 
   useEffect(() => {
     async function fetchData() {
-      const apiData = await getCategoryDataFromAPI();
+      const apiData = await getCategoryNamesFromAPI();
       console.log(apiData);
       setCategoryData(apiData);
     }
@@ -54,7 +54,7 @@ export default function CategoryChoosePage() {
               className="w-[200px] justify-between hover:bg-background"
             >
               {value
-                ? categoryData?.find((category) => category._CourseCategory__name.toLowerCase() === value)?._CourseCategory__name
+                ? categoryData?.find((category) => category.name.toLowerCase() === value)?.name
                 : "Select category..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
@@ -66,21 +66,21 @@ export default function CategoryChoosePage() {
               <CommandGroup>
                 {categoryData?.map((category) => (
                   <CommandItem
-                    key={category._CourseCategory__id}
-                    value={category._CourseCategory__name}
+                    key={category.id}
+                    value={category.name}
                     onSelect={(currentValue) => {
                       setValue(currentValue === value ? "" : currentValue);
                       setOpen(false);
-                      router.push(`/category/${category._CourseCategory__id}`);
+                      router.push(`/category/${category.id}`);
                     }}
                   >
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === category._CourseCategory__name ? "opacity-100" : "opacity-0",
+                        value === category.name ? "opacity-100" : "opacity-0",
                       )}
                     />
-                    {category._CourseCategory__name}
+                    {category.name}
                   </CommandItem>
                 ))}
               </CommandGroup>
