@@ -1,4 +1,4 @@
-import { type Course } from "~/src/lib/definitions/course";
+import { type CourseInfo, type Course } from "~/src/lib/definitions/course";
 import api from "~/src/lib/data/api";
 
 export async function getCourseDataFromAPI() {
@@ -16,9 +16,9 @@ export async function getCourseDataFromAPI() {
   }
 }
 
-export async function getCourseDataWithIDFromAPI(courseID: string) {
+export async function getCourseInfoFromAPI(courseID: string) {
   try {
-    const response = await api.get<Course>(`/course/${courseID}`);
+    const response = await api.get<CourseInfo>(`/course/${courseID}`);
 
     if (response.status == 200) {
       return response.data;
