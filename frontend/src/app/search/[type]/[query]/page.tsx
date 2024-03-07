@@ -53,10 +53,14 @@ export default function SearchResults({ params }: { params: { type: string, quer
   }, []);
 
   useEffect(() => {
-    if (params.type === "course") {
-      setCards((searchResults as CourseCardData[]).map((course) => <CourseCard course={course} key={course.id} />) ?? []);
+    if (searchResults !== undefined){
+      if (params.type === "course") {
+        setCards((searchResults as CourseCardData[]).map((course) => <CourseCard course={course} key={course.id} />) ?? []);
+      } else {
+        setCards(createGenericCards(searchResults, urlPrefix, router) ?? []);
+      }
     } else {
-      setCards(createGenericCards(searchResults, urlPrefix, router) ?? []);
+      setCards(undefined);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchResults]);
@@ -68,6 +72,8 @@ export default function SearchResults({ params }: { params: { type: string, quer
         <h1 className="font-bold text-2xl">Search results for {params.query}</h1>
         <div className="grid grid-cols-4 gap-4">
           {cards?.map((card) => card)}
+          {cards === undefined && <p>Loading...</p>}
+          {cards?.length === 0 && <p>No results found</p>}
         </div>
       </div>
     </div>
