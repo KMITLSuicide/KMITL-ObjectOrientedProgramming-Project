@@ -1,16 +1,18 @@
 import uuid
-from typing import Annotated, Literal
+from typing import Annotated, Literal,List
 from pydantic import BaseModel
 from fastapi import APIRouter, Body, Response, status
 
 from backend.controller_instance import controller
 from backend.definitions.course import Course, CourseReview
 from backend.definitions.user import User
+from enum import Enum
 
 router = APIRouter()
 
+route_tags: List[str | Enum] = ["Reviews"]
 
-@router.get("/course/{course_id}/review")
+@router.get("/course/{course_id}/review", tags = route_tags)
 def get_reviews(course_id: str, response: Response):
     course = controller.search_course_by_id(uuid.UUID(course_id))
     if not isinstance(course, Course):
@@ -26,7 +28,7 @@ class CreateReviewPostData(BaseModel):
     comment: str
 
 
-@router.post("/course/{course_id}/review")
+@router.post("/course/{course_id}/review", tags = route_tags)
 def create_review(
     course_id: str,
     create_review_post_data: Annotated[

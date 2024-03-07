@@ -1,7 +1,8 @@
-from typing import List, Union
+from typing import List
 from fastapi import APIRouter, Body
 from pydantic import UUID4
-
+from uuid import UUID
+from enum import Enum
 from backend.definitions.course import Course
 from backend.definitions.user import User, Teacher
 from backend.definitions.controller import Controller
@@ -10,12 +11,14 @@ import random
 
 router = APIRouter()
 
-@router.get("/course/homepage/random_course")
+route_tags: List[str | Enum] = ["Course"]
+
+@router.get("/course/homepage/random_course", tags= route_tags)
 def random_course():
     all_courses = controller.get_all_courses()
     return random.sample(all_courses, 3)
 
-@router.get("/course/homepage/suggestion")
+@router.get("/course/homepage/suggestion", tags= route_tags)
 
 def suggest_course():
     reviewed_course = []
