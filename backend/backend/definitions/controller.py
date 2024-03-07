@@ -50,7 +50,7 @@ class Controller:
     def search_course_by_name(self, name: str):
         matched_courses: List[Course] = []
         for course in self.get_all_courses():
-            if name in course.get_name():
+            if name.lower() in course.get_name().lower():
                 matched_courses.append(course)
         return matched_courses
 
@@ -63,7 +63,7 @@ class Controller:
     def search_category_by_name(self, name: str):
         matched_category: List[CourseCategory] = []
         for category in self.__categories:
-            if name in category.get_name():
+            if name.lower() in category.get_name().lower():
                 matched_category.append(category)
         return matched_category
 
@@ -104,7 +104,7 @@ class Controller:
     def search_teacher_by_name(self, name: str):
         matched_teachers: List[Teacher] = []
         for teacher in self.get_all_teacher():
-            if name in teacher.get_name():
+            if name.lower() in teacher.get_name().lower():
                 matched_teachers.append(teacher)
         return matched_teachers
 
@@ -166,8 +166,8 @@ class Controller:
         user.add_progress(progress)
         user.set_latest_progress(progress)
         return {"latest progress":user.get_latest_progress(),
-                "user order": user.get_orders()} 
-    
+                "user order": user.get_orders()}
+
 
     def search_coupon_by_id(self, coupon_id):
         for coupon in self.__coupons:
