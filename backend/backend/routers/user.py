@@ -11,17 +11,7 @@ from backend.lib.authentication import get_current_user
 
 
 router = APIRouter()
-route_tags: List[str | Enum] = ["user"]
-
-#for debug only
-@router.get("/user", tags=route_tags)
-def get_all_user():
-    return controller.get_all_user()
-
-
-@router.get("/teacher", tags=route_tags)
-def get_all_teacher():
-    return controller.get_all_teacher()
+route_tags: List[str | Enum] = ["View Video"]
 
 
 @router.get("/user/view_my_learning", tags=route_tags)
@@ -39,11 +29,16 @@ async def study_latest_course(current_user: Annotated[User, Depends(get_current_
     latest_video = current_user.get_latest_video()
     return latest_video
 
-@router.get("/user/search_course_by_id/{course_id}", tags=route_tags)
+@router.get("/user/search_course_by_id/{course_id}", tags=["Course"])
 def get_course_by_id(current_user: Annotated[User, Depends(get_current_user)], course_id: UUID):
     course = current_user.search_course_by_id(course_id)
     return course
 
+@router.get("/user/get_my_teaching", tags=["My Teaching"])
+def get_my_teaching(current_user: Annotated[User, Depends(get_current_user)]):
+    if not isinstance(current_user, Teacher):
+        return "Error, You r not teacher"
+    current_user.get_my_teachings()
 
 
 class AccountInfo(BaseException):
@@ -52,7 +47,7 @@ class AccountInfo(BaseException):
     name: str
     email: str
 
-@router.get("/account", tags=route_tags)
+@router.get("/account", tags=["User"])
 async def get_my_account_info(current_user: Annotated[User, Depends(get_current_user)]):
     user_type = 'user'
     if isinstance(current_user, Teacher):

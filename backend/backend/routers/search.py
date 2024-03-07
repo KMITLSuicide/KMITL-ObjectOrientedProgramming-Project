@@ -8,14 +8,14 @@ from backend.definitions.api_data_model import CourseCardData
 from backend.definitions.course import Course
 
 router = APIRouter()
-route_tags: List[str | Enum] = ["search"]
+route_tags: List[str | Enum] = ["Search"]
 
 
 class SearchResults(BaseModel):
     name: str
     id: str
 
-@router.get("/")
+@router.get("/", tags = ["Debug Purposes"])
 def hello():
     return "hello world"
 

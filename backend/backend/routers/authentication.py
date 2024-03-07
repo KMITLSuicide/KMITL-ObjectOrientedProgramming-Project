@@ -19,7 +19,7 @@ from backend.controller_instance import controller
 
 
 router = APIRouter()
-route_tags: List[str | Enum] = ["authentication"]
+route_tags: List[str | Enum] = ["Authentication"]
 
 
 @router.post("/" + TOKEN_URL, tags=route_tags)
