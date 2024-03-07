@@ -9,6 +9,7 @@ from backend.routers import (
     authentication,
     review,
     buy_course,
+    cart,
     course,
     category,
     search,
@@ -19,6 +20,7 @@ from backend.routers import (
 
 app = FastAPI()
 
+app.include_router(cart.router)
 app.include_router(authentication.router)
 app.include_router(search.router)
 app.include_router(list_course_on_home_page.router)

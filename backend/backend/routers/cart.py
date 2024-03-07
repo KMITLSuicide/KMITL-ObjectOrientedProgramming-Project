@@ -11,9 +11,9 @@ from backend.lib.authentication import get_current_user
 
 router = APIRouter()
 
-route_tags: List[str | Enum] = ["cart"]
+route_tags: List[str | Enum] = ["Cart"]
     
-@router.post('/user/add_course_to_cart')
+@router.post('/user/add_course_to_cart',tags= route_tags)
 def add_course_to_cart(current_user: Annotated[User, Depends(get_current_user)],
                        course_id_query: UUID):
 
@@ -23,7 +23,7 @@ def add_course_to_cart(current_user: Annotated[User, Depends(get_current_user)],
 
     return obj_cart
 
-@router.delete('/user/remove_course_to_cart')
+@router.delete('/user/remove_course_to_cart',tags= route_tags)
 def remove_course_to_cart(current_user: Annotated[User, Depends(get_current_user)], course_id_query: UUID):
 
     obj_course = controller.search_course_by_id(course_id_query)
@@ -32,6 +32,6 @@ def remove_course_to_cart(current_user: Annotated[User, Depends(get_current_user
 
     return obj_cart
 
-@router.get('/user/{user_id}/cart/')
+@router.get('/user/get_course_in_cart/',tags= route_tags)
 def get_course_in_cart(current_user: Annotated[User, Depends(get_current_user)], course_id_query: UUID):
     return current_user.get_cart()
