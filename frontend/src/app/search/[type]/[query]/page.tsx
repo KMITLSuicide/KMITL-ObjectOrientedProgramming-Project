@@ -1,7 +1,6 @@
 'use client';
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CourseCard } from "~/src/components/course/card";
 import { Card, CardHeader, CardTitle } from "~/src/components/ui/card";
