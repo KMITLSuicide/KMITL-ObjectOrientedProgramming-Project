@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 from backend.controller_instance import controller
 from backend.definitions.course import CourseCategory
-from backend.definitions.api_data_model import CourseCardData
+from backend.definitions.api_data_model import CourseCardData,CategoryInfo
 
 
 router = APIRouter()
@@ -28,10 +28,7 @@ def get_all_categories():
     return category_names
 
 
-class CategoryInfo(BaseModel):
-    id: str
-    name: str
-    courses: List[CourseCardData]
+
 
 
 @router.get("/category/{category_id}", tags=route_tags)
@@ -44,7 +41,8 @@ def get_category_by_id(category_id: str):
         id=str(category.get_id()), name=category.get_name(), courses=[]
     )
     for course in category.get_courses():
-        return_data.courses.append(
+        return_data.courses.append
+        (
             CourseCardData(
                 id=str(course.get_id()),
                 name=course.get_name(),
