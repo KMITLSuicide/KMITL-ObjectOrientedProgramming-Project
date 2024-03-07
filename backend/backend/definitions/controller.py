@@ -16,6 +16,8 @@ class Controller:
             cls._instance = super(Controller, cls).__new__(cls)
             cls._instance.__categories = []
             cls._instance.__users = []
+            cls._instance.__teachers = []
+            cls._instance.__coupons = []
         return cls._instance
 
     def __init__(self) -> None:
@@ -23,6 +25,7 @@ class Controller:
         self.__users: List[User] = (
             []
         )  # Question: is user going to collect to be Teacher
+        self.__teachers: List[Teacher] = []
         self.__coupons: List[Coupon] = []
 
     def add_category(self, category: CourseCategory):
@@ -216,7 +219,9 @@ class Controller:
         if payment != None:
             order = Order(address, payment, course, discount, status)
             user.get_orders().append(order)
-
+        return None
+        
+    
     def search_user_by_id(self, user_id):
         for user in self.__users:
             if user.get_id() == user_id:
@@ -227,9 +232,14 @@ class Controller:
         for user in self.__users:
             if email == user.get_email():
                 return user
-
-    def search_category_by_course(self, course: Course):
-        for category in self.__categories:
-            if course in category.get_courses():
-                return category
+            
+    def add_coupon_course(self, coupon_id, discount, course:Course, teacher:Teacher):
+        self.__coupons.append(CouponCourse(coupon_id, discount, course))
         return None
+            
+    def add_coupon_teacher(self, coupon_id, discount, teacher:Teacher):
+        self.__coupons.append(CouponTeacher(coupon_id, discount, teacher))
+        return None
+        
+    def get_all_coupons(self):
+        return self.__coupons
