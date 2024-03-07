@@ -3,6 +3,7 @@ from typing import List
 import uuid
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
+import random
 
 from backend.controller_instance import controller
 from backend.definitions.api_data_model import CourseInfo
@@ -26,6 +27,7 @@ def get_all_course():
                 name=course.get_name()
             ))
     return return_data
+
 
 @router.get("/course/{course_id}", tags=route_tags)
 def get_course_info(course_id: str):
