@@ -2,6 +2,7 @@ import "~/src/styles/globals.css";
 import { inter } from "~/src/styles/font";
 import { ThemeProvider } from "~/src/components/theme-provider";
 import NavBar from "~/src/components/navbar/navbar";
+import { Toaster } from "~/src/components/ui/toaster";
 
 export const metadata = {
   title: "Create T3 App",
@@ -16,6 +17,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link
+          rel="icon"
+          href="/favicon.jpg"
+          type="image/jpg"
+          sizes="32px"
+        />
+      </head>
       <body className={`font-sans ${inter.className}`}>
         <ThemeProvider
           attribute="class"
@@ -25,6 +34,7 @@ export default function RootLayout({
         >
           <NavBar className="px-4" />
           <main className="h-[calc(100vh-3rem)] p-4">{children}</main>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

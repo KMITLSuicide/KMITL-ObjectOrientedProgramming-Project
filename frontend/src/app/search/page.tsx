@@ -16,7 +16,6 @@ import {
 } from "~/src/components/ui/form"
 import { Input } from "~/src/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "~/src/components/ui/radio-group";
-import { Toaster } from "~/src/components/ui/toaster";
 
 const FormSchema = z.object({
   type: z.enum(["course", "category", "teacher"]),
@@ -96,7 +95,6 @@ export default function SearchSelector() {
           </form>
         </Form>
       </div>
-      <Toaster />
     </div>
   )
 }
