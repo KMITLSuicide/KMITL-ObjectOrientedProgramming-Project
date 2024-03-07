@@ -5,7 +5,7 @@ from pydantic import EmailStr
 
 from backend.definitions.course import Course
 from backend.definitions.progress import Progress
-
+from backend.definitions.order import Order
 
 class User:
     # Constants
@@ -117,3 +117,15 @@ class Cart:
 
     def remove_course(self, course):
         self.__courses.remove(course)
+
+# @router.get("/course", tags=route_tags)
+# def get_all_course():
+#     return_data: List[GetAllCourse] = []
+#     all_course = controller.get_all_courses()
+#     for course in all_course:
+#         return_data.append(
+#             GetAllCourse(
+#                 id=str(course.get_id()),
+#                 name=course.get_name()
+#             ))
+#     return return_data

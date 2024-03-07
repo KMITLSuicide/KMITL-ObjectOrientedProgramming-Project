@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List, Annotated, Literal
 from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 
 from backend.controller_instance import controller
 from backend.definitions.user import User, Teacher
@@ -10,10 +11,21 @@ from backend.lib.authentication import get_current_user
 router = APIRouter()
 route_tags: List[str | Enum] = ["user"]
 
+class GetAllUser(BaseModel):
+    id: str
+    name: str
 
 @router.get("/user", tags=route_tags)
 def get_all_user():
-    return controller.get_all_user()
+    return_data: list[GetAllUser] = []
+    all_users = controller.get_all_user()
+    for user in all_users:
+        return_data.append(
+            GetAllUser(
+                id=str(user.get_id()),
+                name=user.get_name()
+            ))
+    return return_data
 
 
 @router.get("/teacher", tags=route_tags)

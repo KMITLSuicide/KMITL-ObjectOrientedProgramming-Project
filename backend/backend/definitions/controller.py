@@ -62,7 +62,7 @@ class Controller:
         return None
 
     def search_category_by_name(self, name: str):
-        matched_category: List[CourseCatergory] = []
+        matched_category: List[CourseCategory] = []
         for category in self.__categories:
             if name in category.get_name():
                 matched_category.append(category)
@@ -215,7 +215,7 @@ class Controller:
         return False
 
     def search_teacher_by_course(self, course:Course):
-        for teacher in self.__teachers:
+        for teacher in self.get_all_teacher():
             if course in teacher.get_my_teachings():
                 return teacher
         return None

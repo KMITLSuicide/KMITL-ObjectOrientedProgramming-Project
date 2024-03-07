@@ -2,6 +2,7 @@ from enum import Enum
 from typing import List
 import uuid
 from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
 from backend.controller_instance import controller
 from backend.definitions.api_data_model import CourseInfo
@@ -10,11 +11,21 @@ from backend.definitions.api_data_model import CourseInfo
 router = APIRouter()
 route_tags: List[str | Enum] = ["course"]
 
+class GetAllCourse(BaseModel):
+    id: str
+    name: str
 
 @router.get("/course", tags=route_tags)
 def get_all_course():
-    return controller.get_all_courses()
-
+    return_data: List[GetAllCourse] = []
+    all_course = controller.get_all_courses()
+    for course in all_course:
+        return_data.append(
+            GetAllCourse(
+                id=str(course.get_id()),
+                name=course.get_name()
+            ))
+    return return_data
 
 @router.get("/course/{course_id}", tags=route_tags)
 def get_course_info(course_id: str):
