@@ -12,11 +12,11 @@ import { Config } from "~/src/config";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export function CourseCard({ course }: { course: CourseCardData }) {
+export function CourseCard({ course, className }: { course: CourseCardData, className?: string }) {
   const router = useRouter();
 
   return (
-    <Card key={course.id} className="w-full cursor-pointer hover:bg-secondary">
+    <Card key={course.id} className={`w-full cursor-pointer hover:bg-secondary ${className}`}>
       <Link
         href={`/course/${course.id}`}
         className="flex h-full w-full flex-col"
