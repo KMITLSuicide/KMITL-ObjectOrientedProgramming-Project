@@ -25,7 +25,7 @@ def get_search_course(course_name: str):
     search_results: List[CourseCardData] = []
     courses = controller.search_course_by_name(course_name)
     for course in courses:
-        search_results.append(            
+        search_results.append(
             CourseCardData(
                 id=str(course.get_id()),
                 name=course.get_name(),

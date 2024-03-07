@@ -1,3 +1,10 @@
+'use client';
+
+import { UserRoundX, UserRoundCheck, UserRound } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 import {
   Avatar,
   AvatarFallback,
@@ -11,52 +18,104 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "~/src/components/ui/dropdown-menu";
+import { toast } from "~/src/components/ui/use-toast";
+import { getAccountDataFromAPI } from "~/src/lib/data/account";
+import { logout } from "~/src/lib/data/authentication";
+import { type AccountInfo } from "~/src/lib/definitions/account";
 
 export default function AccountIcon() {
+  const router = useRouter();
+  const [accountData, setAccountData] = useState<AccountInfo | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const token = Cookies.get('token');
+    setToken(token);
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    console.log(`token: ${token}`);
+    // console.log(`vanilla token: ${localStorage.getItem('token')}`)
+  }, [token]);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    console.log(`token: ${token}`);
+    void getAccountDataFromAPI().then((data) => {
+      setAccountData(data);
+    });
+    router.refresh();
+  }, [token]);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="/default_avatar.png" alt="Profile picture" />
-            <AvatarFallback>PY</AvatarFallback>
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full outline outline-1 outline-secondary">
+          <Avatar className="h-8 w-8  items-center justify-center flex  ">
+            <AvatarImage src="/default_avatar.png" asChild>
+              {accountData ? (
+                <UserRoundCheck color="#6ee7b7" className="m-[6px]" size={24} />
+              ) : (
+                <UserRoundX color="#fca5a5" className="m-[6px]" size={24} />
+              )}
+            </AvatarImage>
+            <AvatarFallback asChild>
+              <UserRound className="m-[6px] bg-transparent" size={24} />
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">shadcn</p>
-            <p className="text-xs leading-none text-muted-foreground">
-              m@example.com
-            </p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+      {accountData ? (
+        <DropdownMenuContent className="w-56" align="end" forceMount>
+          <DropdownMenuLabel className="font-normal">
+            <div className="flex flex-col space-y-1">
+              <p className="text-sm font-medium leading-none">{accountData?.name ?? 'Name'}</p>
+              <p className="text-xs leading-none text-muted-foreground">
+                {accountData?.email ?? 'email@example.com'}
+              </p>
+            </div>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem asChild>
+              <Link href="/account">
+                Profile
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => {
+            logout();
+            setAccountData(null);
+            router.refresh();
+            router.push('/');
+            }}>
+            Log out
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            Billing
-            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>New Team</DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          Log out
-          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
+        </DropdownMenuContent>
+      ) : (
+        <DropdownMenuContent className="w-56" align="end" forceMount>
+          <DropdownMenuLabel className="font-normal">
+            <p className="text-sm font-medium leading-none my-2">Not logged in.</p>
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuItem asChild>
+              <Link href="/authentication/login">
+                Log in
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/authentication/register">
+                Register
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      )}
     </DropdownMenu>
   );
 }
