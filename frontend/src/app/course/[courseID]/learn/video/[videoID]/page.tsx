@@ -5,10 +5,10 @@ import { getCourseLearnDataFromAPI } from "~/src/lib/data/course";
 import { type CourseLearn } from "~/src/lib/definitions/course";
 
 
-export default function CourseMaterialQuiz({
+export default function CourseMaterialImage({
   params,
 }: {
-  params: { courseID: string; quizID: string };
+  params: { courseID: string; videoID: string };
 }) {
   const [learnData, setLearnData] = useState<CourseLearn | null | undefined>(
     undefined,
@@ -20,11 +20,18 @@ export default function CourseMaterialQuiz({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const thisVideo = learnData?.learn_materials_videos.find(
+    (video) => video.id === params.videoID,
+  );
+
   return (
-    <>
-      <h1>Course quiz</h1>
-      <h2>id={params.courseID}</h2>
-      <h2>id={params.quizID}</h2>
-    </>
+    <div className="space-y-2">
+      <video width="1280" controls preload="none">
+        <source src={thisVideo?.url}  />
+        Your browser does not support the video tag.
+      </video>
+      <h1 className="text-3xl font-bold my-8">{thisVideo?.name}</h1>
+      <p>{thisVideo?.description}</p>
+    </div>
   );
 }
