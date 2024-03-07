@@ -3,6 +3,7 @@ from uuid import UUID
 from typing import List, Annotated, Literal, Annotated
 from fastapi import APIRouter, Depends, Response, status, Body
 from pydantic import BaseModel
+
 from backend.controller_instance import controller
 from backend.definitions.progress import Progress
 from backend.definitions.course import Course
