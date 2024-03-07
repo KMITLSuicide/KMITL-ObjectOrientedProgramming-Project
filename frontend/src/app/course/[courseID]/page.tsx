@@ -37,8 +37,13 @@ export default function CourseView({
     <div className="flex h-full w-full justify-center">
       <div className="flex w-full max-w-screen-xl justify-center">
         <div className="flex w-3/5 flex-col space-y-4">
-          <Button asChild className="w-fit rounded-full bg-secondary text-secondary-foreground p-2 px-4">
-            <Link href={`/category/${courseData?.category_id}`}>{courseData?.category_name}</Link>
+          <Button
+            asChild
+            className="w-fit rounded-full bg-secondary p-2 px-4 text-secondary-foreground"
+          >
+            <Link href={`/category/${courseData?.category_id}`}>
+              {courseData?.category_name}
+            </Link>
           </Button>
 
           <h1 className="text-3xl">

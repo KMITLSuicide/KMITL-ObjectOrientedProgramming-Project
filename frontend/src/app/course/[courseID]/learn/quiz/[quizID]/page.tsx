@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,7 +6,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { getCourseLearnDataFromAPI } from "~/src/lib/data/course";
-import { type CourseLearnMaterialQuizQuestions, type CourseLearn } from "~/src/lib/definitions/course";
+import {
+  type CourseLearnMaterialQuizQuestions,
+  type CourseLearn,
+} from "~/src/lib/definitions/course";
 import { Button } from "~/src/components/ui/button";
 import { Checkbox } from "~/src/components/ui/checkbox";
 import {
@@ -51,7 +54,7 @@ const FormSchema = z.object({
   items: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one item.",
   }),
-})
+});
 
 export default function CourseMaterialQuiz({
   params,
@@ -61,30 +64,29 @@ export default function CourseMaterialQuiz({
   const [learnData, setLearnData] = useState<CourseLearn | null | undefined>(
     undefined,
   );
-  const [formItems, setFormItems] = useState<CourseLearnMaterialQuizQuestions[] | null | undefined>(
-    undefined,
-  );
+  const [formItems, setFormItems] = useState<
+    CourseLearnMaterialQuizQuestions[] | null | undefined
+  >(undefined);
   useEffect(() => {
     void getCourseLearnDataFromAPI(params.courseID).then((data) => {
       setLearnData(data);
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     const thisQuiz = learnData?.learn_materials_quizes.find(
       (quiz) => quiz.id === params.quizID,
     );
     setFormItems(thisQuiz?.questions);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [learnData]);
-
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       items: [],
     },
-  })
+  });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({
@@ -94,7 +96,7 @@ export default function CourseMaterialQuiz({
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
-    })
+    });
   }
 
   const thisQuiz = learnData?.learn_materials_quizes.find(
@@ -111,10 +113,10 @@ export default function CourseMaterialQuiz({
             render={() => (
               <FormItem>
                 <div className="mb-4">
-                  <FormLabel className="text-3xl font-bold">{thisQuiz?.name}</FormLabel>
-                  <FormDescription>
-                    {thisQuiz?.description}
-                  </FormDescription>
+                  <FormLabel className="text-3xl font-bold">
+                    {thisQuiz?.name}
+                  </FormLabel>
+                  <FormDescription>{thisQuiz?.description}</FormDescription>
                 </div>
                 {formItems?.map((item) => (
                   <FormField
@@ -135,9 +137,9 @@ export default function CourseMaterialQuiz({
                                   ? field.onChange([...field.value, item.id])
                                   : field.onChange(
                                       field.value?.filter(
-                                        (value) => value !== item.id
-                                      )
-                                    )
+                                        (value) => value !== item.id,
+                                      ),
+                                    );
                               }}
                             />
                           </FormControl>
@@ -145,7 +147,7 @@ export default function CourseMaterialQuiz({
                             {item.question}
                           </FormLabel>
                         </FormItem>
-                      )
+                      );
                     }}
                   />
                 ))}

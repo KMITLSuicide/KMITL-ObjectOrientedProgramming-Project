@@ -3,7 +3,7 @@ import { type AccountInfo } from "~/src/lib/definitions/account";
 
 export async function getAccountDataFromAPI() {
   try {
-    const response = await api.get<AccountInfo>('/account');
+    const response = await api.get<AccountInfo>("/account");
 
     if (response.status == 200) {
       return response.data;

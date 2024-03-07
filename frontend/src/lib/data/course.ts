@@ -1,9 +1,13 @@
-import { type CourseInfo, type Course, CourseLearn } from "~/src/lib/definitions/course";
+import {
+  type CourseInfo,
+  type Course,
+  CourseLearn,
+} from "~/src/lib/definitions/course";
 import api from "~/src/lib/data/api";
 
 export async function getCourseDataFromAPI() {
   try {
-    const response = await api.get<Course[]>('/course');
+    const response = await api.get<Course[]>("/course");
 
     if (response.status == 200) {
       return response.data;

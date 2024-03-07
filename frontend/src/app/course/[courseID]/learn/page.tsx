@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import { getCourseLearnDataFromAPI } from "~/src/lib/data/course";
@@ -9,13 +9,15 @@ export default function CourseLearn({
 }: {
   params: { courseID: string };
 }) {
-  const [learnData, setLearnData] = useState<CourseLearn | null | undefined>(undefined);
+  const [learnData, setLearnData] = useState<CourseLearn | null | undefined>(
+    undefined,
+  );
   useEffect(() => {
     void getCourseLearnDataFromAPI(params.courseID).then((data) => {
       setLearnData(data);
     });
   }, []);
-  
+
   return (
     <div className="flex flex-col space-y-2">
       <h4 className="text-lg font-light">Learning</h4>

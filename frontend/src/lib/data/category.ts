@@ -1,9 +1,12 @@
 import api from "~/src/lib/data/api";
-import { type CategoryInfo, type CategoryNames } from "~/src/lib/definitions/category";
+import {
+  type CategoryInfo,
+  type CategoryNames,
+} from "~/src/lib/definitions/category";
 
 export async function getCategoryNamesFromAPI() {
   try {
-    const response = await api.get<CategoryNames[]>('/category');
+    const response = await api.get<CategoryNames[]>("/category");
 
     if (response.status == 200) {
       return response.data;

@@ -15,14 +15,13 @@ export interface CourseMaterialImage extends CourseMaterial {
 export interface CourseMaterialQuiz extends CourseMaterial {
   _CourseMaterialQuiz__questions: CourseQuestion[];
 }
-export interface CourseMaterialVideo extends CourseMaterial{
+export interface CourseMaterialVideo extends CourseMaterial {
   _CourseMaterialImage__url: string;
 }
-export interface CourseReview
-{
+export interface CourseReview {
   _CourseReview__reviewer: User;
   _CourseReview__star: number;
-  _CourseReview__comment: string
+  _CourseReview__comment: string;
 }
 export interface Course {
   _Course__id: string;
@@ -31,8 +30,8 @@ export interface Course {
   _Course__price: number;
   _Course__quizes: CourseMaterialQuiz[];
   _Course__images: CourseMaterialImage[];
-  _Course__reviews : CourseReview[];
-  _Course__latest_video : null | CourseMaterialVideo;
+  _Course__reviews: CourseReview[];
+  _Course__latest_video: null | CourseMaterialVideo;
 }
 
 export interface CourseCategory {

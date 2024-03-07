@@ -27,7 +27,7 @@ export default function CourseLearnLayout({
     void getCourseLearnDataFromAPI(params.courseID).then((data) => {
       setLearnData(data);
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function CourseLearnLayout({
         variant: "destructive",
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [learnData]);
 
   const sidebarImagesItems = learnData?.learn_materials_images.map(
@@ -84,15 +84,13 @@ export default function CourseLearnLayout({
   return (
     <div className="flex h-full w-full justify-center">
       <div className="flex w-full max-w-screen-xl space-x-6">
-        <div className="bg-secondary rounded-xl h-full w-4/5">
-          <ScrollArea className="m-8">
-            {children}
-          </ScrollArea>
+        <div className="h-full w-4/5 rounded-xl bg-secondary">
+          <ScrollArea className="m-8">{children}</ScrollArea>
         </div>
         <div className="h-full w-1/5">
           <Button
             asChild
-            className="w-full rounded-lg bg-primary px-4 py-2 text-xl font-bold text-left justify-normal"
+            className="w-full justify-normal rounded-lg bg-primary px-4 py-2 text-left text-xl font-bold"
           >
             <Link href={`/course/${learnData?.id}/learn`}>
               {learnData?.name}

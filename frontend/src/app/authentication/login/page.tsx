@@ -19,7 +19,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LoginSchema, login } from "~/src/lib/data/authentication";
 
-
 const FormSchema = LoginSchema;
 
 export default function LogIn() {
@@ -35,13 +34,13 @@ export default function LogIn() {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const loginStatus = await login(data);
 
-    if(loginStatus) {
+    if (loginStatus) {
       router.push("/account");
     } else {
       toast({
         title: "Login failed",
         description: "Please check your credentials and try again",
-        variant: 'destructive',
+        variant: "destructive",
       });
     }
   }

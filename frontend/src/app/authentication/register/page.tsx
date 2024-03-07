@@ -49,7 +49,7 @@ export default function Register() {
     console.log(data);
     const registerStatus = await register(data);
 
-    if(registerStatus) {
+    if (registerStatus) {
       toast({
         title: "Register success",
         description: "You have successfully registered",
@@ -59,7 +59,7 @@ export default function Register() {
       toast({
         title: "Register failed",
         description: "Please check your account details and try again",
-        variant: 'destructive',
+        variant: "destructive",
       });
     }
   }

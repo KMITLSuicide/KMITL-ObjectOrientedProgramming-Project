@@ -31,9 +31,9 @@ export default function CourseMaterialImage({
         src={thisImage?.url ?? "/notexture.png"}
         width={1024}
         height={1024}
-        className="rounded-xl mb-6"
+        className="mb-6 rounded-xl"
       />
-      <h1 className="text-3xl font-bold my-8">{thisImage?.name}</h1>
+      <h1 className="my-8 text-3xl font-bold">{thisImage?.name}</h1>
       <p>{thisImage?.description}</p>
     </div>
   );
