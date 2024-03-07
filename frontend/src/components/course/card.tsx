@@ -25,7 +25,7 @@ export function CourseCard({ course }: { course: CourseCardData }) {
             <CardDescription>{course.description}</CardDescription>
           </CardContent>
           <CardFooter>
-            <div className="w-fit flex items-center justify-center rounded-md p-2 outline">{course.price.toLocaleString(Config.locale, {
+            <div className="w-fit flex items-center justify-center rounded-md p-2 outline outline-1">{course.price.toLocaleString(Config.locale, {
               style: "currency",
               currency: Config.currency,
               minimumFractionDigits: 0,
