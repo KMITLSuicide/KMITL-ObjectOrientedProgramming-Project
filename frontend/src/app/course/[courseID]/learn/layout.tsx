@@ -27,6 +27,7 @@ export default function CourseLearnLayout({
     void getCourseLearnDataFromAPI(params.courseID).then((data) => {
       setLearnData(data);
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -37,6 +38,7 @@ export default function CourseLearnLayout({
         variant: "destructive",
       });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [learnData]);
 
   const sidebarImagesItems = learnData?.learn_materials_images.map(
