@@ -10,8 +10,7 @@ from backend.definitions.api_data_model import CourseCardData
 
 
 router = APIRouter()
-route_tags: List[str | Enum] = ["category"]
-
+route_tags: List[str | Enum] = ["Category"]
 
 class CategoryNames(BaseModel):
     id: str

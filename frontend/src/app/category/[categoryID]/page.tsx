@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import { getCategoryDataWithIDFromAPI } from "~/src/lib/data/category";
@@ -24,14 +24,12 @@ export default function CategoryIDPage({
   }, []);
 
   return (
-    <div className="flex justify-center w-full">
+    <div className="flex w-full justify-center">
       <div className="w-full max-w-screen-lg space-y-4">
-        <h1 className="font-bold text-3xl">{categoryIDData?.name}</h1>
+        <h1 className="text-3xl font-bold">{categoryIDData?.name}</h1>
         <div className="grid grid-cols-4 gap-4">
           {categoryIDData?.courses?.map((course) => {
-            return (
-              <CourseCard key={course.id} course={course} />
-            );
+            return <CourseCard key={course.id} course={course} />;
           })}
         </div>
       </div>

@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
-import {
-  getCategoryNamesFromAPI,
-} from "~/src/lib/data/category";
+import { getCategoryNamesFromAPI } from "~/src/lib/data/category";
 import { cn } from "~/src/lib/utils";
 import { Button } from "~/src/components/ui/button";
 import {
@@ -26,7 +24,7 @@ import { type CategoryNames } from "~/src/lib/definitions/category";
 
 export default function CategoryChoosePage() {
   const [categoryData, setCategoryData] = useState<
-  CategoryNames[] | null | undefined
+    CategoryNames[] | null | undefined
   >(undefined);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
@@ -43,8 +41,8 @@ export default function CategoryChoosePage() {
 
   return (
     <div className="flex h-full flex-col items-center justify-center">
-      <div className="flex space-y-4 flex-col items-center justify-center bg-secondary p-8 rounded-lg">
-        <h1 className="text-2xl font-bold text-center">Select a category</h1>
+      <div className="flex flex-col items-center justify-center space-y-4 rounded-lg bg-secondary p-8">
+        <h1 className="text-center text-2xl font-bold">Select a category</h1>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -54,7 +52,9 @@ export default function CategoryChoosePage() {
               className="w-[200px] justify-between hover:bg-background"
             >
               {value
-                ? categoryData?.find((category) => category.name.toLowerCase() === value)?.name
+                ? categoryData?.find(
+                    (category) => category.name.toLowerCase() === value,
+                  )?.name
                 : "Select category..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>

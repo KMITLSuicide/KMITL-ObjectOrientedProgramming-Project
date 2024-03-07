@@ -18,7 +18,9 @@ export async function searchCourse(query: string) {
 
 export async function searchCategory(query: string) {
   try {
-    const response = await api.get<SearchResults[]>(`/search/category/${query}`);
+    const response = await api.get<SearchResults[]>(
+      `/search/category/${query}`,
+    );
 
     if (response.status == 200) {
       return response.data;

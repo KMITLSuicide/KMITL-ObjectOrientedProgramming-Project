@@ -6,7 +6,6 @@ import { z } from "zod";
 
 import { Input } from "~/src/components/ui/input";
 import { toast } from "~/src/components/ui/use-toast";
-import { Toaster } from "~/src/components/ui/toaster";
 import { Button } from "~/src/components/ui/button";
 import {
   Form,
@@ -19,7 +18,6 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LoginSchema, login } from "~/src/lib/data/authentication";
-
 
 const FormSchema = LoginSchema;
 
@@ -36,13 +34,13 @@ export default function LogIn() {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const loginStatus = await login(data);
 
-    if(loginStatus) {
+    if (loginStatus) {
       router.push("/account");
     } else {
       toast({
         title: "Login failed",
         description: "Please check your credentials and try again",
-        variant: 'destructive',
+        variant: "destructive",
       });
     }
   }
@@ -90,7 +88,6 @@ export default function LogIn() {
           </form>
         </Form>
       </div>
-      <Toaster />
     </div>
   );
 }

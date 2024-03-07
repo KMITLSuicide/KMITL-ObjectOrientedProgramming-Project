@@ -10,6 +10,7 @@ from pydantic import UUID4
 
 class QuizQuestion:
     def __init__(self, question: str, correct: bool) -> None:
+        self.__id = uuid.uuid4()
         self.__question = question
         self.__correct = correct
 
@@ -24,6 +25,9 @@ class QuizQuestion:
             self.__correct = correct
             return True
         return False
+
+    def get_id(self):
+        return self.__id
 
     def get_question(self):
         return self.__question
@@ -75,17 +79,8 @@ class CourseMaterialImage(CourseMaterial):  # Question: Is CourseMaterialImage  
             return True
         return False
 
-    def set_description(self, description: str):
-        if isinstance(description, str):
-            self.__description = description
-            return True
-        return False
-
     def get_url(self):
         return self.__url
-
-    def get_description(self):
-        return self.__description
 
 
 class CourseMaterialQuiz(CourseMaterial):
@@ -101,7 +96,6 @@ class CourseMaterialQuiz(CourseMaterial):
 
     def get_questions(self):
         return self.__questions
-
 
 class CourseReview:
     def __init__(

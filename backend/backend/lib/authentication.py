@@ -14,6 +14,8 @@ from joserfc.errors import BadSignatureError
 from backend.config import JWT_ENCRYPTION_ALGORITHM
 from backend.secrets.key import get_key
 from backend.controller_instance import controller
+from backend.definitions.user import User
+from backend.definitions.course import Course
 
 SECRET_KEY: Final[OKPKey] = get_key()
 JWT_HEADER: Final[Dict] = {"alg": JWT_ENCRYPTION_ALGORITHM}
