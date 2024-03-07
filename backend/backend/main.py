@@ -15,6 +15,7 @@ from backend.routers import (
     search,
     list_course_on_home_page,
     user,
+    teacher,
 )
 
 app = FastAPI()
@@ -29,6 +30,7 @@ app.include_router(course.router)
 app.include_router(category.router)
 app.include_router(user.router)
 app.include_router(buy_course.router)
+app.include_router(teacher.router)
 
 origins = ["http://localhost:3000", "https://localhost:3000", "*"]
 

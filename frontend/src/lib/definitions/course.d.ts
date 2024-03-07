@@ -49,6 +49,12 @@ export interface CourseCardData {
   banner_image: string;
 }
 
+export interface CourseCardDataWithLabel {
+  id: string;
+  label: string;
+  cards: CourseCardData[];
+}
+
 export interface CourseInfo {
   id: string;
   name: string;
