@@ -19,7 +19,6 @@ from backend.routers import (
     add_course_to_cart,
     list_course_on_home_page,
     list_everything,
-    user_post
 )
 
 app = FastAPI()
@@ -38,7 +37,6 @@ app.include_router(course.router)
 app.include_router(category.router)
 app.include_router(user.router)
 app.include_router(buy_course.router)
-app.include_router(user_post.router)
 
 origins = ["http://localhost:3000", "https://localhost:3000", "*"]
 

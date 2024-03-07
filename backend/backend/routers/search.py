@@ -4,7 +4,8 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 
 from backend.controller_instance import controller
-
+from backend.definitions.api_data_model import CourseCardData
+from backend.definitions.course import Course
 
 router = APIRouter()
 route_tags: List[str | Enum] = ["search"]
@@ -20,10 +21,20 @@ def hello():
 
 @router.get("/search/course/{course_name}", tags=route_tags)
 def get_search_course(course_name: str):
-    search_results: List[SearchResults] = []
+    search_results: List[CourseCardData] = []
     courses = controller.search_course_by_name(course_name)
     for course in courses:
-        search_results.append(SearchResults(name=course.get_name(), id=str(course.get_id())))
+        search_results.append(            
+            CourseCardData(
+                id=str(course.get_id()),
+                name=course.get_name(),
+                description=course.get_description(),
+                price=course.get_price(),
+                rating=0,
+                banner_image=course.get_banner_image_url(),
+            )
+        )
+
     return search_results
 
 

@@ -5,7 +5,7 @@ from pydantic import EmailStr
 
 from backend.definitions.course import Course
 from backend.definitions.progress import Progress
-
+from backend.definitions.order import Payment
 
 class User:
     # Constants
@@ -19,9 +19,12 @@ class User:
         self.__my_progresses: List[Progress] = []
         self.__cart: Cart = Cart()
         self.__latest_progress: Union[Progress, None] = None
-        self.__address = None
-        self.__payment_method = None
+        self.__address = "thailand"#default is null
+        self.__payment_method = Payment("credit cart")
         self.__orders: List[Order] = []
+
+    def get_my_progresses(self):
+        return self.__my_progresses
 
     def get_id(self):
         return self.__id
@@ -38,11 +41,14 @@ class User:
     def get_cart(self):
         return self.__cart
 
-    def get_latest_video_from_user(self):
+    def get_latest_video(self):
         if self.__latest_progress is None:
             return None
         latest_progress_video = self.__latest_progress.get_latest_video()
         return latest_progress_video
+
+    def get_latest_progress(self):
+        return self.__latest_progress
 
     def search_progress_by_name(self, name: str):
         for progress in self.__my_progresses:
