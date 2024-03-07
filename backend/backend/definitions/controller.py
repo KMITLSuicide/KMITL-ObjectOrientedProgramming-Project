@@ -3,9 +3,8 @@ from typing import List
 from uuid import UUID
 
 from backend.definitions.course import Course, CourseCategory
-from backend.definitions.user import Teacher  # Question:why don't just collect user
-from backend.definitions.user import User
-from backend.definitions.order import Coupon, CouponCourse, CouponTeacher, Order, Payment
+from backend.definitions.user import User, Teacher
+from backend.definitions.order import Coupon, CouponCourse, CouponTeacher, Order
 from backend.definitions.progress import Progress
 
 
@@ -95,11 +94,16 @@ class Controller:
                 all_teacher.append(user)
         return all_teacher
 
+    def search_user_by_name(self, name: str):
+        matched_users: List[User] = []
+        for user in self.__users:
+            if name in user.get_name():
+                matched_users.append(user)
+        return matched_users
+
     def search_teacher_by_name(self, name: str):
         matched_teachers: List[Teacher] = []
         for teacher in self.get_all_teacher():
-            if not isinstance(teacher, Teacher):
-                return "Error, get_all_teacher func doesnt work"
             if name in teacher.get_name():
                 matched_teachers.append(teacher)
         return matched_teachers
@@ -135,6 +139,73 @@ class Controller:
                 return teacher
         return "Error: Teacher not found"
 
+    def buy_course(self, user_name, status:bool, course_id, coupon_id):
+        if user_name == None:
+            return "Error: Enter your username"
+        if status != True:
+            return "Error: You haven't paid for course yet"
+        if course_id == None:
+            return "Error Enter course id"
+        user = self.get_users_by_name(user_name)
+        if user == None or not isinstance(user, User):
+            return "Error: User not found"
+        course = self.search_course_by_id(course_id)
+        if course == None or not isinstance(course, Course):
+            return "Error: Course not found"
+        teacher = self.search_teacher_by_course(course)
+        if teacher == None or not isinstance(teacher, Teacher):
+            return "Error: Teacher not found"
+        if coupon_id != None:
+            coupon = self.search_coupon_by_id(coupon_id)
+            if coupon == None or not isinstance(coupon, Coupon):
+                return "Error: Coupon not found"
+            if not self.validate_coupon(coupon, course, teacher):
+                return "Erorr: Coupon is invalid"
+            discount = coupon.get_discount()
+        if coupon_id == None:
+            discount = 0
+        self.create_order(user, course, discount, status)
+        progress = Progress(course)
+        if progress in user.__my_progresses:
+            return "Error: You already have this course"
+        user.add_progress(progress)
+        return "Success"
+
+    def search_coupon_by_id(self, coupon_id):
+        for coupon in self.__coupons:
+            if coupon.get_id() == coupon_id:
+                return coupon
+        return None
+
+    def validate_coupon(self, coupon:Coupon, course:Course, teacher:Teacher):
+        if coupon != None:
+            if isinstance(coupon, CouponCourse):
+                if coupon.get_course() == course:
+                    return True
+            if isinstance(coupon, CouponTeacher):
+                if coupon.get_teacher() == teacher:
+                    return True
+            return False
+        return False
+
+    def search_teacher_by_course(self, course:Course):
+        for teacher in self.__teachers:
+            if course in teacher.get_my_teachings():
+                return teacher
+        return None
+
+    def create_order(self, user:User, course, discount, status):
+        address = user.get_address()
+        payment = user.get_payment_method()
+        if payment != None:
+            order = Order(address, payment, course, discount, status)
+            user.get_orders().append(order)
+
+    def search_user_by_id(self, user_id):
+        for user in self.__users:
+            if user.get_id() == user_id:
+                return user
+        return None
 
     def search_user_by_email(self, email: str):
         for user in self.__users:

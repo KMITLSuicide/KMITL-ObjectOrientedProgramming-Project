@@ -51,10 +51,10 @@ app.add_middleware(
 )
 
 if __name__ == "__main__":
-    print(APP_NAME)
-    print(LOG_LEVEL)
-    print(API_HOST)
-    print(API_PORT)
+    # print(APP_NAME)
+    # print(LOG_LEVEL)
+    # print(API_HOST)
+    # print(API_PORT)
 
     uvicorn.run(
         "main:app", host=API_HOST, port=API_PORT, log_level=LOG_LEVEL, reload=True
