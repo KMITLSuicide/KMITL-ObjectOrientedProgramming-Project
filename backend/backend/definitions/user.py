@@ -43,6 +43,12 @@ class User:
                 return progress
         return None
 
+    def search_course_by_id(self, course_id: uuid.UUID):
+        for progress in self.__my_progresses:
+            course = progress.get_course() 
+            if course.get_id() == course_id:
+                return course
+
     def set_latest_progress(self, progress: Progress):
         self.__latest_progress = progress
 
