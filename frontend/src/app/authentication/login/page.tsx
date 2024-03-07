@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { type z } from "zod";
 
 import { Input } from "~/src/components/ui/input";
 import { toast } from "~/src/components/ui/use-toast";
@@ -23,6 +23,7 @@ const FormSchema = LoginSchema;
 
 export default function LogIn() {
   const router = useRouter();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -35,6 +36,7 @@ export default function LogIn() {
     const loginStatus = await login(data);
 
     if (loginStatus) {
+      router.refresh();
       router.push("/account");
     } else {
       toast({
