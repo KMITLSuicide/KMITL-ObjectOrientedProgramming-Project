@@ -38,7 +38,7 @@ def get_course_by_id(current_user: Annotated[User, Depends(get_current_user)], c
 def get_my_teaching(current_user: Annotated[User, Depends(get_current_user)]):
     if not isinstance(current_user, Teacher):
         return "Error, You r not teacher"
-    current_user.get_my_teachings()
+    return current_user.get_my_teachings()
 
 
 class AccountInfo(BaseException):
