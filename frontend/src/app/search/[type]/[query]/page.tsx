@@ -1,6 +1,5 @@
 'use client';
 
-import { type AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -11,7 +10,7 @@ import { searchCategory, searchCourse, searchTeacher } from "~/src/lib/data/sear
 import { type CourseCardData } from "~/src/lib/definitions/course";
 import { type SearchResults } from "~/src/lib/definitions/search";
 
-function createGenericCards(searchResults: SearchResults[] | null | undefined, urlPrefix: string | undefined, router: AppRouterInstance) {
+function createGenericCards(searchResults: SearchResults[] | null | undefined, urlPrefix: string | undefined) {
   return searchResults?.map((result) => {
     return (
       <Card
@@ -29,7 +28,6 @@ function createGenericCards(searchResults: SearchResults[] | null | undefined, u
 }
 
 export default function SearchResults({ params }: { params: { type: string, query: string }}) {
-  const router = useRouter();
   const [searchResults, setSearchResults] = useState<SearchResults[] | CourseCardData[] | null | undefined>(undefined);
   const [urlPrefix, setUrlPrefix] = useState<string | undefined>(undefined);
   const [cards, setCards] = useState<JSX.Element[] | undefined>(undefined);
@@ -57,7 +55,7 @@ export default function SearchResults({ params }: { params: { type: string, quer
       if (params.type === "course") {
         setCards((searchResults as CourseCardData[]).map((course) => <CourseCard course={course} key={course.id} />) ?? []);
       } else {
-        setCards(createGenericCards(searchResults, urlPrefix, router) ?? []);
+        setCards(createGenericCards(searchResults, urlPrefix) ?? []);
       }
     } else {
       setCards(undefined);
@@ -77,8 +75,5 @@ export default function SearchResults({ params }: { params: { type: string, quer
         </div>
       </div>
     </div>
-    // <code>
-    //   {JSON.stringify(searchResults, null, 2)}
-    // </code>
   );
 }
