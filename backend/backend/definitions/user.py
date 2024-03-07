@@ -113,19 +113,9 @@ class Cart:
         return self.__courses
 
     def add_course(self, course):
-        self.__courses.append(course)
+        if isinstance(course, Course):
+            self.__courses.append(course)
 
     def remove_course(self, course):
         self.__courses.remove(course)
 
-# @router.get("/course", tags=route_tags)
-# def get_all_course():
-#     return_data: List[GetAllCourse] = []
-#     all_course = controller.get_all_courses()
-#     for course in all_course:
-#         return_data.append(
-#             GetAllCourse(
-#                 id=str(course.get_id()),
-#                 name=course.get_name()
-#             ))
-#     return return_data
