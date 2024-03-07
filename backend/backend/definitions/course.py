@@ -5,10 +5,12 @@ from pydantic import UUID4
 
 # from backend.definitions.controller import Controller
 # from backend.controller_instance import controller
+# from backend.definitions.user import User, Teacher
 
 
 class QuizQuestion:
     def __init__(self, question: str, correct: bool) -> None:
+        self.__id = uuid.uuid4()
         self.__question = question
         self.__correct = correct
 
@@ -23,6 +25,9 @@ class QuizQuestion:
             self.__correct = correct
             return True
         return False
+
+    def get_id(self):
+        return self.__id
 
     def get_question(self):
         return self.__question
@@ -45,6 +50,7 @@ class CourseMaterial:
 
     def get_description(self):
         return self.__description
+
 
 
 class CourseMaterialVideo(CourseMaterial):
@@ -73,17 +79,8 @@ class CourseMaterialImage(CourseMaterial):  # Question: Is CourseMaterialImage  
             return True
         return False
 
-    def set_description(self, description: str):
-        if isinstance(description, str):
-            self.__description = description
-            return True
-        return False
-
     def get_url(self):
         return self.__url
-
-    def get_description(self):
-        return self.__description
 
 
 class CourseMaterialQuiz(CourseMaterial):
@@ -100,40 +97,42 @@ class CourseMaterialQuiz(CourseMaterial):
     def get_questions(self):
         return self.__questions
 
-
 class CourseReview:
     def __init__(
         self, reviewer: User, star: Literal[1, 2, 3, 4, 5], comment: str
     ) -> None:
         self.__reviewer = reviewer
-        self.__star = star
+        self.__star: Literal[1, 2, 3, 4, 5] = star
         self.__comment = comment
 
     def get_reviewer(self):
         return self.__reviewer
 
-    def get_star(self):
+    def get_star(self) -> Literal[1, 2, 3, 4, 5]:
         return self.__star
+    
+    def cal_average_star(self, star):
+        pass
 
     def get_comment(self):
         return self.__comment
 
-
 class Course:
     def __init__(
-        self, name: str, description: str, price: int, teacher: "Teacher"
+        self, name: str, description: str, price: int, teacher
     ) -> None:
         self.__id: UUID4 = uuid.uuid4()
         self.__name: str = name
         self.__description: str = description
         self.__price: int = price
-        self.__teacher: teacher
+        self.__teacher =  teacher
         self.__images: List[CourseMaterialImage] = []
         self.__quizes: List[CourseMaterialQuiz] = []
         self.__videos: List[CourseMaterialVideo] = []
         self.__reviews: List[CourseReview] = []
         # Question from Taj to phak: Should I collect latest video to course?
         self.__latest_video = None
+        self.__banner_image_url: str = "/course/default-image.jpg"
 
     def set_name(self, name: str):
         if isinstance(name, str):
@@ -217,6 +216,9 @@ class Course:
 
     def get_reviews(self):
         return self.__reviews
+
+    def get_banner_image_url(self):
+        return self.__banner_image_url
 
     def search_review_by_user(self, user: User):
         for review in self.__reviews:

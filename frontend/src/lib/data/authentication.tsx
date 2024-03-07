@@ -1,10 +1,13 @@
-import axios from 'axios';
-import { z } from 'zod';
-import { env } from '~/src/env';
+import Cookies from 'js-cookie';
+import axios from "axios";
+import { z } from "zod";
+
+import { env } from "~/src/env";
+import { TOKEN_VALIDITY } from '~/src/config';
 
 interface TokenResponse {
-  access_token: string,
-  token_type: string,
+  access_token: string;
+  token_type: string;
 }
 
 export const LoginSchema = z.object({
@@ -30,19 +33,21 @@ export const RegisterSchema = z.object({
 });
 
 const api = axios.create({
-  baseURL: env.NEXT_PUBLIC_BACKEND_URL
+  baseURL: env.NEXT_PUBLIC_BACKEND_URL,
 });
 
-export async function login(data: z.infer<typeof LoginSchema>): Promise<boolean> {
+export async function login(
+  data: z.infer<typeof LoginSchema>,
+): Promise<boolean> {
   try {
     const formData = new FormData();
-    formData.append('username', data.username)
-    formData.append('password', data.password)
-  
-    const response = await api.post<TokenResponse>('/login', formData);
-  
+    formData.append("username", data.username);
+    formData.append("password", data.password);
+
+    const response = await api.post<TokenResponse>("/login", formData);
+
     if (response.status == 200) {
-      localStorage.setItem('token', response.data.access_token);
+      Cookies.set('token', response.data.access_token, { expires: TOKEN_VALIDITY });
       return true;
     } else {
       return false;
@@ -53,12 +58,14 @@ export async function login(data: z.infer<typeof LoginSchema>): Promise<boolean>
   }
 }
 
-export async function register(data: z.infer<typeof RegisterSchema>): Promise<boolean> {
+export async function register(
+  data: z.infer<typeof RegisterSchema>,
+): Promise<boolean> {
   try {
-    const response = await api.post<TokenResponse>('/register', data);
-    
+    const response = await api.post<TokenResponse>("/register", data);
+
     if (response.status == 200) {
-      localStorage.setItem('token', response.data.access_token);
+      Cookies.set('token', response.data.access_token, { expires: TOKEN_VALIDITY });
       return true;
     } else {
       return false;
@@ -67,4 +74,8 @@ export async function register(data: z.infer<typeof RegisterSchema>): Promise<bo
     console.error(error);
     return false;
   }
+}
+
+export function logout() {
+  Cookies.remove('token')
 }

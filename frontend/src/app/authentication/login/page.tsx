@@ -2,11 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { type z } from "zod";
 
 import { Input } from "~/src/components/ui/input";
 import { toast } from "~/src/components/ui/use-toast";
-import { Toaster } from "~/src/components/ui/toaster";
 import { Button } from "~/src/components/ui/button";
 import {
   Form,
@@ -20,11 +19,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LoginSchema, login } from "~/src/lib/data/authentication";
 
-
 const FormSchema = LoginSchema;
 
 export default function LogIn() {
   const router = useRouter();
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -36,13 +35,14 @@ export default function LogIn() {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     const loginStatus = await login(data);
 
-    if(loginStatus) {
+    if (loginStatus) {
+      router.refresh();
       router.push("/account");
     } else {
       toast({
         title: "Login failed",
         description: "Please check your credentials and try again",
-        variant: 'destructive',
+        variant: "destructive",
       });
     }
   }
@@ -90,7 +90,6 @@ export default function LogIn() {
           </form>
         </Form>
       </div>
-      <Toaster />
     </div>
   );
 }

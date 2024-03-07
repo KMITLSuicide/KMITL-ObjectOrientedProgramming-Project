@@ -13,14 +13,13 @@ from backend.lib.authentication import (
     Token,
     authenticate_user,
     create_access_token,
-    get_current_user,
     get_password_hash,
 )
 from backend.controller_instance import controller
 
 
 router = APIRouter()
-route_tags: List[str | Enum] = ["authentication"]
+route_tags: List[str | Enum] = ["Authentication"]
 
 
 @router.post("/" + TOKEN_URL, tags=route_tags)
@@ -83,8 +82,3 @@ async def register(
         data=encode_data, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
-
-
-@router.get("/account", tags=route_tags)
-async def get_my_account_info(current_user: Annotated[User, Depends(get_current_user)]):
-    return current_user

@@ -9,5 +9,5 @@ export interface User {
   _User__latest_progress: null | Progress;
 }
 interface Teacher extends User {
-  _Teacher__my_teachings: Course[]
+  _Teacher__my_teachings: Course[];
 }

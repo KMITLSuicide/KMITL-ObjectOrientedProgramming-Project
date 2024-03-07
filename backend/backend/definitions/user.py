@@ -5,8 +5,7 @@ from pydantic import EmailStr
 
 from backend.definitions.course import Course
 from backend.definitions.progress import Progress
-from backend.definitions.order import Order
-
+from backend.definitions.order import Payment,Order,Coupon
 
 class User:
     # Constants
@@ -20,9 +19,12 @@ class User:
         self.__my_progresses: List[Progress] = []
         self.__cart: Cart = Cart()
         self.__latest_progress: Union[Progress, None] = None
-        self.__address = None
-        self.__payment_method = None
+        self.__address = "thailand"#default is null
+        self.__payment_method = Payment("credit cart")
         self.__orders: List[Order] = []
+
+    def get_my_progresses(self):
+        return self.__my_progresses
 
     def get_id(self):
         return self.__id
@@ -39,17 +41,26 @@ class User:
     def get_cart(self):
         return self.__cart
 
-    def get_latest_video_from_user(self):
+    def get_latest_video(self):
         if self.__latest_progress is None:
             return None
         latest_progress_video = self.__latest_progress.get_latest_video()
         return latest_progress_video
+
+    def get_latest_progress(self):
+        return self.__latest_progress
 
     def search_progress_by_name(self, name: str):
         for progress in self.__my_progresses:
             if progress.get_name() == name:
                 return progress
         return None
+
+    def search_course_by_id(self, course_id: uuid.UUID):
+        for progress in self.__my_progresses:
+            course = progress.get_course() 
+            if course.get_id() == course_id:
+                return course
 
     def set_latest_progress(self, progress: Progress):
         self.__latest_progress = progress
@@ -89,6 +100,12 @@ class User:
     def get_orders(self):
         return self.__orders
 
+    def have_access_to_course(self, course: Course):
+        for progress in self.__my_progresses:
+            if progress.get_course() == course:
+                return True
+        return False
+
 
 class Teacher(User):
     def __init__(
@@ -96,6 +113,7 @@ class Teacher(User):
     ) -> None:
         super().__init__(name, email, hashed_password)
         self.__my_teachings: List[Course] = []
+        self.__my_created_coupons: List[Coupon] = []
 
     def get_my_teachings(self):
         return self.__my_teachings
@@ -104,17 +122,22 @@ class Teacher(User):
         if isinstance(course, Course):
             self.__my_teachings.append(course)
             return True
+        
+    def get_my_coupons(self):
+        return self.__my_created_coupons
 
 
 class Cart:
     def __init__(self):
-        self.__courses = []
+        self.__courses: list[Course] = []
 
     def get_courses(self):
         return self.__courses
 
     def add_course(self, course):
-        self.__courses.append(course)
+        if isinstance(course, Course):
+            self.__courses.append(course)
 
     def remove_course(self, course):
         self.__courses.remove(course)
+
