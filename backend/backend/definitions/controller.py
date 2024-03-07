@@ -210,3 +210,14 @@ class Controller:
         for user in self.__users:
             if email == user.get_email():
                 return user
+
+    def add_coupon_course(self, coupon_id, discount, course:Course):
+        self.__coupons.append(CouponCourse(coupon_id, discount, course))
+        return None
+        
+    def add_coupon_teacher(self, coupon_id, discount, teacher:Teacher):
+        self.__coupons.append(CouponTeacher(coupon_id, discount, teacher))
+        return None
+    
+    def get_all_coupons(self):
+        return self.__coupons

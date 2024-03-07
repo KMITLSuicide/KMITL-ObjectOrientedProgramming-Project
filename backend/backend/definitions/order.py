@@ -41,15 +41,16 @@ class Coupon:
 
 
 class CouponCourse(Coupon):
-    def __init__(self, course) -> None:
+    def __init__(self, coupon_id, discount, course) -> None:
+        super().__init__(coupon_id, discount)
         self.__course = course
         
     def get_course(self):
         return self.__course
 
-
 class CouponTeacher(Coupon):
-    def __init__(self, teacher) -> None:
+    def __init__(self, coupon_id, discount, teacher) -> None:
+        super().__init__(coupon_id, discount)
         self.__teacher = teacher
         
     def get_teacher(self):
