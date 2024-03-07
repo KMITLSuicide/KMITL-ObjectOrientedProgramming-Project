@@ -11,9 +11,6 @@ from backend.routers import (
     info,
     authentication,
     review,
-    view_my_learning,
-    view_video,
-    study_latest_video,
     buy_course,
     course,
     category,
@@ -22,6 +19,7 @@ from backend.routers import (
     add_course_to_cart,
     list_course_on_home_page,
     list_everything,
+    user_post
 )
 
 app = FastAPI()
@@ -34,14 +32,13 @@ app.include_router(add_course_to_cart.router)
 app.include_router(list_course_on_home_page.router)
 app.include_router(list_everything.router)
 app.include_router(course_create.router)
-app.include_router(view_my_learning.router)
-app.include_router(view_video.router)
-app.include_router(study_latest_video.router)
+# app.include_router(view_my_learning.router)
 app.include_router(review.router)
 app.include_router(course.router)
 app.include_router(category.router)
 app.include_router(user.router)
 app.include_router(buy_course.router)
+app.include_router(user_post.router)
 
 origins = ["http://localhost:3000", "https://localhost:3000", "*"]
 

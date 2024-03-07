@@ -77,6 +77,7 @@ class AddImageToCoursePostData(CourseMaterialPostData):
     url: str
 
 
+
 @router.post("/course/{course_id}/image", tags=route_tags)
 def add_image_to_course(
     course_id: str,
