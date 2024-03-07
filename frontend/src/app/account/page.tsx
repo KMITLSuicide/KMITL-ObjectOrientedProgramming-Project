@@ -3,7 +3,6 @@
 import { toast } from "~/src/components/ui/use-toast";
 import { Suspense, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { Toaster } from "~/src/components/ui/toaster";
 import { ToastAction } from "~/src/components/ui/toast";
 import Link from "next/link";
 import { getAccountDataFromAPI } from "~/src/lib/data/account";
@@ -72,8 +71,6 @@ export default function AccountPage() {
           </tbody>
         </table>
       </Suspense>
-
-      <Toaster />
     </div>
   </div>);
 }

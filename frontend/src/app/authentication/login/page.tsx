@@ -6,7 +6,6 @@ import { z } from "zod";
 
 import { Input } from "~/src/components/ui/input";
 import { toast } from "~/src/components/ui/use-toast";
-import { Toaster } from "~/src/components/ui/toaster";
 import { Button } from "~/src/components/ui/button";
 import {
   Form,
@@ -90,7 +89,6 @@ export default function LogIn() {
           </form>
         </Form>
       </div>
-      <Toaster />
     </div>
   );
 }

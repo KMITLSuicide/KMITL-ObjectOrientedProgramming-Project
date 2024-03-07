@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+
 
 class CourseCardData(BaseModel):
     id: str
@@ -8,11 +8,7 @@ class CourseCardData(BaseModel):
     price: float
     rating: float
     banner_image: str
-class CategoryInfo(BaseModel):
-    id: str
-    name: str
-    courses: List[CourseCardData]
-    
+
 class CourseInfo(BaseModel):
     id: str
     name: str

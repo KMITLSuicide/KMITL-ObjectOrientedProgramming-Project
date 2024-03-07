@@ -41,7 +41,7 @@ export interface CourseCategory {
   _CourseCategory__courses: Course[];
 }
 
-interface CourseCardData {
+export interface CourseCardData {
   id: string;
   name: string;
   description: string;
@@ -50,7 +50,7 @@ interface CourseCardData {
   banner_image: string;
 }
 
-interface CourseInfo {
+export interface CourseInfo {
   id: string;
   name: string;
   description: string;
@@ -62,4 +62,33 @@ interface CourseInfo {
   materials_images: string[];
   materials_quizes: string[];
   materials_videos: string[];
+}
+
+export interface CourseLearnMaterial {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface CourseLearnMaterialQuizQuestions {
+  id: string;
+  question: string;
+}
+
+export interface CourseLearnMaterialQuiz extends CourseLearnMaterial {
+  questions: CourseLearnMaterialQuizQuestions[];
+}
+
+export interface CourseLearnMaterialImage extends CourseLearnMaterial {
+  url: string;
+}
+
+export interface CourseLearnMaterialVideo extends CourseLearnMaterial {
+  url: string;
+}
+
+export interface CourseLearn extends CourseInfo {
+  learn_materials_quizes: CourseLearnMaterialQuiz[];
+  learn_materials_images: CourseLearnMaterialImage[];
+  learn_materials_videos: CourseLearnMaterialVideo[];
 }
