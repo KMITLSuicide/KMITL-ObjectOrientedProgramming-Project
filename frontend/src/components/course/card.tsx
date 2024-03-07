@@ -9,12 +9,9 @@ import {
 } from "~/src/components/ui/card";
 import Image from "next/image";
 import { Config } from "~/src/config";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export function CourseCard({ course, className }: { course: CourseCardData, className?: string }) {
-  const router = useRouter();
-
   return (
     <Card key={course.id} className={`w-full cursor-pointer hover:bg-secondary ${className}`}>
       <Link
@@ -23,7 +20,7 @@ export function CourseCard({ course, className }: { course: CourseCardData, clas
       >
         <CardHeader>
           <Image
-            className="mx-auto w-48"
+            className="mx-auto w-48 rounded-md"
             alt={`image of course ${course.name}`}
             src={course.banner_image}
             width={192}

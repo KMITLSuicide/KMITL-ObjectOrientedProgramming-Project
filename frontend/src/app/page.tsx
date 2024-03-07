@@ -25,7 +25,7 @@ export default function Index() {
 
         <div className="w-full flex h-1/5 bg-primary rounded-xl p-8">
           <div className="w-2/5 inline-block">
-            <Image className="absolute mt-[-390px] ml-[-40px]" src="/pointy-guy.png" alt="pointy guy" width={360} height={544} />
+            <Image className="absolute left-[23vw] top-[8vh] " src="/pointy-guy.png" alt="pointy guy" width={360} height={544} />
           </div>
           <div className="w-3/5 space-y-2">
             <h1 className="text-4xl font-bold fle">Welcome to &quot;Udemy&quot;</h1>
@@ -36,7 +36,7 @@ export default function Index() {
         </div>
 
         <div className="w-3/4 space-y-2">
-          <h4 className="text-center font-semibold text-2xl">Reccommended courses</h4>
+          <h2 className="text-center font-semibold text-3xl">Reccommended courses</h2>
           <div className="grid grid-cols-3 gap-4">
             {cardsData?.map((course) => {
               return <CourseCard key={course.id} course={course} />;
