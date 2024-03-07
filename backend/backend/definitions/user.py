@@ -125,7 +125,7 @@ class Teacher(User):
 
 class Cart:
     def __init__(self):
-        self.__courses = []
+        self.__courses: list[Course] = []
 
     def get_courses(self):
         return self.__courses

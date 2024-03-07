@@ -2,7 +2,7 @@ from enum import Enum
 from uuid import UUID
 from typing import List, Annotated, Literal, Annotated
 from fastapi import APIRouter, Depends, Response, status, Body
-from pydantic import BaseModelfrom pydantic import BaseModel
+from pydantic import BaseModel
 
 from backend.controller_instance import controller
 from backend.definitions.progress import Progress
