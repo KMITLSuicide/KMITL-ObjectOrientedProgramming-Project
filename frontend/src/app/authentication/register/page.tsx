@@ -17,7 +17,6 @@ import {
 } from "~/src/components/ui/form";
 import Link from "next/link";
 import { RadioGroup, RadioGroupItem } from "~/src/components/ui/radio-group";
-import { Toaster } from "~/src/components/ui/toaster";
 import { register } from "~/src/lib/data/authentication";
 import { useRouter } from "next/navigation";
 
@@ -154,8 +153,6 @@ export default function Register() {
           </form>
         </Form>
       </div>
-
-      <Toaster />
     </div>
   );
 }
