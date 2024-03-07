@@ -30,16 +30,18 @@ async def study_latest_course(current_user: Annotated[User, Depends(get_current_
     latest_video = current_user.get_latest_video()
     return latest_video
 
-@router.get("/user/search_course_by_id/{course_id}", tags=["Course"])
-def get_course_by_id(current_user: Annotated[User, Depends(get_current_user)], course_id: UUID):
+@router.get("/user/search_course_by_id_from_progression/{course_id}", tags=["Course"])
+def search_course_by_id_from_progression(current_user: Annotated[User, Depends(get_current_user)], course_id: UUID):
     course = current_user.search_course_by_id(course_id)
     return course
 
 @router.get("/user/get_my_teaching", tags=["My Teaching"])
 def get_my_teaching(current_user: Annotated[User, Depends(get_current_user)]):
     search_results: List[CourseCardData] = []
+
     if not isinstance(current_user, Teacher):
         return "Error, You r not teacher"
+    
     for course in current_user.get_my_teachings():
         search_results.append(            
             CourseCardData(

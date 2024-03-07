@@ -119,13 +119,12 @@ class CourseReview:
 
 class Course:
     def __init__(
-        self, name: str, description: str, price: int, teacher
+        self, name: str, description: str, price: int
     ) -> None:
         self.__id: UUID4 = uuid.uuid4()
         self.__name: str = name
         self.__description: str = description
         self.__price: int = price
-        self.__teacher =  teacher
         self.__images: List[CourseMaterialImage] = []
         self.__quizes: List[CourseMaterialQuiz] = []
         self.__videos: List[CourseMaterialVideo] = []
@@ -198,8 +197,7 @@ class Course:
     def get_price(self):
         return self.__price
 
-    def get_teacher(self):
-        return self.__teacher
+
 
     def get_images(self):
         return self.__images
@@ -219,6 +217,14 @@ class Course:
 
     def get_banner_image_url(self):
         return self.__banner_image_url
+    
+    def get_average_rating(self):
+        reviews = self.get_reviews()
+        
+        if not reviews:
+            return 0  # or any other default value you prefer
+        
+        return sum(review.get_star() for review in reviews) / len(reviews)
 
     def search_review_by_user(self, user: User):
         for review in self.__reviews:
@@ -231,6 +237,7 @@ class Course:
             if video.get_name() == name:
                 return video
         return None
+    
 
 
 class CourseCategory:
