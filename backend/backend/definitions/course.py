@@ -183,6 +183,7 @@ class Course:
             self.__reviews.append(review)
             return True
         return False
+
     def get_id(self):
         return self.__id
 
@@ -250,6 +251,7 @@ class CourseCategory:
 
     def get_courses(self):
         return self.__courses
+
     def search_course_by_id(self, _id: UUID4) -> Course | None:
         for course in self.__courses:
             if course.get_id() == _id:
