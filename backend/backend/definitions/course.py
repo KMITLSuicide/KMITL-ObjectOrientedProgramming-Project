@@ -96,19 +96,18 @@ class CourseMaterialQuiz(CourseMaterial):
     def get_questions(self):
         return self.__questions
 
-
 class CourseReview:
     def __init__(
         self, reviewer: User, star: Literal[1, 2, 3, 4, 5], comment: str
     ) -> None:
         self.__reviewer = reviewer
-        self.__star = star
+        self.__star: Literal[1, 2, 3, 4, 5] = star
         self.__comment = comment
 
     def get_reviewer(self):
         return self.__reviewer
 
-    def get_star(self):
+    def get_star(self) -> Literal[1, 2, 3, 4, 5]:
         return self.__star
 
     def get_comment(self):

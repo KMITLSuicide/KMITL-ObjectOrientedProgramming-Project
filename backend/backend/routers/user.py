@@ -1,14 +1,14 @@
 from enum import Enum
 from uuid import UUID
 from typing import List, Annotated, Literal, Annotated
-from fastapi import APIRouter, Depends, Response, status, Body, Depends
+from fastapi import APIRouter, Depends, Response, status, Body
 from pydantic import BaseModel
 from backend.controller_instance import controller
 from backend.definitions.progress import Progress
 from backend.definitions.course import Course
 from backend.definitions.user import User,Teacher
 from backend.lib.authentication import get_current_user
-
+from backend.definitions.api_data_model import CourseCardData
 
 router = APIRouter()
 route_tags: List[str | Enum] = ["View Video"]
@@ -36,9 +36,21 @@ def get_course_by_id(current_user: Annotated[User, Depends(get_current_user)], c
 
 @router.get("/user/get_my_teaching", tags=["My Teaching"])
 def get_my_teaching(current_user: Annotated[User, Depends(get_current_user)]):
+    search_results: List[CourseCardData] = []
     if not isinstance(current_user, Teacher):
         return "Error, You r not teacher"
-    return current_user.get_my_teachings()
+    for course in current_user.get_my_teachings():
+        search_results.append(            
+            CourseCardData(
+                id=str(course.get_id()),
+                name=course.get_name(),
+                description=course.get_description(),
+                price=course.get_price(),
+                rating=0,
+                banner_image=course.get_banner_image_url(),
+            )
+        )
+    return search_results
 
 
 class AccountInfo(BaseException):

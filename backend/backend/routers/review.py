@@ -1,8 +1,9 @@
 import uuid
 from typing import Annotated, Literal,List
 from pydantic import BaseModel
-from fastapi import APIRouter, Body, Response, status
+from fastapi import APIRouter, Depends, HTTPException, status, Body, Response
 
+from backend.lib.authentication import get_current_user
 from backend.controller_instance import controller
 from backend.definitions.course import Course, CourseReview
 from backend.definitions.user import User
@@ -23,12 +24,18 @@ def get_reviews(course_id: str, response: Response):
 
 
 class CreateReviewPostData(BaseModel):
-    user_id: str
+    star: Literal[1, 2, 3, 4, 5]
+    comment: str
+
+class GetReviewData(BaseModel):
+    user_id:str
+    user_name:str
     star: Literal[1, 2, 3, 4, 5]
     comment: str
 
 
-@router.post("/course/{course_id}/review", tags = route_tags)
+
+@router.post("/course/{course_id}/review",tags= route_tags)
 def create_review(
     course_id: str,
     create_review_post_data: Annotated[
@@ -36,7 +43,6 @@ def create_review(
         Body(
             examples=[
                 {
-                    "user_id": "d931c01b-71fa-4df8-93c6-71f05ee077dd",
                     "star": 5,
                     "comment": "very bestest course ever",
                 }
@@ -44,24 +50,29 @@ def create_review(
         ),
     ],
     response: Response,
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
+    return_course: list[GetReviewData] = []
     course = controller.search_course_by_id(uuid.UUID(course_id))
     if not isinstance(course, Course):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "Course ID not found"
-
-    user = controller.get_user_by_id(uuid.UUID(create_review_post_data.user_id))
-    if not isinstance(user, User):
-        response.status_code = status.HTTP_401_UNAUTHORIZED
-        return "User ID not found"
-
+    
     review = CourseReview(
-        user, create_review_post_data.star, create_review_post_data.comment
+        current_user, create_review_post_data.star, create_review_post_data.comment
     )
     review_adding_result = course.add_review(review)
-
     if not review_adding_result:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "Duplicate reviews"
 
-    return course.get_reviews()
+    for course in course.get_reviews():
+        return_course.append(
+            GetReviewData(
+                user_id= str(current_user.get_id()),
+                user_name = current_user.get_name(),
+                star = course.get_star(),
+                comment = course.get_comment()
+            )
+        )
+    return return_course
