@@ -15,16 +15,20 @@ route_tags: List[str | Enum] = ["Reviews"]
 
 @router.get("/course/{course_id}/review", tags = route_tags)
 def get_reviews(course_id: str, response: Response):
-    return_course: list[CreateReviewPostData] = []
+    return_course: list[GetReviewData] = []
     course = controller.search_course_by_id(uuid.UUID(course_id))
     if not isinstance(course, Course):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "Course ID not found"
 
     for course in course.get_reviews():
+        reviewer = course.get_reviewer()
+        if not isinstance(reviewer, User):
+            return "reviewer is not user"
         return_course.append(
-            CreateReviewPostData(
-                user_id = str(course.get_reviewer().get_id()),
+            GetReviewData(
+                user_id = str(reviewer.get_id()),
+                user_name = reviewer.get_name(),
                 star = course.get_star(),
                 comment = course.get_comment()
             )
