@@ -1,35 +1,32 @@
-export function getFrontendCourseViewData(courseID: string): Frontend.Course {
-  const imageNumber = (courseID.charCodeAt(0) % 6) + 1;
-  const quizNumber = courseID.charCodeAt(0);
-  return {
-    id: courseID,
-    name: "course name",
-    description: "course description",
-    category: {
-      courses: [],
-      id: "category id",
-      name: "category name",
-    },
-    price: 10000,
-    images: [
-      {
-        id: courseID + `image-${imageNumber}`,
-        name: "image name",
-        description: "image description",
-        url: `/course/react/image-${imageNumber}.png`,
-      },
-    ],
-    quizes: [
-      {
-        id: courseID + `quiz-${quizNumber}`,
-        name: "quiz name",
-        description: "quiz description",
-        questions: [
-          {
-            question: `quiz-${quizNumber}`,
-          },
-        ],
-      },
-    ],
-  };
+import { type CourseInfo, type Course } from "~/src/lib/definitions/course";
+import api from "~/src/lib/data/api";
+
+export async function getCourseDataFromAPI() {
+  try {
+    const response = await api.get<Course[]>('/course');
+
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function getCourseInfoFromAPI(courseID: string) {
+  try {
+    const response = await api.get<CourseInfo>(`/course/${courseID}`);
+
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }

@@ -3,6 +3,9 @@ import uuid
 from typing import List, Literal
 from pydantic import UUID4
 
+# from backend.definitions.controller import Controller
+# from backend.controller_instance import controller
+
 
 class QuizQuestion:
     def __init__(self, question: str, correct: bool) -> None:
@@ -42,6 +45,7 @@ class CourseMaterial:
 
     def get_description(self):
         return self.__description
+
 
 
 class CourseMaterialVideo(CourseMaterial):
@@ -117,17 +121,21 @@ class CourseReview:
 
 
 class Course:
-    def __init__(self, name: str, description: str, price: int) -> None:
+    def __init__(
+        self, name: str, description: str, price: int, teacher: "Teacher"
+    ) -> None:
         self.__id: UUID4 = uuid.uuid4()
         self.__name: str = name
         self.__description: str = description
         self.__price: int = price
+        self.__teacher: teacher
         self.__images: List[CourseMaterialImage] = []
         self.__quizes: List[CourseMaterialQuiz] = []
         self.__videos: List[CourseMaterialVideo] = []
         self.__reviews: List[CourseReview] = []
         # Question from Taj to phak: Should I collect latest video to course?
         self.__latest_video = None
+        self.__banner_image_url: str = "/course/default-image.jpg"
 
     def set_name(self, name: str):
         if isinstance(name, str):
@@ -193,6 +201,9 @@ class Course:
     def get_price(self):
         return self.__price
 
+    def get_teacher(self):
+        return self.__teacher
+
     def get_images(self):
         return self.__images
 
@@ -209,6 +220,9 @@ class Course:
     def get_reviews(self):
         return self.__reviews
 
+    def get_banner_image_url(self):
+        return self.__banner_image_url
+
     def search_review_by_user(self, user: User):
         for review in self.__reviews:
             if review.get_reviewer() == user:
@@ -217,7 +231,7 @@ class Course:
 
     def search_video_by_name(self, name: str):
         for video in self.__videos:
-            if video.__name == name:
+            if video.get_name() == name:
                 return video
         return None
 
@@ -243,9 +257,9 @@ class CourseCategory:
     def get_courses(self):
         return self.__courses
 
-    def search_course_by_id(self, id: UUID4) -> Course | None:
+    def search_course_by_id(self, _id: UUID4) -> Course | None:
         for course in self.__courses:
-            if course.get_id() == id:
+            if course.get_id() == _id:
                 return course
         return None
 

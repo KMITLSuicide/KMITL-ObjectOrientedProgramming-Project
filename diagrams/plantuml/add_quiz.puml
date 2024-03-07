@@ -1,0 +1,17 @@
+@startuml Add Quiz
+participant Client
+participant Course
+participant CourseMaterialQuiz
+
+Client -> Course: add_quiz(quiz: CourseMaterialQuiz)
+activate Course
+
+alt quiz is instance of CourseMaterialQuiz
+    Course -> Course: self.__quizes.append(quiz)
+    Course --> Client: True
+else
+    Course --> Client: False
+end
+
+deactivate Course
+@enduml

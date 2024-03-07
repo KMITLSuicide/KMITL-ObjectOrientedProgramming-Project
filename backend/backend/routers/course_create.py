@@ -1,10 +1,11 @@
 from enum import Enum
 import uuid
 from typing import List, Annotated
-from fastapi import APIRouter, Response, status, Body
+from backend.lib.authentication import get_current_user
+from fastapi import APIRouter, Depends, Response, status, Body
 from pydantic import BaseModel
 
-from backend.definitions.user import Teacher
+from backend.definitions.user import Teacher, User
 from backend.definitions.course import (
     Course,
     CourseMaterialImage,
@@ -19,7 +20,6 @@ route_tags: List[str | Enum] = ["course create"]
 
 
 class PostCourseData(BaseModel):
-    teacher_id: str
     name: str
     description: str
     price: int
@@ -33,7 +33,6 @@ def new_course(
         Body(
             examples=[
                 {
-                    "teacher_id": "afeabc96-80f6-4508-82e4-e8a429e86547",
                     "name": "Example",
                     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                     "price": 100,
@@ -43,19 +42,25 @@ def new_course(
         ),
     ],
     response: Response,
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
-    course = Course(
-        post_course_data.name, post_course_data.description, post_course_data.price
-    )
+    teacher = current_user
+
+    if not isinstance(teacher, Teacher):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Teacher not found"
+
     category = controller.search_category_by_id(uuid.UUID(post_course_data.category_id))
     if not category:
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "Category not found"
 
-    teacher = controller.get_teacher_by_id(uuid.UUID(post_course_data.teacher_id))
-    if not isinstance(teacher, Teacher):
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return "Teacher not found"
+    course = Course(
+        post_course_data.name,
+        post_course_data.description,
+        post_course_data.price,
+        current_user,
+    )
 
     teacher.add_my_teaching(course)
     category.add_course(course)
@@ -89,11 +94,16 @@ def add_image_to_course(
         ),
     ],
     response: Response,
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     course = controller.search_course_by_id(uuid.UUID(course_id))
     if not isinstance(course, Course):
         response.status_code = status.HTTP_400_BAD_REQUEST
-        return "Teacher not found"
+        return "Course not found"
+
+    if not (current_user == course.get_teacher()):
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return "Unauthorized"
 
     image = CourseMaterialImage(
         add_image_to_course_data.url,
@@ -122,7 +132,7 @@ def add_quiz_to_course(
         Body(
             examples=[
                 {
-                    "name": "Which language is FASTApi built with",
+                    "name": "Which language is FastAPI built with",
                     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                     "questions": [
                         {"question": "Python", "correct": True},
@@ -133,11 +143,16 @@ def add_quiz_to_course(
         ),
     ],
     response: Response,
+    current_user: Annotated[User, Depends(get_current_user)],
 ):
     course = controller.search_course_by_id(uuid.UUID(course_id))
     if not isinstance(course, Course):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "Teacher not found"
+
+    if not (current_user == course.get_teacher()):
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return "Unauthorized"
 
     quiz = CourseMaterialQuiz(
         add_quiz_to_course_data.name, add_quiz_to_course_data.description

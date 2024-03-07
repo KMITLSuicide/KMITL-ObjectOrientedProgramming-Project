@@ -1,4 +1,5 @@
-import { Course } from "./course";
+import { type Progress } from "~/src/lib/definitions/progress";
+
 export interface User {
   _User__id: string;
   _User__name: string;

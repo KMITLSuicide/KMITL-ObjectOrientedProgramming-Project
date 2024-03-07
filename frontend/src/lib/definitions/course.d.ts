@@ -1,15 +1,14 @@
-import { User } from "./user";
-interface CourseQuestion {
+export interface CourseQuestion {
   _QuizQuestion__question: string;
   _QuizQuestion__correct: string;
 }
-interface CourseMaterial {
+export interface CourseMaterial {
   _CourseMaterial__id: string;
   _CourseMaterial__name: string;
   _CourseMaterial__name: string;
 }
 
-interface CourseMaterialImage extends CourseMaterial {
+export interface CourseMaterialImage extends CourseMaterial {
   _CourseMaterialImage__url: string;
 }
 
@@ -19,7 +18,7 @@ export interface CourseMaterialQuiz extends CourseMaterial {
 export interface CourseMaterialVideo extends CourseMaterial{
   _CourseMaterialImage__url: string;
 }
-interface CourseReview
+export interface CourseReview
 {
   _CourseReview__reviewer: User;
   _CourseReview__star: number;
@@ -36,8 +35,31 @@ export interface Course {
   _Course__latest_video : null | CourseMaterialVideo;
 }
 
-interface CourseCategory {
+export interface CourseCategory {
   _CourseCategory__id: string;
   _CourseCategory__name: string;
   _CourseCategory__courses: Course[];
+}
+
+interface CourseCardData {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  rating: number;
+  banner_image: string;
+}
+
+interface CourseInfo {
+  id: string;
+  name: string;
+  description: string;
+  category_id: string;
+  category_name: string;
+  price: number;
+  rating: number;
+  banner_image: string;
+  materials_images: string[];
+  materials_quizes: string[];
+  materials_videos: string[];
 }

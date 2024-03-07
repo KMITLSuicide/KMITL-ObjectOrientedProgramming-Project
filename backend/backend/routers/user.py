@@ -1,12 +1,12 @@
 from enum import Enum
 from uuid import UUID
-from typing import List, Annotated
-from fastapi import APIRouter, Response, status, Body, Depends
+from typing import List, Annotated, Literal, Annotated
+from fastapi import APIRouter, Depends, Response, status, Body, Depends
 from pydantic import BaseModel
 from backend.controller_instance import controller
 from backend.definitions.progress import Progress
 from backend.definitions.course import Course
-from backend.definitions.user import User
+from backend.definitions.user import User,Teacher
 from backend.lib.authentication import get_current_user
 
 
@@ -44,3 +44,23 @@ def get_course_by_id(current_user: Annotated[User, Depends(get_current_user)], c
     course = current_user.search_course_by_id(course_id)
     return course
 
+
+
+class AccountInfo(BaseException):
+    type: Literal['user', 'teacher']
+    id: str
+    name: str
+    email: str
+
+@router.get("/account", tags=route_tags)
+async def get_my_account_info(current_user: Annotated[User, Depends(get_current_user)]):
+    user_type = 'user'
+    if isinstance(current_user, Teacher):
+        user_type = 'teacher'
+
+    return {
+        "type": user_type,
+        "id": str(current_user.get_id()),
+        "name": current_user.get_name(),
+        "email": current_user.get_email(),
+        }

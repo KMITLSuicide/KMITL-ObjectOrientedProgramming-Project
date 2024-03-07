@@ -5,6 +5,8 @@ from uuid import UUID
 from backend.definitions.course import Course, CourseCategory
 from backend.definitions.user import Teacher  # Question:why don't just collect user
 from backend.definitions.user import User
+from backend.definitions.order import Coupon, CouponCourse, CouponTeacher, Order, Payment
+from backend.definitions.progress import Progress
 
 
 class Controller:
@@ -22,6 +24,7 @@ class Controller:
         self.__users: List[User] = (
             []
         )  # Question: is user going to collect to be Teacher
+        self.__coupons: List[Coupon] = []
 
     def add_category(self, category: CourseCategory):
         if isinstance(category, CourseCategory):
@@ -42,15 +45,15 @@ class Controller:
                 return matched_course
         return None
 
+    def get_all_categories(self):
+        return self.__categories
+
     def search_course_by_name(self, name: str):
         matched_courses: List[Course] = []
         for course in self.get_all_courses():
             if name in course.get_name():
                 matched_courses.append(course)
         return matched_courses
-
-    def get_all_categories(self):
-        return self.__categories
 
     def search_category_by_id(self, uuid: UUID4):
         for category in self.__categories:
@@ -59,12 +62,19 @@ class Controller:
         return None
 
     def search_category_by_name(self, name: str):
+        matched_category: List[CourseCategory] = []
         for category in self.__categories:
-            if category.get_name() == name:
-                return category
-        return None
+            if name in category.get_name():
+                matched_category.append(category)
+        return matched_category
 
-    # Tajdang commit
+    def add_teacher(self, teacher: Teacher):
+        if isinstance(teacher, Teacher):
+            self.__users.append(teacher)
+            return True
+        return False
+
+    #Tajdang commit
     def add_user(self, user: User):
         if isinstance(user, User):
             self.__users.append(user)
@@ -131,6 +141,8 @@ class Controller:
             if email == user.get_email():
                 return user
 
-        for user in self.get_all_teacher():
-            if email == user.get_email():
-                return user
+    def search_category_by_course(self, course: Course):
+        for category in self.__categories:
+            if course in category.get_courses():
+                return category
+        return None

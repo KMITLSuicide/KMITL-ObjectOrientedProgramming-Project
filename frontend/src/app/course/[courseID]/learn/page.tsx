@@ -1,4 +1,4 @@
-import { getFrontendCourseViewData } from "~/src/lib/data/course";
+import { getFrontendCourseViewData } from "~/src/app/course/[courseID]/page";
 
 export default function CourseLearn({
   params,
