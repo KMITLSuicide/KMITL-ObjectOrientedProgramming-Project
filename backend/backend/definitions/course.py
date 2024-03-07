@@ -5,6 +5,7 @@ from pydantic import UUID4
 
 # from backend.definitions.controller import Controller
 # from backend.controller_instance import controller
+# from backend.definitions.user import User, Teacher
 
 
 class QuizQuestion:
@@ -96,34 +97,35 @@ class CourseMaterialQuiz(CourseMaterial):
     def get_questions(self):
         return self.__questions
 
-
 class CourseReview:
     def __init__(
         self, reviewer: User, star: Literal[1, 2, 3, 4, 5], comment: str
     ) -> None:
         self.__reviewer = reviewer
-        self.__star = star
+        self.__star: Literal[1, 2, 3, 4, 5] = star
         self.__comment = comment
 
     def get_reviewer(self):
         return self.__reviewer
 
-    def get_star(self):
+    def get_star(self) -> Literal[1, 2, 3, 4, 5]:
         return self.__star
+    
+    def cal_average_star(self, star):
+        pass
 
     def get_comment(self):
         return self.__comment
 
-
 class Course:
     def __init__(
-        self, name: str, description: str, price: int, teacher: "Teacher"
+        self, name: str, description: str, price: int, teacher
     ) -> None:
         self.__id: UUID4 = uuid.uuid4()
         self.__name: str = name
         self.__description: str = description
         self.__price: int = price
-        self.__teacher: teacher
+        self.__teacher =  teacher
         self.__images: List[CourseMaterialImage] = []
         self.__quizes: List[CourseMaterialQuiz] = []
         self.__videos: List[CourseMaterialVideo] = []

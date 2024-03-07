@@ -2,6 +2,9 @@ from enum import Enum
 from typing import Annotated, List
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, status, Body, Response
+from pydantic import BaseModel
+import random
+
 from backend.controller_instance import controller
 from backend.definitions.user import User,Teacher
 from backend.definitions.api_data_model import CourseInfo, CourseLearn, CourseLearnMaterialImage, CourseLearnMaterialQuiz, CourseLearnMaterialQuizQuestions, CourseLearnMaterialVideo
@@ -19,12 +22,21 @@ from backend.definitions.course import (
 router = APIRouter()
 route_tags: List[str | Enum] = ["Course"]
 
+class GetAllCourse(BaseModel):
+    id: str
+    name: str
 
 @router.get("/course", tags=route_tags)
 def get_all_course():
-    return controller.get_all_courses()
-
-
+    return_data: List[GetAllCourse] = []
+    all_course = controller.get_all_courses()
+    for course in all_course:
+        return_data.append(
+            GetAllCourse(
+                id=str(course.get_id()),
+                name=course.get_name()
+            ))
+    return return_data
 
 
 @router.get("/course/{course_id}", tags=route_tags)
