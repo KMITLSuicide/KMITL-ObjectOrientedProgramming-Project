@@ -37,6 +37,15 @@ class Controller:
             courses.extend(category.get_courses())
         return courses
 
+
+    def sort_course_by_rating(self):
+        all_courses = self.get_all_courses()
+
+        sorted_courses = sorted(all_courses, key=lambda course: course.get_average_rating(), reverse=True)
+
+        return sorted_courses
+
+
     def search_course_by_id(self, uuid: UUID4) -> Course | None:
         for category in self.__categories:
             matched_course = category.search_course_by_id(uuid)
@@ -86,6 +95,8 @@ class Controller:
             if isinstance(user, User):
                 all_user.append(user)
         return all_user
+
+
 
     def get_all_teacher(self):
         all_teacher: List[Teacher] = []
@@ -140,22 +151,29 @@ class Controller:
         return "Error: Teacher not found"
 
     def buy_course(self, user: User, status:bool, course_id, coupon_id):
+
         if status != True:
             return "Error: You haven't paid for course yet"
+        
         if course_id == None:
             return "Error Enter course id"
+        
         course = self.search_course_by_id(course_id)
         if course == None or not isinstance(course, Course):
             return "Error: Course not found"
+        
         teacher = self.search_teacher_by_course(course)
         if teacher == None or not isinstance(teacher, Teacher):
             return "Error: Teacher not found"
+        
         if coupon_id != None:
             coupon = self.search_coupon_by_id(coupon_id)
             if coupon == None or not isinstance(coupon, Coupon):
                 return "Error: Coupon not found"
+            
             if not self.validate_coupon(coupon, course, teacher):
                 return "Erorr: Coupon is invalid"
+            
             discount = coupon.get_discount()
         if coupon_id == None:
             discount = 0

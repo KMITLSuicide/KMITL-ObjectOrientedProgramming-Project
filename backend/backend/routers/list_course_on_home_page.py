@@ -34,7 +34,7 @@ def random_course():
                 name = course.get_name(),
                 description = course.get_description(),
                 price = course.get_price(),
-                rating = 0,
+                rating = course.get_average_rating(),
                 banner_image = course.get_banner_image_url()
         ))
     random_course = random.sample(return_data, 3)
@@ -53,25 +53,30 @@ def random_reviewed_course():
                     name = course.get_name(),
                     description = course.get_description(),
                     price = course.get_price(),
-                    rating = 0,
+                    rating = course.get_average_rating(),
                     banner_image = course.get_banner_image_url()
                 ))
     random_reviewed_course = random.sample(return_data, 3)
     return random_reviewed_course
 
-# @router.get("/course/homepage/suggestion")
-# def suggest_course():
-#     return_data: List[CourseCardData] = []
-#     all_course = controller.get_all_courses()
-#     for course in all_course:
-#         if course.get_reviews():
-#             return_data.append(
-#                 CourseCardData(
-#                     id = str(course.get_id()),
-#                     name = course.get_name(),
-#                     description = course.get_description(),
-#                     price = course.get_price(),
-#                     rating = 0,
-#                     banner_image = course.get_banner_image_url()
-#                 ))
-#     return return_data
+@router.get("/course/homepage/suggestion", tags= route_tags)
+def suggest_course():
+    return_data: List[CourseCardData] = []
+    
+    # Call the sort_course_by_rating method
+    sorted_courses = controller.sort_course_by_rating()
+    
+    for course in sorted_courses:
+        if not isinstance(course, Course):
+            return 'Error'
+        if course.get_reviews():
+            return_data.append(
+                CourseCardData(
+                    id=str(course.get_id()),
+                    name=course.get_name(),
+                    description=course.get_description(),
+                    price=course.get_price(),
+                    rating= course.get_average_rating(),
+                    banner_image=course.get_banner_image_url()
+                ))
+    return return_data

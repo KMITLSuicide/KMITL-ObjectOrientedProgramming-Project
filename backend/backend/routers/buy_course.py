@@ -27,7 +27,6 @@ def buy_course(
                 {
                     "status": True,
                     "coupon_id": "adfasbasdfaskldfjasdfka",
-
                 }
             ]),],
 ):

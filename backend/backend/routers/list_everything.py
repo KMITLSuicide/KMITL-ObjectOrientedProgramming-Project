@@ -12,14 +12,11 @@ router = APIRouter()
 
 route_tags: List[str | Enum] = ["Debug Purposes"]
 
-@router.get("/course/all_course/", tags = route_tags)
-def get_all_course_list():
-    all_courses = controller.get_all_courses()
-    return all_courses
 
 @router.get("/teacher/all_teacher", tags = route_tags)
 def get_all_teacher_list():
-    return controller.get_all_teacher()
+    teacher_list = controller.get_all_teacher()
+    return teacher_list
 
 
 #for debug only
