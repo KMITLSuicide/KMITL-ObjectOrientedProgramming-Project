@@ -11,6 +11,15 @@ import random
 
 router = APIRouter()
 
+class ShowCourse(BaseModel):
+    id: str
+    name: str
+    description: str
+    price: float
+    rating: float
+    banner_image: str
+    star: float
+
 @router.get("/course/homepage/random_course")
 def random_course():
     return_data: List[CourseCardData] = []
@@ -29,8 +38,8 @@ def random_course():
     return random_course
 
 
-@router.get("/course/homepage/suggestion")
-def suggest_course():
+@router.get("/course/homepage/random_reviewed_course")
+def random_reviewed_course():
     return_data: List[CourseCardData] = []
     all_course = controller.get_all_courses()
     for course in all_course:
@@ -44,4 +53,22 @@ def suggest_course():
                     rating = 0,
                     banner_image = course.get_banner_image_url()
                 ))
-    return return_data
+    random_reviewed_course = random.sample(return_data, 3)
+    return random_reviewed_course
+
+# @router.get("/course/homepage/suggestion")
+# def suggest_course():
+#     return_data: List[CourseCardData] = []
+#     all_course = controller.get_all_courses()
+#     for course in all_course:
+#         if course.get_reviews():
+#             return_data.append(
+#                 CourseCardData(
+#                     id = str(course.get_id()),
+#                     name = course.get_name(),
+#                     description = course.get_description(),
+#                     price = course.get_price(),
+#                     rating = 0,
+#                     banner_image = course.get_banner_image_url()
+#                 ))
+#     return return_data

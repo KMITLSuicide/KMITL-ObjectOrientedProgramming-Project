@@ -116,6 +116,9 @@ class CourseReview:
 
     def get_star(self) -> Literal[1, 2, 3, 4, 5]:
         return self.__star
+    
+    def cal_average_star(self, star):
+        pass
 
     def get_comment(self):
         return self.__comment

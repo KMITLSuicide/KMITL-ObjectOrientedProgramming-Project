@@ -71,6 +71,7 @@ def create_review(
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "Duplicate reviews"
 
+    
     for course in course.get_reviews():
         return_course.append(
             CreateReviewPostData(
