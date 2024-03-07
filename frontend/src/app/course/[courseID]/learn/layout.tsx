@@ -84,9 +84,11 @@ export default function CourseLearnLayout({
   return (
     <div className="flex h-full w-full justify-center">
       <div className="flex w-full max-w-screen-xl space-x-6">
-        <ScrollArea className="h-full w-4/5 rounded-xl bg-secondary p-6">
-          {children}
-        </ScrollArea>
+        <div className="bg-secondary rounded-xl h-full w-4/5">
+          <ScrollArea className="m-8">
+            {children}
+          </ScrollArea>
+        </div>
         <div className="h-full w-1/5">
           <Button
             asChild
