@@ -79,21 +79,21 @@ export default function CategoryChoosePage() {
                       setOpen(false);
                       router.push(`/category/${category.id}`);
                     }}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === category.name ? "opacity-100" : "opacity-0",
-                      )}
-                    />
-                    {category.name}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </Command>
-          </PopoverContent>
-        </Popover>
-      </div>
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value === category.name ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                  {category.name}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </Command>
+        </PopoverContent>
+      </Popover>
     </div>
-  );
+  </div>
+);
 }

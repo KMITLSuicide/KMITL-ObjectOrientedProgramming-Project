@@ -40,6 +40,6 @@
     "**/*.js",
     ".next/types/**/*.ts",
     "src/app/course/[courseID]/learn/reminder-layout.tsx"
-  ],
+, "src/components/course/learn/quiz.tsx"  ],
   "exclude": ["node_modules"]
 }
