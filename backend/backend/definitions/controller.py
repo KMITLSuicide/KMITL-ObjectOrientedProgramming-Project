@@ -40,14 +40,14 @@ class Controller:
             courses.extend(category.get_courses())
         return courses
 
-
     def sort_course_by_rating(self):
         all_courses = self.get_all_courses()
 
-        sorted_courses = sorted(all_courses, key=lambda course: course.get_average_rating(), reverse=True)
+        sorted_courses = sorted(
+            all_courses, key=lambda course: course.get_average_rating(), reverse=True
+        )
 
         return sorted_courses
-
 
     def search_course_by_id(self, uuid: UUID4) -> Course | None:
         for category in self.__categories:
@@ -85,7 +85,7 @@ class Controller:
             return True
         return False
 
-    #Tajdang commit
+    # Tajdang commit
     def add_user(self, user: User):
         if isinstance(user, User):
             self.__users.append(user)
@@ -98,8 +98,6 @@ class Controller:
             if isinstance(user, User):
                 all_user.append(user)
         return all_user
-
-
 
     def get_all_teacher(self):
         all_teacher: List[Teacher] = []
@@ -153,30 +151,30 @@ class Controller:
                 return teacher
         return "Error: Teacher not found"
 
-    def buy_course(self, user: User, status:bool, course_id, coupon_id):
+    def buy_course(self, user: User, status: bool, course_id, coupon_id):
 
         if status != True:
             return "Error: You haven't paid for course yet"
-        
+
         if course_id == None:
             return "Error Enter course id"
-        
+
         course = self.search_course_by_id(course_id)
         if course == None or not isinstance(course, Course):
             return "Error: Course not found"
-        
+
         teacher = self.search_teacher_by_course(course)
         if teacher == None or not isinstance(teacher, Teacher):
             return "Error: Teacher not found"
-        
+
         if coupon_id != None:
             coupon = self.search_coupon_by_id(coupon_id)
             if coupon == None or not isinstance(coupon, Coupon):
                 return "Error: Coupon not found"
-            
+
             if not self.validate_coupon(coupon, course, teacher):
                 return "Erorr: Coupon is invalid"
-            
+
             discount = coupon.get_discount()
         if coupon_id == None:
             discount = 0
@@ -186,9 +184,10 @@ class Controller:
             return "Error: You already have this course"
         user.add_progress(progress)
         user.set_latest_progress(progress)
-        return {"latest progress":user.get_latest_progress(),
-                "user order": user.get_orders()}
-
+        return {
+            "latest progress": user.get_latest_progress(),
+            "user order": user.get_orders(),
+        }
 
     def search_coupon_by_id(self, coupon_id):
         for coupon in self.__coupons:
@@ -196,7 +195,7 @@ class Controller:
                 return coupon
         return None
 
-    def validate_coupon(self, coupon:Coupon, course:Course, teacher:Teacher):
+    def validate_coupon(self, coupon: Coupon, course: Course, teacher: Teacher):
         if coupon != None:
             if isinstance(coupon, CouponCourse):
                 if coupon.get_course() == course:
@@ -207,21 +206,20 @@ class Controller:
             return False
         return False
 
-    def search_teacher_by_course(self, course:Course):
+    def search_teacher_by_course(self, course: Course):
         for teacher in self.get_all_teacher():
             if course in teacher.get_my_teachings():
                 return teacher
         return None
 
-    def create_order(self, user:User, course, discount, status):
+    def create_order(self, user: User, course, discount, status):
         address = user.get_address()
         payment = user.get_payment_method()
         if payment != None:
             order = Order(address, payment, course, discount, status)
             user.get_orders().append(order)
         return None
-        
-    
+
     def search_user_by_id(self, user_id):
         for user in self.__users:
             if user.get_id() == user_id:
@@ -232,14 +230,20 @@ class Controller:
         for user in self.__users:
             if email == user.get_email():
                 return user
-            
-    def add_coupon_course(self, coupon_id, discount, course:Course, teacher:Teacher):
+
+    def add_coupon_course(self, coupon_id, discount, course: Course, teacher: Teacher):
         self.__coupons.append(CouponCourse(coupon_id, discount, course))
         return None
-            
-    def add_coupon_teacher(self, coupon_id, discount, teacher:Teacher):
+
+    def add_coupon_teacher(self, coupon_id, discount, teacher: Teacher):
         self.__coupons.append(CouponTeacher(coupon_id, discount, teacher))
         return None
-        
+
     def get_all_coupons(self):
         return self.__coupons
+
+    def search_category_by_course(self, course: Course):
+        for category in self.__categories:
+            if course in category.get_courses():
+                return category
+        return None
