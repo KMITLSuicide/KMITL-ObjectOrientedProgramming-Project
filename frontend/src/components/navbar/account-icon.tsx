@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "~/src/components/ui/dropdown-menu";
 import { toast } from "~/src/components/ui/use-toast";
-import { getAccountDataFromAPI } from "~/src/lib/data/account";
+import { getAccountDataFromAPI } from "~/src/lib/data/account/account";
 import { logout } from "~/src/lib/data/authentication";
 import { type AccountInfo } from "~/src/lib/definitions/account";
 

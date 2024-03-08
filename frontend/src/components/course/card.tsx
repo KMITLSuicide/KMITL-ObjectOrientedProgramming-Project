@@ -11,11 +11,22 @@ import Image from "next/image";
 import { Config } from "~/src/config";
 import Link from "next/link";
 
-export function CourseCard({ course, className }: { course: CourseCardData, className?: string }) {
+export function CourseCard({
+  course,
+  className,
+  customLink,
+}: {
+  course: CourseCardData;
+  className?: string;
+  customLink?: string;
+}) {
   return (
-    <Card key={course.id} className={`w-full cursor-pointer hover:bg-secondary transition-colors ${className}`}>
+    <Card
+      key={course.id}
+      className={`w-full cursor-pointer transition-colors hover:bg-secondary ${className}`}
+    >
       <Link
-        href={`/course/${course.id}`}
+        href={customLink ? customLink : `/course/${course.id}`}
         className="flex h-full w-full flex-col"
       >
         <CardHeader>

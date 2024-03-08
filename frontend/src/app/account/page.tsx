@@ -5,7 +5,7 @@ import { Suspense, useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { ToastAction } from "~/src/components/ui/toast";
 import Link from "next/link";
-import { getAccountDataFromAPI } from "~/src/lib/data/account";
+import { getAccountDataFromAPI } from "~/src/lib/data/account/account";
 import { type AccountInfo } from "~/src/lib/definitions/account";
 
 export default function AccountPage() {
