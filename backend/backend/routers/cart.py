@@ -33,7 +33,7 @@ def add_course_to_cart(current_user: Annotated[User, Depends(get_current_user)],
                 name = course.get_name(),
                 description = course.get_description(),
                 price = course.get_price(),
-                rating = 0,
+                rating = course.get_average_rating(),
                 banner_image = course.get_banner_image_url()
         ))
     return return_cart
@@ -61,7 +61,7 @@ def get_course_in_cart(current_user: Annotated[User, Depends(get_current_user)],
                 name = course.get_name(),
                 description = course.get_description(),
                 price = course.get_price(),
-                rating = 0,
+                rating = course.get_average_rating(),
                 banner_image = course.get_banner_image_url()
         ))
 

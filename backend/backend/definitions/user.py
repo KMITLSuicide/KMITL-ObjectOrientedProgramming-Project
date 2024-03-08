@@ -5,7 +5,7 @@ from pydantic import EmailStr
 
 from backend.definitions.course import Course
 from backend.definitions.progress import Progress
-from backend.definitions.order import Payment,Order
+from backend.definitions.order import Payment,Order,Coupon
 
 class User:
     # Constants
@@ -113,6 +113,7 @@ class Teacher(User):
     ) -> None:
         super().__init__(name, email, hashed_password)
         self.__my_teachings: List[Course] = []
+        self.__my_created_coupons: List[Coupon] = []
 
     def get_my_teachings(self):
         return self.__my_teachings
@@ -121,6 +122,9 @@ class Teacher(User):
         if isinstance(course, Course):
             self.__my_teachings.append(course)
             return True
+        
+    def get_my_coupons(self):
+        return self.__my_created_coupons
 
 
 class Cart:

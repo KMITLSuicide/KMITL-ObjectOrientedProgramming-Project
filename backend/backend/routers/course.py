@@ -26,7 +26,7 @@ class GetAllCourse(BaseModel):
     id: str
     name: str
 
-@router.get("/course", tags=route_tags)
+@router.get("/course", tags=["Debug Purposes"])
 def get_all_course():
     return_data: List[GetAllCourse] = []
     all_course = controller.get_all_courses()
@@ -68,7 +68,7 @@ def get_course_info(course_id: str):
         category_name=category.get_name(),
         category_id=str(category.get_id()),
         price=course.get_price(),
-        rating=0,
+        rating= course.get_average_rating(),
         banner_image=course.get_banner_image_url(),
         materials_images=course_materials_images,
         materials_quizes=course_materials_quizes,
@@ -195,7 +195,6 @@ def new_course(
         post_course_data.name,
         post_course_data.description,
         post_course_data.price,
-        current_user,
     )
 
     teacher.add_my_teaching(course)
@@ -214,41 +213,41 @@ class AddImageToCoursePostData(CourseMaterialPostData):
 
 
 
-@router.post("/course/{course_id}/image", tags=route_tags)
-def add_image_to_course(
-    course_id: str,
-    add_image_to_course_data: Annotated[
-        AddImageToCoursePostData,
-        Body(
-            examples=[
-                {
-                    "url": "https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png",
-                    "name": "FastAPI Logo",
-                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                }
-            ],
-        ),
-    ],
-    response: Response,
-    current_user: Annotated[User, Depends(get_current_user)],
-):
-    course = controller.search_course_by_id(uuid.UUID(course_id))
-    if not isinstance(course, Course):
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return "Course not found"
+# @router.post("/course/{course_id}/image", tags=route_tags)
+# def add_image_to_course(
+#     course_id: str,
+#     add_image_to_course_data: Annotated[
+#         AddImageToCoursePostData,
+#         Body(
+#             examples=[
+#                 {
+#                     "url": "https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png",
+#                     "name": "FastAPI Logo",
+#                     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+#                 }
+#             ],
+#         ),
+#     ],
+#     response: Response,
+#     current_user: Annotated[User, Depends(get_current_user)],
+# ):
+#     course = controller.search_course_by_id(uuid.UUID(course_id))
+#     if not isinstance(course, Course):
+#         response.status_code = status.HTTP_400_BAD_REQUEST
+#         return "Course not found"
 
-    if not (current_user == course.get_teacher()):
-        response.status_code = status.HTTP_401_UNAUTHORIZED
-        return "Unauthorized"
+#     if not (current_user == course.get_teacher()):
+#         response.status_code = status.HTTP_401_UNAUTHORIZED
+#         return "Unauthorized"
 
-    image = CourseMaterialImage(
-        add_image_to_course_data.url,
-        add_image_to_course_data.name,
-        add_image_to_course_data.description,
-    )
-    course.add_image(image)
+#     image = CourseMaterialImage(
+#         add_image_to_course_data.url,
+#         add_image_to_course_data.name,
+#         add_image_to_course_data.description,
+#     )
+#     course.add_image(image)
 
-    return course
+#     return course
 
 
 class QuizQuestionPostData(BaseModel):
@@ -260,42 +259,42 @@ class AddQuizToCoursePostData(CourseMaterialPostData):
     questions: List[QuizQuestionPostData]
 
 
-@router.post("/course/{course_id}/quiz", tags=route_tags)
-def add_quiz_to_course(
-    course_id: str,
-    add_quiz_to_course_data: Annotated[
-        AddQuizToCoursePostData,
-        Body(
-            examples=[
-                {
-                    "name": "Which language is FastAPI built with",
-                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                    "questions": [
-                        {"question": "Python", "correct": True},
-                        {"question": "Rust", "correct": False},
-                    ],
-                }
-            ],
-        ),
-    ],
-    response: Response,
-    current_user: Annotated[User, Depends(get_current_user)],
-):
-    course = controller.search_course_by_id(uuid.UUID(course_id))
-    if not isinstance(course, Course):
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return "Teacher not found"
+# @router.post("/course/{course_id}/quiz", tags=route_tags)
+# def add_quiz_to_course(
+#     course_id: str,
+#     add_quiz_to_course_data: Annotated[
+#         AddQuizToCoursePostData,
+#         Body(
+#             examples=[
+#                 {
+#                     "name": "Which language is FastAPI built with",
+#                     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+#                     "questions": [
+#                         {"question": "Python", "correct": True},
+#                         {"question": "Rust", "correct": False},
+#                     ],
+#                 }
+#             ],
+#         ),
+#     ],
+#     response: Response,
+#     current_user: Annotated[User, Depends(get_current_user)],
+# ):
+#     course = controller.search_course_by_id(uuid.UUID(course_id))
+#     if not isinstance(course, Course):
+#         response.status_code = status.HTTP_400_BAD_REQUEST
+#         return "Teacher not found"
 
-    if not (current_user == course.get_teacher()):
-        response.status_code = status.HTTP_401_UNAUTHORIZED
-        return "Unauthorized"
+#     if not (current_user == course.get_teacher()):
+#         response.status_code = status.HTTP_401_UNAUTHORIZED
+#         return "Unauthorized"
 
-    quiz = CourseMaterialQuiz(
-        add_quiz_to_course_data.name, add_quiz_to_course_data.description
-    )
-    for question in add_quiz_to_course_data.questions:
-        quiz.add_question(QuizQuestion(question.question, question.correct))
-    course.add_quiz(quiz)
+#     quiz = CourseMaterialQuiz(
+#         add_quiz_to_course_data.name, add_quiz_to_course_data.description
+#     )
+#     for question in add_quiz_to_course_data.questions:
+#         quiz.add_question(QuizQuestion(question.question, question.correct))
+#     course.add_quiz(quiz)
 
-    return course
+#     return course
 

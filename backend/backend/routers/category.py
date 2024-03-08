@@ -17,7 +17,7 @@ class CategoryNames(BaseModel):
     name: str
 
 
-@router.get("/category", tags=route_tags)
+@router.get("/category", tags=["Debug Purposes"])
 def get_all_categories():
     category_names: List[CategoryNames] = []
     for category in controller.get_all_categories():
@@ -49,7 +49,7 @@ def get_category_by_id(category_id: str):
                 name=course.get_name(),
                 description=course.get_description(),
                 price=course.get_price(),
-                rating=0,
+                rating=course.get_average_rating(),
                 banner_image=course.get_banner_image_url(),
             )
         )
