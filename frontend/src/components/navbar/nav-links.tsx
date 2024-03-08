@@ -1,26 +1,25 @@
 import Link from "next/link";
 
-const links: {
+export interface NavItems {
   href: string;
   label: string;
-}[] = [
-  {
-    href: "/category",
-    label: "Categories",
-  },
-];
+}
 
-export default function NavLinks() {
+export function NavLinks({
+  items
+} : {
+  items: NavItems[]
+}) {
   return (
     <>
-      {links.map((link) => {
+      {items.map((item) => {
         return (
           <Link
-            key={link.href}
-            href={link.href}
+            key={item.href}
+            href={item.href}
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
           >
-            {link.label}
+            {item.label}
           </Link>
         );
       })}
