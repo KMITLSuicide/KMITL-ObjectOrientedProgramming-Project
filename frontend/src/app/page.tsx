@@ -25,12 +25,12 @@ export default function Index() {
 
         <div className="w-full flex h-1/5 bg-primary rounded-xl p-8">
           <div className="w-2/5 inline-block">
-            <Image className="absolute left-[23vw] top-[8vh] " src="/pointy-guy.png" alt="pointy guy" width={360} height={544} />
+            <Image className="absolute left-[23vw] top-[6vh]" src="/pointy-guy.png" alt="pointy guy" width={360} height={544} />
           </div>
           <div className="w-3/5 space-y-2">
             <h1 className="text-4xl font-bold fle">Welcome to &quot;Udemy&quot;</h1>
             <p className="text-xl">
-              A place that have &quot;courses&quot; where you can &quot;buy&quot; <br /> from some random and &quot;learn&quot;.
+              A place that have &quot;courses&quot; where you can technically &quot;buy&quot; <br /> from some random and &quot;learn&quot;.
             </p>
           </div>
         </div>

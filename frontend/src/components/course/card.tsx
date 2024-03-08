@@ -13,7 +13,7 @@ import Link from "next/link";
 
 export function CourseCard({ course, className }: { course: CourseCardData, className?: string }) {
   return (
-    <Card key={course.id} className={`w-full cursor-pointer hover:bg-secondary ${className}`}>
+    <Card key={course.id} className={`w-full cursor-pointer hover:bg-secondary transition-colors ${className}`}>
       <Link
         href={`/course/${course.id}`}
         className="flex h-full w-full flex-col"

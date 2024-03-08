@@ -2,10 +2,28 @@ import { cn } from "~/src/lib/utils";
 import Logo from "~/src/components/navbar/logo";
 import ThemeToggle from "~/src/components/navbar/theme-toggle";
 import AccountIcon from "~/src/components/navbar/account-icon";
-import NavLinks from "./nav-links";
-import { Search } from "lucide-react";
+import { NavLinks, type NavItems } from "~/src/components/navbar/nav-links";
+import { Search, ShoppingCart } from "lucide-react";
 import { Button } from "~/src/components/ui/button";
 import Link from "next/link";
+
+const navItemsLeft: NavItems[] = [
+  {
+    href: "/category",
+    label: "Categories",
+  },
+];
+
+const navItemsRight: NavItems[] = [
+  {
+    href: "/account/teaching",
+    label: "Teaching",
+  },
+  {
+    href: "/account/learning",
+    label: "Learning",
+  },
+];
 
 export default function NavBar({
   className,
@@ -20,16 +38,18 @@ export default function NavBar({
       {...props}
     >
       <Logo />
-      <Button asChild variant="outline" size="icon">
-        <Link href="/search">
-          <Search className="h-[1.2rem] w-[1.2rem]" />
-        </Link>
-      </Button>
+      <NavLinks items={navItemsLeft} />
+      <Link href="/search">
+        <Search className="h-[1.2rem] w-[1.2rem] hover:text-primary transition-colors" />
+      </Link>
 
       <div className="flex-grow" />
 
-      <NavLinks />
+      <NavLinks items={navItemsRight} />
 
+      <Link href="/search">
+        <ShoppingCart className="h-[1.2rem] w-[1.2rem] hover:text-primary transition-colors" />
+      </Link>
       <ThemeToggle />
       <AccountIcon />
     </nav>
