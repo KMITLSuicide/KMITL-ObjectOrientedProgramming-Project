@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CourseCard } from "~/src/components/course/card";
+import { toast } from "~/src/components/ui/use-toast";
 import { getCoursesByTeachers } from "~/src/lib/data/teacher";
 import { type CourseCardDataWithLabel } from "~/src/lib/definitions/course";
 
@@ -17,8 +18,13 @@ export default function CoursesByTeacher({
   useEffect(() => {
     async function fetchData() {
       const apiData = await getCoursesByTeachers(params.teacherID);
-      console.log(apiData);
       setCardsData(apiData);
+      if (apiData === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch data",
+          variant: "destructive",
+        })}
     }
     void fetchData();
   }, []);

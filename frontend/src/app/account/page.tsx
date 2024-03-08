@@ -17,27 +17,24 @@ export default function AccountPage() {
     async function fetchData() {
       const apiData = await getAccountDataFromAPI();
       setAccountData(apiData);
+
+      if (apiData === null) {
+        toast({
+          title: "Failed to get account data",
+          description: "Please log in to view your account data.",
+          variant: "destructive",
+          action: (
+            <ToastAction altText="Log in" asChild>
+              <Link href="/authentication/login">Log in</Link>
+            </ToastAction>
+          ),
+        });
+      }
     }
     void fetchData();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    if (accountData === null) {
-      toast({
-        title: "Failed to get account data",
-        description: "Please log in to view your account data.",
-        variant: "destructive",
-        action: (
-          <ToastAction altText="Log in" asChild>
-            <Link href="/authentication/login">Log in</Link>
-          </ToastAction>
-        ),
-      });
-    }
-    console.log(accountData);
-  }, [accountData]);
 
   return (
     <div className="flex h-full w-full items-center justify-center">

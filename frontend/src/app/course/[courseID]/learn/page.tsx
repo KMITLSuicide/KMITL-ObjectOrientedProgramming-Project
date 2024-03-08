@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { toast } from "~/src/components/ui/use-toast";
 import { getCourseLearnDataFromAPI } from "~/src/lib/data/course";
 import { type CourseLearn } from "~/src/lib/definitions/course";
 
@@ -15,6 +16,12 @@ export default function CourseLearn({
   useEffect(() => {
     void getCourseLearnDataFromAPI(params.courseID).then((data) => {
       setLearnData(data);
+      if (data === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch data",
+          variant: "destructive",
+        })}
     });
   }, []);
 

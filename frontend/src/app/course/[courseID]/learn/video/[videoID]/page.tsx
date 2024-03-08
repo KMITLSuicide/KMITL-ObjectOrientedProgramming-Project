@@ -5,6 +5,7 @@ import { getCourseLearnDataFromAPI } from "~/src/lib/data/course";
 import { type CourseLearn } from "~/src/lib/definitions/course";
 import ReactPlayer from "react-player";
 import { Skeleton } from "~/src/components/ui/skeleton";
+import { toast } from "~/src/components/ui/use-toast";
 
 export default function CourseMaterialImage({
   params,
@@ -18,6 +19,12 @@ export default function CourseMaterialImage({
   useEffect(() => {
     void getCourseLearnDataFromAPI(params.courseID).then((data) => {
       setLearnData(data);
+      if (data === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch data",
+          variant: "destructive",
+        })}
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -3,6 +3,7 @@
 import Image from "next/image"
 import { useEffect, useState } from "react";
 import { CourseCard } from "~/src/components/course/card";
+import { toast } from "~/src/components/ui/use-toast";
 import { getReccommendedCourses } from "~/src/lib/data/homepage";
 import { type CourseCardData } from "~/src/lib/definitions/course";
 
@@ -12,8 +13,14 @@ export default function Index() {
   useEffect(() => {
     async function fetchData() {
       const apiData = await getReccommendedCourses();
-      console.log(apiData);
       setCardsData(apiData);
+
+      if (apiData === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch recommended courses",
+          variant: "destructive",
+        })}
     }
     void fetchData();
   }, []);

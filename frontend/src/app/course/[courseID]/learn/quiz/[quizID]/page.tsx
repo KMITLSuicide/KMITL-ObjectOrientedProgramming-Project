@@ -70,6 +70,12 @@ export default function CourseMaterialQuiz({
   useEffect(() => {
     void getCourseLearnDataFromAPI(params.courseID).then((data) => {
       setLearnData(data);
+      if (data === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch data",
+          variant: "destructive",
+        })}
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

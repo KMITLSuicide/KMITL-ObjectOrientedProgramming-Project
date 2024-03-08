@@ -10,6 +10,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "~/src/components/ui/collapsible";
+import { toast } from "~/src/components/ui/use-toast";
 import { Config } from "~/src/config";
 import { getCourseInfoFromAPI } from "~/src/lib/data/course";
 import { type CourseInfo } from "~/src/lib/definitions/course";
@@ -27,8 +28,14 @@ export default function CourseView({
   useEffect(() => {
     async function fetchData(courseID: string) {
       const apiData = await getCourseInfoFromAPI(courseID);
-      console.log(apiData);
       setCourseData(apiData);
+
+      if (apiData === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch course data",
+          variant: "destructive",
+        })}
     }
     void fetchData(params.courseID);
   }, []);

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { CourseCard } from "~/src/components/course/card";
+import { toast } from "~/src/components/ui/use-toast";
 import { getMyTeachings } from "~/src/lib/data/account/teaching";
 import { type CourseCardData } from "~/src/lib/definitions/course";
 
@@ -13,8 +14,14 @@ export default function MyTeachings() {
   useEffect(() => {
     async function fetchData() {
       const apiData = await getMyTeachings();
-      console.log(apiData);
       setCardsData(apiData);
+
+      if (apiData === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch my teachings",
+          variant: "destructive",
+        })}
     }
     void fetchData();
   }, []);
