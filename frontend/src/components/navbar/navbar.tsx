@@ -40,7 +40,7 @@ export default function NavBar({
       <Logo />
       <NavLinks items={navItemsLeft} />
       <Link href="/search">
-        <Search className="h-[1.2rem] w-[1.2rem] hover:text-primary transition-colors" />
+        <Search size={20} className="text-muted-foreground hover:text-primary transition-colors" />
       </Link>
 
       <div className="flex-grow" />
@@ -48,7 +48,7 @@ export default function NavBar({
       <NavLinks items={navItemsRight} />
 
       <Link href="/search">
-        <ShoppingCart className="h-[1.2rem] w-[1.2rem] hover:text-primary transition-colors" />
+        <ShoppingCart size={20} className="text-muted-foreground hover:text-primary transition-colors" />
       </Link>
       <ThemeToggle />
       <AccountIcon />
