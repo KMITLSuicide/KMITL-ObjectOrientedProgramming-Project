@@ -1,4 +1,4 @@
-@startuml
+@startuml Add Course To Cart
 actor "User" as UserActor
 
 participant "UI" as Server

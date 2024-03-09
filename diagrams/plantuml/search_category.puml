@@ -1,7 +1,7 @@
-@startuml
+@startuml Search Category
 actor User
 
-participant "Web Server" as Server
+participant "UI" as Server
 participant Controller
 
 

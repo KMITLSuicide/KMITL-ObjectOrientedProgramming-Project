@@ -1,4 +1,4 @@
-@startuml
+@startuml Get Cart
 
 actor "User" as UserActor
 
@@ -13,15 +13,15 @@ Server -> Controller: get_course_in_cart(current_user)
 activate Controller
 Controller -> UserClass: get_cart()
 activate UserClass
-UserClass --> Controller: Class_cart
+UserClass --> Controller: return_cart
 deactivate UserClass
 Controller -> Cart: get_courses()
 activate Cart
-Cart --> Controller: List of courses in cart
+Cart --> Controller: return List of courses in cart
 deactivate Cart
 Controller --> Server: return_cart
 deactivate Controller
 
-Server -> UserActor: return_cart
+Server --> UserActor: return_cart
 
 @enduml

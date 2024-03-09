@@ -1,7 +1,7 @@
-@startuml
+@startuml Search Teacher
 actor User
 
-participant "Web Server" as Server
+participant "UI" as Server
 participant Controller
 
 User -> Server: Search Teacher

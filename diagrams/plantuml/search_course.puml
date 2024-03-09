@@ -1,7 +1,7 @@
-@startuml
+@startuml Search Course
 actor User
 
-participant "Web Server" as Server
+participant "UI" as Server
 participant Controller
 participant Course
 

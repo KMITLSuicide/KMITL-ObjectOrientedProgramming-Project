@@ -111,8 +111,8 @@ Progress o-- ProgressVideo
 Progress o-- ProgressQuiz
 Progress --> Course
 Progress --o User
-Video <|-- ProgressVideo
-Quiz <|-- ProgressQuiz
+Video <-- ProgressVideo
+Quiz <-- ProgressQuiz
 Course *-- Video
 Course *-- Quiz
 Course *-- Review

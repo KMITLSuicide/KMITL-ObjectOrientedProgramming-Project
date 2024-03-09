@@ -1,7 +1,8 @@
-@startuml
+@startuml Get Course For Teacher
+
 actor User
 
-participant "Web Server" as Server
+participant "UI" as Server
 participant Controller
 
 User -> Server: Get Course For Teacher

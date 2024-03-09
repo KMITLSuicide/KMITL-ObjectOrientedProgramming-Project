@@ -1,4 +1,4 @@
-@startuml
+@startuml Remove Course From Cart
 actor "User" as UserActor
 
 participant "UI" as Server
@@ -8,17 +8,17 @@ participant Cart
 
 
 UserActor -> Server: Remove Course
-Server -> Controller: remove_course_to_cart(current_user, course_id_query)
+Server -> Controller: remove_course_from_cart(current_user, course_id_query)
 activate Controller
 Controller -> UserClass: search_course_by_id(course_id_query)
 activate UserClass
-UserClass --> Controller: Class_course
+UserClass --> Controller: return_course
 deactivate UserClass
 Controller -> UserClass: get_cart()
 activate UserClass
-UserClass --> Controller: Class_cart
+UserClass --> Controller: return_cart
 deactivate UserClass
-Controller -> Cart: remove_course(Class_course)
+Controller -> Cart: remove_course(course)
 activate Cart
 Cart --> Controller: Course removed from cart
 deactivate Cart
