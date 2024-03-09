@@ -25,7 +25,7 @@ def add_course_to_cart(current_user: Annotated[User, Depends(get_current_user)],
         obj_cart = current_user.get_cart()
 
     if obj_course in obj_cart.get_courses():
-        return "Error: This course already in your cart"
+        raise HTTPException(status_code=400)#Fail
         
     obj_cart.add_course(obj_course)
 
