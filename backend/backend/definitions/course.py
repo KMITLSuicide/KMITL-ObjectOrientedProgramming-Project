@@ -1,6 +1,6 @@
 from __future__ import annotations
 import uuid
-from typing import List, Literal
+from typing import List, Literal, Optional
 from pydantic import UUID4
 
 # from backend.definitions.controller import Controller
@@ -86,16 +86,82 @@ class CourseMaterialImage(CourseMaterial):  # Question: Is CourseMaterialImage  
 class CourseMaterialQuiz(CourseMaterial):
     def __init__(self, name: str, description: str) -> None:
         super().__init__(name, description)
-        self.__questions: List[QuizQuestion] = []
+        self.__questions: List[QuizQuestion] = [QuizQuestion("default question", True)]
 
     def add_question(self, question: QuizQuestion):
         if isinstance(question, QuizQuestion):
             self.__questions.append(question)
             return True
         return False
+    
+    def search_question_by_id(self, id : uuid.UUID):
+        return next(quiz for quiz in self.__questions if isinstance(quiz, QuizQuestion) and quiz.get_id() == id)
 
     def get_questions(self):
         return self.__questions
+    
+    def get_correct_answer(self):
+        return [question for question in self.__questions if isinstance(question, QuizQuestion) and question.get_correct()]
+
+    def calculate_normalized_correctness(self, answers: List[QuizQuestion]) -> float:
+        correct_answers = self.get_correct_answer()
+
+        if not correct_answers:
+            raise ValueError("The quiz has no correct answers. Unable to calculate correctness.")
+
+        correct_count = sum(answer in correct_answers for answer in answers)
+        total_correct_answers = len(correct_answers)
+
+        normalized_score = correct_count / total_correct_answers if total_correct_answers > 0 else 0.0
+        return normalized_score
+
+    def evaluate_answer(self, answers: List[QuizQuestion]):
+        correct_answers = self.get_correct_answer()
+        num_correct_answers = len(correct_answers)
+
+        if num_correct_answers == 0:
+            return False, "No correct answers available for evaluation."
+
+        # Remove duplicates from user answers
+        unique_user_answers = list(set(answers))
+
+        if not unique_user_answers or len(unique_user_answers) != num_correct_answers:
+            return False, "Invalid number of unique answers provided for evaluation."
+
+        normalized_correctness = self.calculate_normalized_correctness(unique_user_answers)
+
+        if normalized_correctness == 1:
+            return True, "Congratulations! You answered all questions correctly."
+        else:
+            user_answer_count = int(normalized_correctness * num_correct_answers)
+            return False, f"You got {user_answer_count} out of {num_correct_answers} correct answers."
+
+    def is_valid_quiz(self) -> bool:
+        correct_count = sum(question.get_correct() for question in self.__questions)
+
+        return correct_count >= 1
+    
+    def edit_question(self, quiz_question: QuizQuestion, question: Optional[str] = None, correct: Optional[bool] = None):
+        if correct is not None:
+            quiz_question.set_correct(correct)
+
+            if not self.is_valid_quiz():
+                quiz_question.set_correct(not correct)
+                return False,"Quiz, must have atleast 1 correct answer"
+            
+        if question is not None:
+            quiz_question.set_question(question)
+        return True,"Success"
+
+    def edit(self, name: Optional[str] = None, description: Optional[str] = None):
+        if name is not None:
+            self.__name = name
+        if description is not None:
+            self.__description = description
+            
+
+
+        
 
 class CourseReview:
     def __init__(
@@ -157,6 +223,7 @@ class Course:
             self.__latest_video = video
             return True
         return False
+    
 
     def add_image(self, image: CourseMaterialImage):
         if isinstance(image, CourseMaterialImage):
@@ -231,6 +298,15 @@ class Course:
             if review.get_reviewer() == user:
                 return review
         return None
+
+    def search_quiz_by_id(self, id: uuid.UUID):
+        return next(quiz for quiz in self.__quizes if isinstance(quiz, CourseMaterialQuiz) and quiz.get_id() == id)
+    
+    def search_video_by_id(self, id: uuid.UUID):
+        return next(video for video in self.__videos if isinstance(video, CourseMaterialVideo) and video.get_id() == id)
+    
+    def search_image_by_id(self, id: uuid.UUID):
+        return next(image for image in self.__images if isinstance(image, CourseMaterialImage) and image.get_id() == id)
 
     def search_video_by_name(self, name: str):
         for video in self.__videos:
