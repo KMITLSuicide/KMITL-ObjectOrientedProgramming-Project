@@ -32,7 +32,7 @@ export default function MyTeachings() {
         <h1 className="text-3xl font-bold">My Learnings</h1>
         <div className="grid grid-cols-4 gap-4">
           {cardsData?.map((course) => {
-            return <CourseCard key={course.id} course={course} customLink={`/course/${course.id}/edit`} />;
+            return <CourseCard key={course.id} course={course} customLink={`/course/${course.id}/learn`} showPrice={false} />;
           })}
         </div>
       </div>

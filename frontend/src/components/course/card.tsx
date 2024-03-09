@@ -15,10 +15,12 @@ export function CourseCard({
   course,
   className,
   customLink,
+  showPrice = true,
 }: {
   course: CourseCardData;
   className?: string;
   customLink?: string;
+  showPrice?: boolean;
 }) {
   return (
     <Card
@@ -42,15 +44,17 @@ export function CourseCard({
           <CardTitle>{course.name}</CardTitle>
           <CardDescription>{course.description}</CardDescription>
         </CardContent>
-        <CardFooter>
-          <div className="flex w-fit items-center justify-center rounded-md p-2 outline outline-1">
-            {course.price.toLocaleString(Config.locale, {
-              style: "currency",
-              currency: Config.currency,
-              minimumFractionDigits: 0,
-            })}
-          </div>
-        </CardFooter>
+        {showPrice && (
+          <CardFooter>
+            <div className="flex w-fit items-center justify-center rounded-md p-2 outline outline-1">
+              {course.price.toLocaleString(Config.locale, {
+                style: "currency",
+                currency: Config.currency,
+                minimumFractionDigits: 0,
+              })}
+            </div>
+          </CardFooter>
+        )}
       </Link>
     </Card>
   );

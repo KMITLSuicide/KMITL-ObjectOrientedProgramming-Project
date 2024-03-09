@@ -3,7 +3,7 @@ import { type CourseCardData } from "~/src/lib/definitions/course";
 
 export async function getMyLearnings() {
   try {
-    const response = await api.get<CourseCardData[]>("/user/view_my_learning");
+    const response = await api.get<CourseCardData[]>("/user/learnings");
 
     if (response.status == 200) {
       return response.data;

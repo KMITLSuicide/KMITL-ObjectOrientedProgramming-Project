@@ -5,7 +5,6 @@ import CourseLearnSidebar, {
   type SidebarCategory,
   type SidebarItem,
 } from "~/src/components/course/sidebar";
-import { ScrollArea } from "~/src/components/ui/scroll-area";
 import { getCourseLearnDataFromAPI } from "~/src/lib/data/course";
 import { type CourseLearn } from "~/src/lib/definitions/course";
 import { useToast } from "~/src/components/ui/use-toast";
