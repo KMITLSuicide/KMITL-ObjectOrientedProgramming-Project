@@ -29,10 +29,12 @@ export function CourseCardInCart({
   course,
   className,
   customLink,
+  updateCart,
 }: {
   course: CourseCardData;
   className?: string;
   customLink?: string;
+  updateCart: () => void;
 }) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -49,6 +51,8 @@ export function CourseCardInCart({
         description: "Failed to delete item from cart",
         variant: "destructive",
       });
+    } else {
+      void updateCart();
     }
   }
 

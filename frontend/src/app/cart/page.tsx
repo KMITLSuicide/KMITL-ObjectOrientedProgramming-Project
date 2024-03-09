@@ -27,18 +27,20 @@ const FormSchema = z.object({
 export default function Cart() {
   const [cardsData, setCardsData] = useState<CourseCardData[] | null | undefined>(undefined);
   const [totalPrice, setTotalPrice] = useState<number | undefined>(undefined);
-  useEffect(() => {
-    async function fetchData() {
-      const apiData = await getMyCart();
-      setCardsData(apiData);
-      if (apiData === null) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch my cart",
-          variant: "destructive",
-        });
-      }
+
+  async function fetchData() {
+    const apiData = await getMyCart();
+    setCardsData(apiData);
+    if (apiData === null) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch my cart",
+        variant: "destructive",
+      });
     }
+  }
+
+  useEffect(() => {
     void fetchData();
   }, []);
 
@@ -73,13 +75,16 @@ export default function Cart() {
   return (
     <div className="flex w-full justify-center">
       <div className="flex flex-col w-full max-w-screen-lg space-y-4">
-        <h1 className="text-3xl font-bold">Cart</h1>
+        <div>
+          <h1 className="text-3xl font-bold">Cart</h1>
+          <p className="text-base">Items: {cardsData?.length ?? 0}</p>
+        </div>
 
         <div className="flex flex-row w-full space-x-6">
 
           <div className="w-full h-fit grid gap-4">
             {cardsData?.map((course) => {
-              return (<CourseCardInCart key={course.id} course={course} />);
+              return (<CourseCardInCart key={course.id} course={course} updateCart={fetchData} />);
             })}
           </div>
 
