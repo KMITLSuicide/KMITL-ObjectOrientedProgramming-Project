@@ -16,8 +16,8 @@ route_tags: List[str | Enum] = ["Coupon"]
 class CouponData(BaseModel):
     coupon_id: str
     discount: int
-
-class GetAllCoupon(BaseModel):
+    
+class CouponCourseData(BaseModel):
     type: str
     coupon_id: str
     discount: int
@@ -25,11 +25,11 @@ class GetAllCoupon(BaseModel):
     course_name: str
     course_id: str
     
-class ReturnCouponData(BaseModel):
+class CouponTeacherData(BaseModel):
+    type: str
     coupon_id: str
     discount: int
-    teacher: str
-    course: str
+    teacher_name: str
     
 @router.get("/coupon", tags=["Debug Purposes"])
 def get_all_coupon():
@@ -37,18 +37,16 @@ def get_all_coupon():
     for coupon in controller.get_all_coupons():
         if isinstance(coupon, CouponTeacher):
             return_data.append(
-                GetAllCoupon(
+                CouponTeacherData(
                     type="Teacher Coupon",
                     coupon_id=str(coupon.get_id()),
                     discount=coupon.get_discount(),
-                    teacher_name=str(coupon.get_teacher().get_name()),
-                    course_name="None",
-                    course_id="None"
+                    teacher_name=str(coupon.get_teacher().get_name())
                 )
             )
         elif isinstance(coupon, CouponCourse):
             return_data.append(
-                GetAllCoupon(
+                CouponCourseData(
                     type="Course Coupon",
                     coupon_id=str(coupon.get_id()),
                     discount=coupon.get_discount(),
@@ -61,8 +59,8 @@ def get_all_coupon():
             return_data.append(
                 "Error Warning"
             )
-        return_data.append("SUCCESS")
-        return return_data
+    return return_data
+
 
 @router.post("/teacher/add_coupon_course/{course_id}", tags=route_tags)
 def add_coupon_course(
@@ -79,7 +77,34 @@ def add_coupon_course(
     if not isinstance(course, Course):
         return "Error: Course is not instance"
     controller.add_coupon_course(add_coupon_data.coupon_id, add_coupon_data.discount, course, current_user)
-    return controller.get_all_coupons_of_this_teacher(current_user)
+    return_data = []
+    for coupon in controller.get_all_coupons():
+        if isinstance(coupon, CouponTeacher):
+            return_data.append(
+                CouponTeacherData(
+                    type="Teacher Coupon",
+                    coupon_id=str(coupon.get_id()),
+                    discount=coupon.get_discount(),
+                    teacher_name=str(coupon.get_teacher().get_name())
+                )
+            )
+        elif isinstance(coupon, CouponCourse):
+            return_data.append(
+                CouponCourseData(
+                    type="Course Coupon",
+                    coupon_id=str(coupon.get_id()),
+                    discount=coupon.get_discount(),
+                    teacher_name=str(coupon.get_teacher().get_name()),
+                    course_name=str(coupon.get_course().get_name()),
+                    course_id=str(coupon.get_course().get_id())
+                )
+            )
+        else:
+            return_data.append(
+                "Error Warning"
+            )
+    return return_data
+
 
 @router.post("/teacher/add_coupon_teacher", tags=route_tags)
 def add_coupon_teacher(
@@ -92,4 +117,30 @@ def add_coupon_teacher(
                 }
             ]),],):
     controller.add_coupon_teacher(add_coupon_data.coupon_id, add_coupon_data.discount, current_user)
-    return controller.get_all_coupons_of_this_teacher(current_user)
+    return_data = []
+    for coupon in controller.get_all_coupons():
+        if isinstance(coupon, CouponTeacher):
+            return_data.append(
+                CouponTeacherData(
+                    type="Teacher Coupon",
+                    coupon_id=str(coupon.get_id()),
+                    discount=coupon.get_discount(),
+                    teacher_name=str(coupon.get_teacher().get_name())
+                )
+            )
+        elif isinstance(coupon, CouponCourse):
+            return_data.append(
+                CouponCourseData(
+                    type="Course Coupon",
+                    coupon_id=str(coupon.get_id()),
+                    discount=coupon.get_discount(),
+                    teacher_name=str(coupon.get_teacher().get_name()),
+                    course_name=str(coupon.get_course().get_name()),
+                    course_id=str(coupon.get_course().get_id())
+                )
+            )
+        else:
+            return_data.append(
+                "Error Warning"
+            )
+    return return_data
