@@ -50,7 +50,7 @@ def search_course_by_id_from_progression(current_user: Annotated[User, Depends(g
     course = current_user.search_course_by_id(course_id)
     return course
 
-@router.get("/teacher/my_teaching", tags=["Teacher"])
+@router.get("/teacher/teachings", tags=["Teacher"])
 def get_my_teaching(current_user: Annotated[User, Depends(get_current_user)]):
     search_results: List[CourseCardData] = []
 
@@ -119,7 +119,7 @@ def answer_quiz(
 
     if not isinstance(progress, Progress):
         raise HTTPException(status_code=404, detail="Progress not found. Please check your progress_id")
-    
+
     quiz = next((progress_quiz.get_quiz() for progress_quiz in progress.get_progress_quizes() if isinstance(progress_quiz, ProgressQuiz) and progress_quiz.get_quiz().get_id() == quiz_id), None)
 
     if not isinstance(quiz, CourseMaterialQuiz):
@@ -130,8 +130,8 @@ def answer_quiz(
 
     return quiz.evaluate_answer(answer_list)
 
-    
-    
+
+
 
 class AccountInfo(BaseException):
     type: Literal['user', 'teacher']
