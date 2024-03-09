@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getCategoryDataWithIDFromAPI } from "~/src/lib/data/category";
 import { type CategoryInfo } from "~/src/lib/definitions/category";
 import { CourseCard } from "~/src/components/course/card";
+import { toast } from "~/src/components/ui/use-toast";
 
 export default function CategoryIDPage({
   params,
@@ -17,8 +18,14 @@ export default function CategoryIDPage({
   useEffect(() => {
     async function fetchData() {
       const apiData = await getCategoryDataWithIDFromAPI(params.categoryID);
-      console.log(apiData);
       setCategoryIDData(apiData);
+
+      if (apiData === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch data",
+          variant: "destructive",
+        })}
     }
     void fetchData();
   }, []);

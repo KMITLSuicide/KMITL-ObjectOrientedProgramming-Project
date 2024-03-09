@@ -47,7 +47,7 @@ export default function NavBar({
 
       <NavLinks items={navItemsRight} />
 
-      <Link href="/search">
+      <Link href="/cart">
         <ShoppingCart size={20} className="text-muted-foreground hover:text-primary transition-colors" />
       </Link>
       <ThemeToggle />

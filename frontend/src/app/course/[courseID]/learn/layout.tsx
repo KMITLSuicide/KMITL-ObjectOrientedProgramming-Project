@@ -5,7 +5,6 @@ import CourseLearnSidebar, {
   type SidebarCategory,
   type SidebarItem,
 } from "~/src/components/course/sidebar";
-import { ScrollArea } from "~/src/components/ui/scroll-area";
 import { getCourseLearnDataFromAPI } from "~/src/lib/data/course";
 import { type CourseLearn } from "~/src/lib/definitions/course";
 import { useToast } from "~/src/components/ui/use-toast";
@@ -26,6 +25,12 @@ export default function CourseLearnLayout({
   useEffect(() => {
     void getCourseLearnDataFromAPI(params.courseID).then((data) => {
       setLearnData(data);
+      if (data === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch data",
+          variant: "destructive",
+        })}
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -84,8 +89,8 @@ export default function CourseLearnLayout({
   return (
     <div className="flex h-full w-full justify-center">
       <div className="flex w-full max-w-screen-xl space-x-6">
-        <div className="h-full w-4/5 rounded-xl bg-secondary">
-          <ScrollArea className="m-8">{children}</ScrollArea>
+        <div className="h-full w-4/5 rounded-xl bg-secondary p-8">
+          {children}
         </div>
         <div className="h-full w-1/5">
           <Button
