@@ -1,79 +1,72 @@
-@startuml FastAPI - Cart Management Sequence Diagram
+@startuml
+actor "User" as UserActor
 
-actor User
+participant "UI" as Server
 participant Controller
-participant current_user
-participant obj_course
-participant obj_cart
-participant CourseCardData
-participant Response
+participant "User" as UserClass
+participant Cart
 
-User -> Controller: add_course_to_cart(current_user, course_id)
+
+UserActor -> Server: HTTP Request
+activate Server
+
+Server -> Controller: add_course_to_cart(current_user, course_id)
 activate Controller
-Controller -> current_user: get_current_user()
-activate current_user
-current_user --> Controller: User object
-deactivate current_user
-Controller -> Controller: search_course_by_id(course_id)
-activate Controller
-Controller -> obj_course: search_course_by_id(course_id)
-activate obj_course
-obj_course --> Controller: Course object
-deactivate obj_course
-Controller -> current_user: get_cart()
-activate current_user
-current_user --> Controller: Cart object
-deactivate current_user
-Controller -> obj_cart: add_course(obj_course)
-activate obj_cart
-obj_cart --> Controller: Course added to cart
-deactivate obj_cart
-Controller -> Response: Return response with CourseCardData
-activate Response
-Response --> User: Updated cart data
-deactivate Response
+Controller -> UserClass: search_course_by_id(course_id)
+activate UserClass
+UserClass --> Controller: Class_course
+deactivate UserClass
+Controller -> UserClass: get_cart()
+activate UserClass
+UserClass --> Controller: Class_cart
+deactivate UserClass
+Controller -> Cart: add_course(Class_course)
+activate Cart
+Cart --> Controller: Course added to cart
+deactivate Cart
+Controller -> Cart: get_courses()
+activate Cart
+Cart --> Controller: List of courses in cart
+deactivate Cart
+Controller --> Server: return_cart
 deactivate Controller
 
-User -> Controller: remove_course_to_cart(current_user, course_id_query)
+Server -> Server: HTTP Response with return_cart
+
+UserActor -> Server: HTTP Request
+Server -> Controller: remove_course_to_cart(current_user, course_id_query)
 activate Controller
-Controller -> current_user: get_current_user()
-activate current_user
-current_user --> Controller: User object
-deactivate current_user
-Controller -> Controller: search_course_by_id(course_id_query)
-activate Controller
-Controller -> obj_course: search_course_by_id(course_id_query)
-activate obj_course
-obj_course --> Controller: Course object
-deactivate obj_course
-Controller -> current_user: get_cart()
-activate current_user
-current_user --> Controller: Cart object
-deactivate current_user
-Controller -> obj_cart: remove_course(obj_course)
-activate obj_cart
-obj_cart --> Controller: Course removed from cart
-deactivate obj_cart
-Controller -> Response: Return response with updated cart data
-activate Response
-Response --> User: Updated cart data
-deactivate Response
+Controller -> UserClass: search_course_by_id(course_id_query)
+activate UserClass
+UserClass --> Controller: Class_course
+deactivate UserClass
+Controller -> UserClass: get_cart()
+activate UserClass
+UserClass --> Controller: Class_cart
+deactivate UserClass
+Controller -> Cart: remove_course(Class_course)
+activate Cart
+Cart --> Controller: Course removed from cart
+deactivate Cart
+Controller --> Server: Class_cart
 deactivate Controller
 
-User -> Controller: get_course_in_cart(current_user)
+Server -> Server: HTTP Response with Class_cart
+
+UserActor -> Server: HTTP Request
+Server -> Controller: get_course_in_cart(current_user)
 activate Controller
-Controller -> current_user: get_current_user()
-activate current_user
-current_user --> Controller: User object
-deactivate current_user
-Controller -> current_user: get_cart()
-activate current_user
-current_user --> Controller: Cart object
-deactivate current_user
-Controller -> Response: Return response with CourseCardData
-activate Response
-Response --> User: Courses in the cart
-deactivate Response
+Controller -> UserClass: get_cart()
+activate UserClass
+UserClass --> Controller: Class_cart
+deactivate UserClass
+Controller -> Cart: get_courses()
+activate Cart
+Cart --> Controller: List of courses in cart
+deactivate Cart
+Controller --> Server: return_cart
 deactivate Controller
+
+Server -> Server: HTTP Response with return_cart
 
 @enduml

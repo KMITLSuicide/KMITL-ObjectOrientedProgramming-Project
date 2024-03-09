@@ -1,37 +1,30 @@
-@startuml FastAPI - Add Course to Cart Sequence Diagram
-
+@startuml
 actor User
-participant Controller
-participant current_user
-participant obj_course
-participant obj_cart
-participant CourseCardData
-participant Response
 
-User -> Controller: add_course_to_cart(current_user, course_id)
+participant "UI" as Server
+participant Controller
+participant Category
+
+User -> Server: HTTP Request
+activate Server
+
+Server -> Controller: get_all_categories()
 activate Controller
-Controller -> current_user: get_current_user()
-activate current_user
-current_user --> Controller: User object
-deactivate current_user
-Controller -> Controller: search_course_by_id(course_id)
-activate Controller
-Controller -> obj_course: search_course_by_id(course_id)
-activate obj_course
-obj_course --> Controller: Course object
-deactivate obj_course
-Controller -> current_user: get_cart()
-activate current_user
-current_user --> Controller: Cart object
-deactivate current_user
-Controller -> obj_cart: add_course(obj_course)
-activate obj_cart
-obj_cart --> Controller: Course added to cart
-deactivate obj_cart
-Controller -> Response: Return response with CourseCardData
-activate Response
-Response --> User: Updated cart data
-deactivate Response
+Controller --> Server: List of categories
 deactivate Controller
+
+Server -> Server: HTTP Response with category_names
+
+User -> Server: HTTP Request
+Server -> Controller: get_category_by_id(category_id)
+activate Controller
+Controller -> Category: search_category_by_id(category_id)
+activate Category
+Category --> Controller: category
+deactivate Category
+Controller --> Server: CategoryInfo
+deactivate Controller
+
+Server -> Server: HTTP Response with CategoryInfo
 
 @enduml
