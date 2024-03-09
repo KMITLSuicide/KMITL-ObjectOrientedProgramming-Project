@@ -34,11 +34,10 @@ export default function Index() {
         <div className="grid grid-cols-[1fr_2fr] h-2/5 w-full flex-col">
           <div className="relative h-full">
             <Image
-              className="absolute"
+              className="absolute object-contain"
               src="/pointy-guy.png"
               alt="pointy guy"
               fill
-              objectFit='contain'
             />
           </div>
           <div className="flex flex-col">
