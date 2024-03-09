@@ -53,24 +53,24 @@ export function CourseLearnImage({
 
   return (
     <>
-      <div className="flex flex-col w-full h-full space-y-2">
+      <div className="max-h-2/3 flex flex-col space-y-2">
         <h1 className="text-2xl font-bold">Preview</h1>
-        <div className="h-full w-full">
-          <div className="relative h-full w-full">
-            <Image
-              alt={watchedFields?.description ?? "description not found"}
-              src={watchedFields?.url ?? "/notexture.png"}
-              fill
-              objectFit="contain"
-              className="fixed mb-6 rounded-xl"
-            />
-          </div>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={watchedFields?.url ?? "/notexture.png"}
+          alt={watchedFields?.description ?? "description not found"}
+          height={320}
+          style={{
+            objectFit: "contain",
+            width: "100%",
+            height: "320px",
+          }}
+        />
         <h2 className="text-2xl font-bold">{watchedFields?.name}</h2>
         <p>{watchedFields?.description}</p>
       </div>
       <div>
-        <hr className="h-px border-0 bg-muted-foreground my-4" />
+        <hr className="my-4 h-px border-0 bg-muted-foreground" />
       </div>
       <div className="h-fit space-y-2">
         <h1 className="text-2xl font-bold">Edit</h1>
