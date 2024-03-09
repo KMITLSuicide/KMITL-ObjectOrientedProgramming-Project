@@ -29,20 +29,24 @@ class Order:#บิล
 
 
 class Coupon:
-    def __init__(self, coupon_id, discount) -> None:
+    def __init__(self, coupon_id:str, discount, teacher:"Teacher") -> None:
         self.__coupon_id = coupon_id
         self.__discount = discount
+        self.__teacher = teacher
         
     def get_id(self):
         return self.__coupon_id    
         
     def get_discount(self):
         return self.__discount
+    
+    def get_teacher(self) -> "Teacher":
+        return self.__teacher
 
 
 class CouponCourse(Coupon):
-    def __init__(self, coupon_id, discount, course) -> None:
-        super().__init__(coupon_id, discount)
+    def __init__(self, coupon_id, discount, teacher, course:Course) -> None:
+        super().__init__(coupon_id, discount, teacher)
         self.__course = course
         
     def get_course(self):
@@ -50,10 +54,4 @@ class CouponCourse(Coupon):
 
 class CouponTeacher(Coupon):
     def __init__(self, coupon_id, discount, teacher) -> None:
-        super().__init__(coupon_id, discount)
-        self.__teacher = teacher
-        
-    def get_teacher(self):
-        return self.__teacher
-
-
+        super().__init__(coupon_id, discount, teacher)
