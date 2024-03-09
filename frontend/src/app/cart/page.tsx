@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useEffect, useState } from "react";
 import { CourseCardInCart } from "~/src/components/course/cart-card";
@@ -19,13 +19,16 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "~/src/components/ui/input";
+import Link from "next/link";
 
 const FormSchema = z.object({
   couponCode: z.string().min(1),
-})
+});
 
 export default function Cart() {
-  const [cardsData, setCardsData] = useState<CourseCardData[] | null | undefined>(undefined);
+  const [cardsData, setCardsData] = useState<
+    CourseCardData[] | null | undefined
+  >(undefined);
   const [totalPrice, setTotalPrice] = useState<number | undefined>(undefined);
 
   async function fetchData() {
@@ -59,7 +62,7 @@ export default function Cart() {
     defaultValues: {
       couponCode: "",
     },
-  })
+  });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({
@@ -69,26 +72,31 @@ export default function Cart() {
           <code className="text-white">{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
-    })
+    });
   }
 
   return (
     <div className="flex w-full justify-center">
-      <div className="flex flex-col w-full max-w-screen-lg space-y-4">
+      <div className="flex w-full max-w-screen-lg flex-col space-y-4">
         <div>
           <h1 className="text-3xl font-bold">Cart</h1>
           <p className="text-base">Items: {cardsData?.length ?? 0}</p>
         </div>
 
-        <div className="flex flex-row w-full space-x-6">
-
-          <div className="w-full h-fit grid gap-4">
+        <div className="flex w-full flex-row space-x-6">
+          <div className="grid h-fit w-full gap-4">
             {cardsData?.map((course) => {
-              return (<CourseCardInCart key={course.id} course={course} updateCart={fetchData} />);
+              return (
+                <CourseCardInCart
+                  key={course.id}
+                  course={course}
+                  updateCart={fetchData}
+                />
+              );
             })}
           </div>
 
-          <div className="w-2/5 h-fit bg-secondary rounded-lg p-6 space-y-4">
+          <div className="h-fit w-2/5 space-y-4 rounded-lg bg-secondary p-6">
             <div>
               <h2 className="text-sm">Total</h2>
               <p className="text-4xl font-bold">
@@ -97,13 +105,18 @@ export default function Cart() {
                   currency: Config.currency,
                   minimumFractionDigits: 0,
                 })}
-            </p>
+              </p>
             </div>
-            <Button className="w-full">Checkout</Button>
+            <Button className="w-full" asChild>
+              <Link href="/cart/checkout">Checkout</Link>
+            </Button>
             <hr className="h-px border-0 bg-muted-foreground" />
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-3">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="w-full space-y-3"
+              >
                 <FormField
                   control={form.control}
                   name="couponCode"
@@ -117,13 +130,13 @@ export default function Cart() {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full">Submit</Button>
+                <Button type="submit" className="w-full">
+                  Submit
+                </Button>
               </form>
             </Form>
           </div>
         </div>
-
-
       </div>
     </div>
   );
