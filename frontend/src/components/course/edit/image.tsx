@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import type { CourseLearnMaterialImage } from "~/src/lib/definitions/course";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
@@ -24,7 +23,7 @@ const FormSchema = z.object({
   url: z.string().url(),
 });
 
-export function CourseLearnImage({
+export function CourseEditImage({
   imageData: initImageData,
 }: {
   imageData: CourseLearnMaterialImage;

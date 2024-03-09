@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { CourseLearnImage } from "~/src/components/course/edit/image";
+import { CourseEditImage } from "~/src/components/course/edit/image";
 import { CourseLearnQuiz } from "~/src/components/course/edit/quiz";
 import { CourseLearnVideo } from "~/src/components/course/edit/video";
 import { toast } from "~/src/components/ui/use-toast";
@@ -66,7 +66,7 @@ export default function CourseViewMaterial({
           });
           return;
         }
-        setMaterialComponent(<CourseLearnImage imageData={image} />);
+        setMaterialComponent(<CourseEditImage imageData={image} />);
       } else if (params.materialType === "video") {
         const video = courseData?.learn_materials_videos.find((video) => video.id === params.materialID);
         if (video === undefined) {
