@@ -57,7 +57,7 @@ def get_search_teacher(teacher_name: str):
 
 
 
-@router.get("/get_courses_for_teacher/{teacher_id}", tags=route_tags)
+@router.get("/get_courses_for_teacher/{teacher_id}", tags=["Course"])
 def get_courses_for_teacher(teacher_id: UUID):
     search_results: List[CourseCardData] = []
     teacher = controller.get_teacher_by_id(teacher_id)

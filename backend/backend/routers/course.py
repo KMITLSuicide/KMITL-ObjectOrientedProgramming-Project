@@ -40,7 +40,7 @@ def get_all_course():
     return return_data
 
 
-@router.get("/course/{course_id}", tags=route_tags)
+@router.get("/course/{course_id}", tags=["Course Material"])
 def get_course_info(course_id: str):
     course = controller.search_course_by_id(uuid.UUID(course_id))
     if course is None:
@@ -78,7 +78,7 @@ def get_course_info(course_id: str):
     return course_info
 
 
-@router.get("/course/{course_id}/learn", tags=route_tags)
+@router.get("/course/{course_id}/learn", tags=["Course Material"])
 def get_learn_course_materials(
     course_id: str,
     current_user: Annotated[User, Depends(get_current_user)],
@@ -312,7 +312,7 @@ def edit_quiz(
 
     return course
 
-@router.put("/course/{course_id}/edit/{quiz_id}/edit/{question_id}", tags=["Quiz"])
+@router.put("/course/{course_id}/edit/{quiz_id}/edit/{question_id}", tags=["Question"])
 def edit_question(
     course_id: str,
     quiz_id: uuid.UUID,

@@ -13,7 +13,7 @@ router = APIRouter()
 route_tags: List[str | Enum] = ["Teacher"]
 
 
-@router.get("/teacher/{teacher_id}/course", tags=route_tags)
+@router.get("/teacher/{teacher_id}/course", tags=["Course"])
 def get_courses_for_teacher(teacher_id: UUID):
     teacher = controller.get_teacher_by_id(teacher_id)
     if not isinstance(teacher, Teacher):

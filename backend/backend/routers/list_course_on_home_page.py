@@ -12,7 +12,7 @@ import random
 
 router = APIRouter()
 
-route_tags: List[str | Enum] = ["Course"]
+route_tags: List[str | Enum] = ["HomePage"]
 
 class ShowCourse(BaseModel):
     id: str

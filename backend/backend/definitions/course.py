@@ -3,9 +3,6 @@ import uuid
 from typing import List, Literal, Optional
 from pydantic import UUID4
 
-# from backend.definitions.controller import Controller
-# from backend.controller_instance import controller
-# from backend.definitions.user import User, Teacher
 
 
 class QuizQuestion:
@@ -95,7 +92,7 @@ class CourseMaterialQuiz(CourseMaterial):
         return False
     
     def search_question_by_id(self, id : uuid.UUID):
-        return next(quiz for quiz in self.__questions if isinstance(quiz, QuizQuestion) and quiz.get_id() == id)
+        return next((quiz for quiz in self.__questions if isinstance(quiz, QuizQuestion) and quiz.get_id() == id), None)
 
     def get_questions(self):
         return self.__questions
@@ -155,10 +152,9 @@ class CourseMaterialQuiz(CourseMaterial):
 
     def edit(self, name: Optional[str] = None, description: Optional[str] = None):
         if name is not None:
-            self.__name = name
+            self._CourseMaterial__name = name
         if description is not None:
-            self.__description = description
-            
+            self._CourseMaterial__description = description
 
 
         
