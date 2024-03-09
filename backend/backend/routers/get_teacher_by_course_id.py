@@ -10,7 +10,7 @@ from backend.controller_instance import controller
 
 router = APIRouter()
 
-@router.get("/get_teacher_by_course_id/{course_id}")
+@router.get("/get_teacher_by_course_id/{course_id}",tags= ["Teacher"])
 def get_teacher_by_course_id(course_id:UUID4):
   course = controller.search_course_by_id(course_id)
   if course == None:
