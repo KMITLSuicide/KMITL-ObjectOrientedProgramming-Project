@@ -10,6 +10,7 @@ import { type CourseLearn } from "~/src/lib/definitions/course";
 import { useToast } from "~/src/components/ui/use-toast";
 import Link from "next/link";
 import { Button } from "~/src/components/ui/button";
+import { Book } from "lucide-react";
 
 export default function CourseLearnLayout({
   children,
@@ -95,10 +96,13 @@ export default function CourseLearnLayout({
         <div className="h-full w-1/5">
           <Button
             asChild
-            className="w-full justify-normal rounded-lg bg-primary px-4 py-2 text-left text-xl font-bold"
+            className="w-full justify-normal rounded-lg bg-primary px-4 py-2 text-left text-xl font-bold space-x-2"
           >
             <Link href={`/course/${learnData?.id}/learn`}>
-              {learnData?.name}
+              <Book />
+              <p>
+                {learnData?.name}
+              </p>
             </Link>
           </Button>
           <CourseLearnSidebar
