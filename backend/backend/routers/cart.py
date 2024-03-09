@@ -1,7 +1,7 @@
 from enum import Enum
 from uuid import UUID
 from typing import List, Annotated, Literal, Annotated
-from fastapi import APIRouter, Depends, Response, status, Body, Depends
+from fastapi import APIRouter, Depends, Response, status, Body, Depends, HTTPException
 from pydantic import BaseModel
 from backend.controller_instance import controller
 from backend.definitions.progress import Progress
@@ -24,6 +24,9 @@ def add_course_to_cart(current_user: Annotated[User, Depends(get_current_user)],
     if isinstance(current_user, User):
         obj_cart = current_user.get_cart()
 
+    if obj_course in obj_cart.get_courses():
+        return "Error: This course already in your cart"
+        
     obj_cart.add_course(obj_course)
 
     for course in obj_cart.get_courses():
@@ -43,12 +46,14 @@ def remove_course_to_cart(current_user: Annotated[User, Depends(get_current_user
 
     obj_course = controller.search_course_by_id(course_id_query)
     obj_cart = current_user.get_cart()
+    if obj_course not in obj_cart.get_courses():
+        return HTTPException(status_code=400)#Fail
     obj_cart.remove_course(obj_course)
 
-    return obj_cart
+    return HTTPException(status_code=200)#Succeed
 
 @router.get('/user/cart',tags= route_tags)
-def get_course_in_cart(current_user: Annotated[User, Depends(get_current_user)], course_id: UUID):
+def get_course_in_cart(current_user: Annotated[User, Depends(get_current_user)]):
     return_cart: list[CourseCardData] = []
 
     if isinstance(current_user, User):
