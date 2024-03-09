@@ -172,12 +172,15 @@ class CourseReview:
 
     def get_star(self) -> Literal[1, 2, 3, 4, 5]:
         return self.__star
-    
-    def cal_average_star(self, star):
-        pass
 
     def get_comment(self):
         return self.__comment
+    
+    def set_star(self, star: Literal[1, 2, 3, 4, 5]):
+        self.__star = star
+
+    def set_comment(self, comment :str):
+        self.__comment = comment
 
 class Course:
     def __init__(
@@ -309,6 +312,9 @@ class Course:
             if video.get_name() == name:
                 return video
         return None
+    
+    def remove_review(self, review: CourseReview):
+        self.__reviews.remove(review)
     
 
 
