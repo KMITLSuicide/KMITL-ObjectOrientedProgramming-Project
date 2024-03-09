@@ -1,0 +1,17 @@
+@startuml
+actor User
+
+participant "Web Server" as Server
+participant Controller
+
+User -> Server: Search Teacher
+Server -> Controller: get_search_teacher(teacher_name)
+activate Controller
+Controller -> Controller: search_teacher_by_name(teacher_name)
+activate Controller
+Controller --> Server: search_results
+deactivate Controller
+
+Server --> User: return teacher
+
+@enduml

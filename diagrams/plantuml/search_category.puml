@@ -1,0 +1,19 @@
+@startuml
+actor User
+
+participant "Web Server" as Server
+participant Controller
+
+
+
+User -> Server: Search Category
+Server -> Controller: get_search_category(category_name)
+activate Controller
+Controller -> Controller: search_category_by_name(category_name)
+activate Controller
+Controller --> Server: search_results
+deactivate Controller
+
+Server --> User: return Category
+
+@enduml
