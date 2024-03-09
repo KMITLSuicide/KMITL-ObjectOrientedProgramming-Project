@@ -234,7 +234,7 @@ class Controller:
                 return user
             
     def add_coupon_course(self, coupon_id, discount, course:Course, teacher:Teacher):
-        self.__coupons.append(CouponCourse(coupon_id, discount, course))
+        self.__coupons.append(CouponCourse(coupon_id, discount, teacher, course))
         return None
             
     def add_coupon_teacher(self, coupon_id, discount, teacher:Teacher):
@@ -243,3 +243,10 @@ class Controller:
         
     def get_all_coupons(self):
         return self.__coupons
+    
+    def get_all_coupons_of_this_teacher(self, teacher:Teacher):
+        coupon_in_teacher: List[Coupon] = []
+        for coupon in self.get_all_coupons():
+            if coupon.get_teacher() == teacher:
+                coupon_in_teacher.append(coupon)
+        return coupon_in_teacher
