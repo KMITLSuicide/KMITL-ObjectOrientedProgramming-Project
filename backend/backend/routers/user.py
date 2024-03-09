@@ -54,7 +54,7 @@ def get_my_teaching(current_user: Annotated[User, Depends(get_current_user)]):
     search_results: List[CourseCardData] = []
 
     if not isinstance(current_user, Teacher):
-        return HTTPException(status.HTTP_403_FORBIDDEN, 'Not a teacher')
+        raise HTTPException(status.HTTP_403_FORBIDDEN, 'Not a teacher')
 
     for course in current_user.get_my_teachings():
         search_results.append(
