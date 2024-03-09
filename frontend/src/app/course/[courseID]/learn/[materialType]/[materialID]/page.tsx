@@ -80,7 +80,7 @@ export default function CourseViewMaterial({
         setMaterialComponent(<CourseLearnVideo videoData={video} />);
       }
     }
-  }, [courseData, params.materialID, params.materialType]);
+  }, [courseData, params.materialID, params.materialType, params]);
 
   return (
     <div className="flex h-full flex-col space-y-2">
