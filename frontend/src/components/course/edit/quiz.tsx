@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "~/src/components/ui/form";
 import { toast } from "~/src/components/ui/use-toast";
-import type { CourseLearnMaterialQuiz } from "~/src/lib/definitions/course";
+import type { CourseLearnMaterialQuizWithKey } from "~/src/lib/definitions/course";
 
 
 const FormSchema = z.object({
@@ -27,7 +27,7 @@ const FormSchema = z.object({
 export function CourseLearnQuiz({
   quizData
   } : {
-  quizData: CourseLearnMaterialQuiz
+  quizData: CourseLearnMaterialQuizWithKey
 }) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -48,6 +48,7 @@ export function CourseLearnQuiz({
   }
   return (
     <>
+      <h2 className="text-3xl font-extrabold">Editing</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -56,7 +57,7 @@ export function CourseLearnQuiz({
             render={() => (
               <FormItem>
                 <div className="mb-4">
-                  <FormLabel className="text-3xl font-bold">
+                  <FormLabel className="text-2xl font-bold">
                     {quizData?.name}
                   </FormLabel>
                   <FormDescription>{quizData?.description}</FormDescription>
@@ -74,7 +75,7 @@ export function CourseLearnQuiz({
                         >
                           <FormControl>
                             <Checkbox
-                              checked={field.value?.includes(item.id)}
+                              checked={item.correct}
                               onCheckedChange={(checked) => {
                                 return checked
                                   ? field.onChange([...field.value, item.id])
@@ -98,7 +99,7 @@ export function CourseLearnQuiz({
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit">Save</Button>
         </form>
       </Form>
     </>
