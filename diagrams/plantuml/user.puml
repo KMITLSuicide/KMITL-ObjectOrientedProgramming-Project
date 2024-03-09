@@ -1,0 +1,97 @@
+@startuml FastAPI - User and Teacher Operations Sequence Diagram
+
+actor User
+participant Controller
+participant Teacher
+participant CourseCardData
+participant AccountInfo
+participant Response
+
+User -> Controller: view_my_learning(current_user)
+activate Controller
+Controller -> current_user: view_my_learning()
+activate current_user
+current_user --> Controller: List of progress data
+deactivate current_user
+Controller -> Response: Return response with progress data
+activate Response
+Response --> User: My learning progress
+deactivate Response
+deactivate Controller
+
+User -> Controller: view_video(current_user, video_name)
+activate Controller
+Controller -> current_user: view_video_by_name(video_name)
+activate current_user
+current_user --> Controller: Video object
+deactivate current_user
+Controller -> Response: Return response with video data
+activate Response
+Response --> User: Video information
+deactivate Response
+deactivate Controller
+
+User -> Controller: study_latest_course(current_user)
+activate Controller
+Controller -> current_user: get_latest_video()
+activate current_user
+current_user --> Controller: Latest video object
+deactivate current_user
+Controller -> Response: Return response with latest video data
+activate Response
+Response --> User: Latest video information
+deactivate Response
+deactivate Controller
+
+User -> Controller: get_course_by_id(current_user, course_id)
+activate Controller
+Controller -> current_user: search_course_by_id(course_id)
+activate current_user
+current_user --> Controller: Course object
+deactivate current_user
+Controller -> Response: Return response with course data
+activate Response
+Response --> User: Course information
+deactivate Response
+deactivate Controller
+
+User -> Controller: get_my_teaching(current_user)
+activate Controller
+Controller -> current_user: get_my_teachings()
+activate current_user
+alt current_user is not a Teacher
+    Controller -> Response: Return error message
+    activate Response
+    Response --> User: Error message
+    deactivate Response
+else
+    current_user --> Controller: List of teaching courses
+    Controller -> Response: Return response with teaching courses
+    activate Response
+    Response --> User: Teaching courses information
+    deactivate Response
+end
+deactivate current_user
+deactivate Controller
+
+User -> Controller: get_my_account_info(current_user)
+activate Controller
+Controller -> current_user: get_id(), get_name(), get_email()
+activate current_user
+alt current_user is a Teacher
+    current_user --> Controller: Check if current_user is a Teacher
+    Controller -> Response: Return response with teacher account info
+    activate Response
+    Response --> User: Teacher account information
+    deactivate Response
+else
+    current_user --> Controller: User account info
+    Controller -> Response: Return response with user account info
+    activate Response
+    Response --> User: User account information
+    deactivate Response
+end
+deactivate current_user
+deactivate Controller
+
+@enduml

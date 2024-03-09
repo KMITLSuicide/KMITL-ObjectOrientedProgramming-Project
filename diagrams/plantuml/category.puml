@@ -1,0 +1,30 @@
+@startuml
+actor User
+
+participant "UI" as Server
+participant Controller
+participant Category
+
+User -> Server: HTTP Request
+activate Server
+
+Server -> Controller: get_all_categories()
+activate Controller
+Controller --> Server: List of categories
+deactivate Controller
+
+Server -> Server: HTTP Response with category_names
+
+User -> Server: HTTP Request
+Server -> Controller: get_category_by_id(category_id)
+activate Controller
+Controller -> Category: search_category_by_id(category_id)
+activate Category
+Category --> Controller: category
+deactivate Category
+Controller --> Server: CategoryInfo
+deactivate Controller
+
+Server -> Server: HTTP Response with CategoryInfo
+
+@enduml

@@ -1,0 +1,78 @@
+@startuml FastAPI - Search and Get Courses Sequence Diagram
+
+actor User
+participant Controller
+participant Course
+participant Category
+participant Teacher
+participant CourseCardData
+participant SearchResults
+participant Response
+
+User -> Controller: get_search_course(course_name)
+activate Controller
+Controller -> Controller: search_course_by_name(course_name)
+activate Controller
+Controller --> Controller: List of courses
+deactivate Controller
+Controller -> Response: Return response with CourseCardData
+activate Response
+Response --> User: Search results
+deactivate Response
+deactivate Controller
+
+User -> Controller: get_search_category(category_name)
+activate Controller
+Controller -> Controller: search_category_by_name(category_name)
+activate Controller
+Controller --> Controller: List of categories
+deactivate Controller
+Controller -> Response: Return response with SearchResults
+activate Response
+Response --> User: Search results
+deactivate Response
+deactivate Controller
+
+User -> Controller: get_search_teacher(teacher_name)
+activate Controller
+Controller -> Controller: search_teacher_by_name(teacher_name)
+activate Controller
+Controller --> Controller: List of teachers
+deactivate Controller
+Controller -> Response: Return response with SearchResults
+activate Response
+Response --> User: Search results
+deactivate Response
+deactivate Controller
+
+User -> Controller: get_courses_for_teacher(teacher_id)
+activate Controller
+Controller -> Controller: get_teacher_by_id(teacher_id)
+activate Controller
+Controller --> Controller: Teacher object
+deactivate Controller
+Controller -> Response: Check if teacher is an instance of Teacher
+activate Response
+Response --> User: Error message or continue
+deactivate Response
+
+alt Teacher is instance of Teacher
+    User -> Controller: Retrieve courses taught by the teacher
+    activate Controller
+    Controller -> Teacher: get_my_teachings()
+    activate Teacher
+    Teacher --> Controller: List of courses taught
+    deactivate Teacher
+    Controller -> Response: Return response with CourseCardData
+    activate Response
+    Response --> User: Courses taught by the teacher
+    deactivate Response
+    deactivate Controller
+else
+    User -> Response: Return error message
+    activate Response
+    Response --> User: Error message
+    deactivate Response
+end
+
+@enduml
