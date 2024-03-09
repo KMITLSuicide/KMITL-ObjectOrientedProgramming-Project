@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 # from backend.backend.config import config
 
-from backend.config import APP_NAME, API_HOST, API_PORT, LOG_LEVEL
+from backend.config import API_HOST, API_PORT, LOG_LEVEL
 from backend.routers import (
     authentication,
     review,
@@ -14,7 +14,11 @@ from backend.routers import (
     category,
     search,
     list_course_on_home_page,
+    list_everything,
     user,
+    teacher,
+    get_teacher_by_course_id,
+    add_coupon,
 )
 
 app = FastAPI()
@@ -23,12 +27,15 @@ app.include_router(cart.router)
 app.include_router(authentication.router)
 app.include_router(search.router)
 app.include_router(list_course_on_home_page.router)
-# app.include_router(view_my_learning.router)
+app.include_router(list_everything.router)
 app.include_router(review.router)
 app.include_router(course.router)
 app.include_router(category.router)
 app.include_router(user.router)
 app.include_router(buy_course.router)
+app.include_router(get_teacher_by_course_id.router)
+app.include_router(teacher.router)
+app.include_router(add_coupon.router)
 
 origins = ["http://localhost:3000", "https://localhost:3000", "*"]
 

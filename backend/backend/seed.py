@@ -208,8 +208,7 @@ def seed(controller: Controller):
                 course = Course(
                     name=course_dict["name"],
                     description=course_dict["description"],
-                    price=course_dict["price"],
-                    teacher=teacher,
+                    price=course_dict["price"]
                 )
                 teacher.add_my_teaching(course)
                 category.add_course(course)

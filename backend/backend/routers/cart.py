@@ -1,7 +1,7 @@
 from enum import Enum
 from uuid import UUID
 from typing import List, Annotated, Literal, Annotated
-from fastapi import APIRouter, Depends, Response, status, Body, Depends
+from fastapi import APIRouter, Depends, Response, status, Body, Depends, HTTPException
 from pydantic import BaseModel
 from backend.controller_instance import controller
 from backend.definitions.progress import Progress
@@ -24,6 +24,9 @@ def add_course_to_cart(current_user: Annotated[User, Depends(get_current_user)],
     if isinstance(current_user, User):
         obj_cart = current_user.get_cart()
 
+    if obj_course in obj_cart.get_courses():
+        raise HTTPException(status_code=400)#Fail
+        
     obj_cart.add_course(obj_course)
 
     for course in obj_cart.get_courses():
@@ -33,22 +36,24 @@ def add_course_to_cart(current_user: Annotated[User, Depends(get_current_user)],
                 name = course.get_name(),
                 description = course.get_description(),
                 price = course.get_price(),
-                rating = 0,
+                rating = course.get_average_rating(),
                 banner_image = course.get_banner_image_url()
         ))
     return return_cart
 
 @router.delete('/user/cart',tags= route_tags)
-def remove_course_to_cart(current_user: Annotated[User, Depends(get_current_user)], course_id_query: UUID):
+def remove_course_to_cart(current_user: Annotated[User, Depends(get_current_user)], course_id: UUID):
 
-    obj_course = controller.search_course_by_id(course_id_query)
+    obj_course = controller.search_course_by_id(course_id)
     obj_cart = current_user.get_cart()
+    if obj_course not in obj_cart.get_courses():
+        raise HTTPException(status_code=400)#Fail
     obj_cart.remove_course(obj_course)
 
-    return obj_cart
+    return HTTPException(status_code=200)#Succeed
 
 @router.get('/user/cart',tags= route_tags)
-def get_course_in_cart(current_user: Annotated[User, Depends(get_current_user)], course_id: UUID):
+def get_course_in_cart(current_user: Annotated[User, Depends(get_current_user)]):
     return_cart: list[CourseCardData] = []
 
     if isinstance(current_user, User):
@@ -61,7 +66,7 @@ def get_course_in_cart(current_user: Annotated[User, Depends(get_current_user)],
                 name = course.get_name(),
                 description = course.get_description(),
                 price = course.get_price(),
-                rating = 0,
+                rating = course.get_average_rating(),
                 banner_image = course.get_banner_image_url()
         ))
 

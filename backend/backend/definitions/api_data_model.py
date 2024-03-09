@@ -9,6 +9,12 @@ class CourseCardData(BaseModel):
     rating: float
     banner_image: str
 
+class CourseCardDataWithLabel(BaseModel):
+    id: str
+    label: str
+    cards: list[CourseCardData]
+
+
 class CourseInfo(BaseModel):
     id: str
     name: str

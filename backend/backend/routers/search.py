@@ -25,13 +25,13 @@ def get_search_course(course_name: str):
     search_results: List[CourseCardData] = []
     courses = controller.search_course_by_name(course_name)
     for course in courses:
-        search_results.append(            
+        search_results.append(
             CourseCardData(
                 id=str(course.get_id()),
                 name=course.get_name(),
                 description=course.get_description(),
                 price=course.get_price(),
-                rating=0,
+                rating=course.get_average_rating(),
                 banner_image=course.get_banner_image_url(),
             )
         )
@@ -70,7 +70,7 @@ def get_courses_for_teacher(teacher_id: UUID):
                 name=course.get_name(),
                 description=course.get_description(),
                 price=course.get_price(),
-                rating=0,
+                rating= course.get_average_rating(),
                 banner_image=course.get_banner_image_url(),
             )
         )
