@@ -297,4 +297,3 @@ class AddQuizToCoursePostData(CourseMaterialPostData):
 #     course.add_quiz(quiz)
 
 #     return course
-
