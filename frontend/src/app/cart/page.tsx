@@ -73,11 +73,11 @@ export default function Cart() {
   return (
     <div className="flex w-full justify-center">
       <div className="flex flex-col w-full max-w-screen-lg space-y-4">
-        <h1 className="text-3xl font-bold ml-6">Cart</h1>
+        <h1 className="text-3xl font-bold">Cart</h1>
 
         <div className="flex flex-row w-full space-x-6">
 
-          <div className="w-full grid gap-4">
+          <div className="w-full h-fit grid gap-4">
             {cardsData?.map((course) => {
               return (<CourseCardInCart key={course.id} course={course} />);
             })}
@@ -98,7 +98,7 @@ export default function Cart() {
             <hr className="h-px border-0 bg-muted-foreground" />
 
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-2">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-3">
                 <FormField
                   control={form.control}
                   name="couponCode"

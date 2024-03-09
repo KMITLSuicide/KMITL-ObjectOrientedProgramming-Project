@@ -38,7 +38,7 @@ export default function CourseView({
         })}
     }
     void fetchData(params.courseID);
-  }, []);
+  }, [params.courseID]);
 
   return (
     <div className="flex h-full w-full justify-center">
