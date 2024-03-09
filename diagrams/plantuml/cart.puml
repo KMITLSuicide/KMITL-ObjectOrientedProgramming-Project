@@ -1,0 +1,79 @@
+@startuml FastAPI - Cart Management Sequence Diagram
+
+actor User
+participant Controller
+participant current_user
+participant obj_course
+participant obj_cart
+participant CourseCardData
+participant Response
+
+User -> Controller: add_course_to_cart(current_user, course_id)
+activate Controller
+Controller -> current_user: get_current_user()
+activate current_user
+current_user --> Controller: User object
+deactivate current_user
+Controller -> Controller: search_course_by_id(course_id)
+activate Controller
+Controller -> obj_course: search_course_by_id(course_id)
+activate obj_course
+obj_course --> Controller: Course object
+deactivate obj_course
+Controller -> current_user: get_cart()
+activate current_user
+current_user --> Controller: Cart object
+deactivate current_user
+Controller -> obj_cart: add_course(obj_course)
+activate obj_cart
+obj_cart --> Controller: Course added to cart
+deactivate obj_cart
+Controller -> Response: Return response with CourseCardData
+activate Response
+Response --> User: Updated cart data
+deactivate Response
+deactivate Controller
+
+User -> Controller: remove_course_to_cart(current_user, course_id_query)
+activate Controller
+Controller -> current_user: get_current_user()
+activate current_user
+current_user --> Controller: User object
+deactivate current_user
+Controller -> Controller: search_course_by_id(course_id_query)
+activate Controller
+Controller -> obj_course: search_course_by_id(course_id_query)
+activate obj_course
+obj_course --> Controller: Course object
+deactivate obj_course
+Controller -> current_user: get_cart()
+activate current_user
+current_user --> Controller: Cart object
+deactivate current_user
+Controller -> obj_cart: remove_course(obj_course)
+activate obj_cart
+obj_cart --> Controller: Course removed from cart
+deactivate obj_cart
+Controller -> Response: Return response with updated cart data
+activate Response
+Response --> User: Updated cart data
+deactivate Response
+deactivate Controller
+
+User -> Controller: get_course_in_cart(current_user)
+activate Controller
+Controller -> current_user: get_current_user()
+activate current_user
+current_user --> Controller: User object
+deactivate current_user
+Controller -> current_user: get_cart()
+activate current_user
+current_user --> Controller: Cart object
+deactivate current_user
+Controller -> Response: Return response with CourseCardData
+activate Response
+Response --> User: Courses in the cart
+deactivate Response
+deactivate Controller
+
+@enduml
