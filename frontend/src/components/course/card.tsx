@@ -11,11 +11,24 @@ import Image from "next/image";
 import { Config } from "~/src/config";
 import Link from "next/link";
 
-export function CourseCard({ course, className }: { course: CourseCardData, className?: string }) {
+export function CourseCard({
+  course,
+  className,
+  customLink,
+  showPrice = true,
+}: {
+  course: CourseCardData;
+  className?: string;
+  customLink?: string;
+  showPrice?: boolean;
+}) {
   return (
-    <Card key={course.id} className={`w-full cursor-pointer hover:bg-secondary transition-colors ${className}`}>
+    <Card
+      key={course.id}
+      className={`w-full cursor-pointer transition-colors hover:bg-secondary ${className}`}
+    >
       <Link
-        href={`/course/${course.id}`}
+        href={customLink ? customLink : `/course/${course.id}`}
         className="flex h-full w-full flex-col"
       >
         <CardHeader>
@@ -31,15 +44,17 @@ export function CourseCard({ course, className }: { course: CourseCardData, clas
           <CardTitle>{course.name}</CardTitle>
           <CardDescription>{course.description}</CardDescription>
         </CardContent>
-        <CardFooter>
-          <div className="flex w-fit items-center justify-center rounded-md p-2 outline outline-1">
-            {course.price.toLocaleString(Config.locale, {
-              style: "currency",
-              currency: Config.currency,
-              minimumFractionDigits: 0,
-            })}
-          </div>
-        </CardFooter>
+        {showPrice && (
+          <CardFooter>
+            <div className="flex w-fit items-center justify-center rounded-md p-2 outline outline-1">
+              {course.price.toLocaleString(Config.locale, {
+                style: "currency",
+                currency: Config.currency,
+                minimumFractionDigits: 0,
+              })}
+            </div>
+          </CardFooter>
+        )}
       </Link>
     </Card>
   );

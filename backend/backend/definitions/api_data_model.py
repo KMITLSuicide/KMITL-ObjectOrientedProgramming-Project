@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-
+from uuid import UUID
 
 class CourseCardData(BaseModel):
     id: str
@@ -37,6 +37,9 @@ class CourseLearnMaterialQuizQuestions(BaseModel):
     id: str
     question: str
 
+class AnswerQuestion(BaseModel):
+    ids: list[UUID]
+
 class CourseLearnMaterialQuiz(CourseLearnMaterial):
     id: str
     name: str
@@ -59,3 +62,29 @@ class CourseLearn(CourseInfo):
     learn_materials_quizes: list[CourseLearnMaterialQuiz]
     learn_materials_images: list[CourseLearnMaterialImage]
     learn_materials_videos: list[CourseLearnMaterialVideo]
+
+class ProgressVideoData(BaseModel):
+    id: UUID
+    is_complete: bool
+
+class CourseMaterialData(BaseModel):
+    name: str
+    description: str
+
+class AddImageToCoursePostData(CourseMaterialData):
+    url: str
+
+class PostCourseData(BaseModel):
+    name: str
+    description: str
+    price: int
+    category_id: str
+
+class QuizQuestionData(BaseModel):
+    question: str
+    correct: bool
+
+
+class AddQuizToCoursePostData(CourseMaterialData):
+    questions: list[QuizQuestionData]
+

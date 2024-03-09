@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CourseCard } from "~/src/components/course/card";
 import { Card, CardHeader, CardTitle } from "~/src/components/ui/card";
+import { toast } from "~/src/components/ui/use-toast";
 
 import {
   searchCategory,
@@ -58,6 +59,12 @@ export default function SearchResults({
     void fetchData(params.query).then((data) => {
       setSearchResults(data);
       setUrlPrefix(params.type);
+      if (data === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch data",
+          variant: "destructive",
+        })}
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

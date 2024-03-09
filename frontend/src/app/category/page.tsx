@@ -21,6 +21,7 @@ import {
 } from "~/src/components/ui/popover";
 import { useRouter } from "next/navigation";
 import { type CategoryNames } from "~/src/lib/definitions/category";
+import { toast } from "~/src/components/ui/use-toast";
 
 export default function CategoryChoosePage() {
   const [categoryData, setCategoryData] = useState<
@@ -33,8 +34,13 @@ export default function CategoryChoosePage() {
   useEffect(() => {
     async function fetchData() {
       const apiData = await getCategoryNamesFromAPI();
-      console.log(apiData);
       setCategoryData(apiData);
+      if (apiData === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch category data",
+          variant: "destructive",
+        })}
     }
     void fetchData();
   }, []);
@@ -73,21 +79,21 @@ export default function CategoryChoosePage() {
                       setOpen(false);
                       router.push(`/category/${category.id}`);
                     }}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === category.name ? "opacity-100" : "opacity-0",
-                      )}
-                    />
-                    {category.name}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </Command>
-          </PopoverContent>
-        </Popover>
-      </div>
+                >
+                  <Check
+                    className={cn(
+                      "mr-2 h-4 w-4",
+                      value === category.name ? "opacity-100" : "opacity-0",
+                    )}
+                  />
+                  {category.name}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          </Command>
+        </PopoverContent>
+      </Popover>
     </div>
-  );
+  </div>
+);
 }

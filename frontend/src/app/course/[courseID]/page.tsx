@@ -10,15 +10,62 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "~/src/components/ui/collapsible";
+import {
+  Form
+} from "~/src/components/ui/form";
+import { toast } from "~/src/components/ui/use-toast";
 import { Config } from "~/src/config";
 import { getCourseInfoFromAPI } from "~/src/lib/data/course";
 import { type CourseInfo } from "~/src/lib/definitions/course";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { postAddCartItem } from "~/src/lib/data/cart";
+import { useRouter } from "next/navigation";
+
+const FormSchema = z.object({
+  id: z.string().min(1),
+});
 
 export default function CourseView({
   params,
 }: {
   params: { courseID: string };
 }) {
+  const router = useRouter();
+
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      id: params.courseID ?? "",
+    },
+  });
+
+  async function onSubmitAddToCart(data: z.infer<typeof FormSchema>) {
+    const result = await postAddCartItem(data.id);
+    if (result === null) {
+      toast({
+        title: "Error",
+        description: "Failed to add item to cart",
+        variant: "destructive",
+      });
+    } else {
+      router.push("/cart");
+    }
+  }
+
+  async function onSubmitBuyNow(data: z.infer<typeof FormSchema>) {
+    // const result = await postAddCartItem(data.id);
+    const result = null;
+    if (result === null) {
+      toast({
+        title: "Error - NOT IMPLEMENTED",
+        description: JSON.stringify(data, null, 2),
+        variant: "destructive",
+      });
+    }
+  }
+
   const [courseContentOpen, setCourseContentOpen] = React.useState(false);
   const [courseQuizOpen, setCourseQuizOpen] = React.useState(false);
   const [courseVideoOpen, setCourseVideosOpen] = React.useState(false);
@@ -27,11 +74,18 @@ export default function CourseView({
   useEffect(() => {
     async function fetchData(courseID: string) {
       const apiData = await getCourseInfoFromAPI(courseID);
-      console.log(apiData);
       setCourseData(apiData);
+
+      if (apiData === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch course data",
+          variant: "destructive",
+        });
+      }
     }
     void fetchData(params.courseID);
-  }, []);
+  }, [params.courseID]);
 
   return (
     <div className="flex h-full w-full justify-center">
@@ -165,8 +219,27 @@ export default function CourseView({
             </div>
 
             <div className="flex w-full justify-center space-x-6">
-              <Button variant="link">Add to cart</Button>
-              <Button variant="default">Buy now!</Button>
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmitAddToCart)}
+                  className="w-fit space-y-2"
+                >
+                  <Button variant="link" type="submit">
+                    Add to cart
+                  </Button>
+                </form>
+              </Form>
+
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmitBuyNow)}
+                  className="w-fit space-y-2"
+                >
+                  <Button variant="default" type="submit">
+                    Buy now!
+                  </Button>
+                </form>
+              </Form>
             </div>
           </div>
         </div>
