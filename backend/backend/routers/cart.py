@@ -42,12 +42,12 @@ def add_course_to_cart(current_user: Annotated[User, Depends(get_current_user)],
     return return_cart
 
 @router.delete('/user/cart',tags= route_tags)
-def remove_course_to_cart(current_user: Annotated[User, Depends(get_current_user)], course_id_query: UUID):
+def remove_course_to_cart(current_user: Annotated[User, Depends(get_current_user)], course_id: UUID):
 
-    obj_course = controller.search_course_by_id(course_id_query)
+    obj_course = controller.search_course_by_id(course_id)
     obj_cart = current_user.get_cart()
     if obj_course not in obj_cart.get_courses():
-        return HTTPException(status_code=400)#Fail
+        raise HTTPException(status_code=400)#Fail
     obj_cart.remove_course(obj_course)
 
     return HTTPException(status_code=200)#Succeed
