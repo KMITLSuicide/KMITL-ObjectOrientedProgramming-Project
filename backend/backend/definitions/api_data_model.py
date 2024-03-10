@@ -85,6 +85,9 @@ class QuizQuestionData(BaseModel):
     question: str
     correct: bool
 
+class GetCorrectAnswer(QuizQuestionData):
+    id: str
+
 
 class AddQuizToCoursePostData(CourseMaterialData):
     questions: list[QuizQuestionData]
