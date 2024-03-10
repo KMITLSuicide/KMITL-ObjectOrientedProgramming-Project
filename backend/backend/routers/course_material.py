@@ -173,8 +173,8 @@ def add_image_to_course(
     )
     course.add_image(image)
 
-    return course
-
+    return str(image.get_id()
+)
 @router.post("/course/{course_id}/quiz", tags=["Quiz"])
 def add_quiz_to_course(
     course_id: str,
@@ -212,7 +212,7 @@ def add_quiz_to_course(
         quiz.add_question(QuizQuestion(question.question, question.correct))
     course.add_quiz(quiz)
 
-    return course
+    return str(quiz.get_id())
 
 @router.put("/course/{course_id}/edit/{quiz_id}", tags=["Quiz"])
 def edit_quiz(
@@ -310,7 +310,7 @@ def edit_question(
     if not isinstance(quiz, CourseMaterialQuiz):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "quiz not found"
-    
+
     question = quiz.search_question_by_id(quiz_id)
 
     if not isinstance(question, QuizQuestion):
@@ -354,7 +354,7 @@ def add_question(
     if not isinstance(quiz, CourseMaterialQuiz):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "quiz not found"
-    
+
     return quiz.add_question(QuizQuestion(QuizQuestionData.question, QuizQuestionData.correct))
 
 @router.delete("/course/{course_id}/edit/{quiz_id}/delete/{question_id}", tags=["Question"])
@@ -379,7 +379,7 @@ def delte_question(
   if not isinstance(quiz, CourseMaterialQuiz):
       response.status_code = status.HTTP_400_BAD_REQUEST
       return "quiz not found"
-  
+
   question = quiz.search_question_by_id(quiz_id)
 
   if not isinstance(question, QuizQuestion):
