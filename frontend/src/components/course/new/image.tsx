@@ -16,6 +16,8 @@ import {
 } from "~/src/components/ui/form";
 import { Input } from "~/src/components/ui/input";
 import { toast } from "~/src/components/ui/use-toast";
+import { createMaterialImage } from "~/src/lib/data/course-create";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   name: z.string().min(1),
@@ -23,35 +25,35 @@ const FormSchema = z.object({
   url: z.string().url(),
 });
 
-export function CourseEditImage({
-  imageData: initImageData,
-}: {
-  imageData: CourseLearnMaterialImage;
-}) {
+export function CourseCreateImage(
+  { courseID }: { courseID: string },
+) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      name: initImageData.name,
-      description: initImageData.description,
-      url: initImageData.url,
-    },
   });
+  const router = useRouter();
 
   const watchedFields = useWatch({ control: form.control });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    async function callAPI(data: z.infer<typeof FormSchema>) {
+      const image_id = await createMaterialImage(data, courseID);
+      if (image_id === null) {
+        toast({
+          title: "Error",
+          description: "Failed to create image material",
+          variant: "destructive",
+        });
+      } else {
+        router.push(`/course/${courseID}/edit/image/${image_id}?fetch=true`)
+      }
+    }
+    void callAPI(data);
   }
 
   return (
     <>
+      <h1 className="text-3xl font-bold">Create new image material</h1>
       <div className="max-h-2/3 flex flex-col space-y-2">
         <h1 className="text-2xl font-bold">Preview</h1>
         {/* eslint-disable-next-line @next/next/no-img-element */}

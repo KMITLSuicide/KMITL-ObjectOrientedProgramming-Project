@@ -51,18 +51,3 @@ export async function getCourseLearnDataFromAPI(courseID: string) {
     return null;
   }
 }
-
-export async function createCourseToAPI(data: CourseCreatePostData) {
-  try {
-    const response = await api.post<CourseCardData>("/course", data);
-
-    if (response.status == 200) {
-      return response.data;
-    } else {
-      return null;
-    }
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}

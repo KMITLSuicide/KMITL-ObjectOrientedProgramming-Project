@@ -1,8 +1,7 @@
 "use client";
 
-import type { CourseLearnMaterialImage } from "~/src/lib/definitions/course";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { Button } from "~/src/components/ui/button";
@@ -23,21 +22,10 @@ const FormSchema = z.object({
   url: z.string().url(),
 });
 
-export function CourseEditImage({
-  imageData: initImageData,
-}: {
-  imageData: CourseLearnMaterialImage;
-}) {
+export function CourseCreateVideo () {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      name: initImageData.name,
-      description: initImageData.description,
-      url: initImageData.url,
-    },
   });
-
-  const watchedFields = useWatch({ control: form.control });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     toast({
@@ -52,27 +40,8 @@ export function CourseEditImage({
 
   return (
     <>
-      <div className="max-h-2/3 flex flex-col space-y-2">
-        <h1 className="text-2xl font-bold">Preview</h1>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={watchedFields?.url ?? "/notexture.png"}
-          alt={watchedFields?.description ?? "description not found"}
-          height={320}
-          style={{
-            objectFit: "contain",
-            width: "100%",
-            height: "320px",
-          }}
-        />
-        <h2 className="text-2xl font-bold">{watchedFields?.name}</h2>
-        <p>{watchedFields?.description}</p>
-      </div>
-      <div>
-        <hr className="my-4 h-px border-0 bg-muted-foreground" />
-      </div>
       <div className="h-fit space-y-2">
-        <h1 className="text-2xl font-bold">Edit</h1>
+        <h1 className="text-2xl font-bold">New video</h1>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}

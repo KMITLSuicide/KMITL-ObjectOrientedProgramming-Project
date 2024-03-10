@@ -10,7 +10,8 @@ import { type CourseLearn } from "~/src/lib/definitions/course";
 import { useToast } from "~/src/components/ui/use-toast";
 import Link from "next/link";
 import { Button } from "~/src/components/ui/button";
-import { Book, SquarePen } from "lucide-react";
+import { Book, Plus, SquarePen } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 export default function CourseLearnLayout({
   children,
@@ -19,22 +20,31 @@ export default function CourseLearnLayout({
   children: React.ReactNode;
   params: { courseID: string };
 }) {
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [learnData, setLearnData] = useState<CourseLearn | null | undefined>(
     undefined,
   );
+
+  async function fetchData(courseID: string) {
+    const data = await getCourseLearnDataFromAPI(courseID);
+    setLearnData(data);
+    if (data === null) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch data",
+        variant: "destructive",
+      })}
+  }
+
   useEffect(() => {
-    void getCourseLearnDataFromAPI(params.courseID).then((data) => {
-      setLearnData(data);
-      if (data === null) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch data",
-          variant: "destructive",
-        })}
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    void fetchData(params.courseID);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.courseID]);
+
+  if (searchParams.has("fetch")) {
+    void fetchData(params.courseID);
+  }
 
   useEffect(() => {
     if (learnData === null) {
@@ -93,7 +103,7 @@ export default function CourseLearnLayout({
         <div className="h-full w-4/5 rounded-xl bg-secondary p-8">
           {children}
         </div>
-        <div className="h-full w-1/5">
+        <div className="h-full w-1/5 space-y-2">
           <div className="flex space-x-2">
             <Button
               asChild
@@ -117,6 +127,21 @@ export default function CourseLearnLayout({
               </Link>
           </Button>
           </div>
+
+          <div className="flex">
+            <Button
+              asChild
+              className="flex-grow justify-normal rounded-lg bg-primary px-4 py-2 text-left text-lg font-semibold space-x-2"
+            >
+              <Link href={`/course/${learnData?.id}/edit/new`} className="flex">
+                <Plus />
+                <p>
+                  New material
+                </p>
+              </Link>
+            </Button>
+          </div>
+
           <CourseLearnSidebar
             className="px-5"
             sidebarCategories={sidebarCategories}

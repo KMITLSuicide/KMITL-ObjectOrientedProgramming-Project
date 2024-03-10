@@ -93,7 +93,7 @@ export function CourseLearnVideo ({
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Description</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
