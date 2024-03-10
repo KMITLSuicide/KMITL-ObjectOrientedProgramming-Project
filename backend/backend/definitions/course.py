@@ -326,13 +326,13 @@ class Course:
         return None
 
     def search_quiz_by_id(self, id: uuid.UUID):
-        return next(quiz for quiz in self.__quizes if isinstance(quiz, CourseMaterialQuiz) and quiz.get_id() == id)
+        return next((quiz for quiz in self.__quizes if isinstance(quiz, CourseMaterialQuiz) and quiz.get_id() == id), None)
     
     def search_video_by_id(self, id: uuid.UUID):
-        return next(video for video in self.__videos if isinstance(video, CourseMaterialVideo) and video.get_id() == id)
+        return next((video for video in self.__videos if isinstance(video, CourseMaterialVideo) and video.get_id() == id), None)
     
     def search_image_by_id(self, id: uuid.UUID):
-        return next(image for image in self.__images if isinstance(image, CourseMaterialImage) and image.get_id() == id)
+        return next((image for image in self.__images if isinstance(image, CourseMaterialImage) and image.get_id() == id),None)
 
     def search_video_by_name(self, name: str):
         for video in self.__videos:
