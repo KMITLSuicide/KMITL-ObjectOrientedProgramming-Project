@@ -67,9 +67,16 @@ def create_review(
 ):
     return_course: list[GetReviewData] = []
     course = controller.search_course_by_id(uuid.UUID(course_id))
+
     if not isinstance(course, Course):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "Course ID not found"
+    
+    if not current_user.have_access_to_course(course):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User does not have access to course",
+        ) 
     
     if create_review_post_data.star not in [1, 2, 3, 4, 5]:
         response.status_code = status.HTTP_400_BAD_REQUEST
@@ -113,9 +120,16 @@ def edit_review(
 ):
     return_course: list[GetReviewData] = []
     course = controller.search_course_by_id(uuid.UUID(course_id))
+    
     if not isinstance(course, Course):
         raise HTTPException(status_code=400, detail="course not found.")  
 
+    if not current_user.have_access_to_course(course):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User does not have access to course",
+        )
+    
     review = course.search_review_by_user(current_user)
 
     if not isinstance(review, CourseReview):
@@ -147,6 +161,11 @@ def remove_review(current_user: Annotated[User, Depends(get_current_user)], cour
     if not isinstance(course, Course):
         raise HTTPException(status_code=400, detail="course not found.")  
     
+    if not current_user.have_access_to_course(course):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="User does not have access to course",
+        )
     review = course.search_review_by_user(current_user)
 
     if not isinstance(review, CourseReview):

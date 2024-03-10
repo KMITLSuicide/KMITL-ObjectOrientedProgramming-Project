@@ -1,7 +1,7 @@
 from typing import List
 from enum import Enum
 from uuid import UUID
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException,status
 
 from backend.controller_instance import controller
 from backend.definitions.api_data_model import CourseCardData, CourseCardDataWithLabel
@@ -17,7 +17,10 @@ route_tags: List[str | Enum] = ["Teacher"]
 def get_courses_for_teacher(teacher_id: UUID):
     teacher = controller.get_teacher_by_id(teacher_id)
     if not isinstance(teacher, Teacher):
-        return "Error teacher is not instance of Teacher"
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Teacher id not found",
+        ) 
     search_results: CourseCardDataWithLabel = CourseCardDataWithLabel(
         id=str(teacher.get_id()), label=teacher.get_name(), cards=[]
     )
