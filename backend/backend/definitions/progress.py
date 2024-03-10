@@ -21,7 +21,8 @@ class ProgressVideo():
     
     def set_learned(self, is_learn:bool):
         self.__learned = is_learn
-
+    def get_id(self):
+        return self.__video.get_id()
 
 class ProgressQuiz():
     def __init__(self, quiz: CourseMaterialQuiz) -> None:
@@ -36,8 +37,8 @@ class ProgressQuiz():
     
     def set_completed(self,is_complete:bool):
         self.__completed = is_complete
-
-
+    def get_id(self):
+        return self.__quiz.get_id()
 class Progress:
     def __init__(self, course: Course) -> None:
         self.__course = course

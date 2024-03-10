@@ -62,6 +62,9 @@ class User:
             if course_from_progress == course:
                 return progress
         return None
+    
+    def search_progress_by_id(self, progress_id: uuid.UUID):
+        return next((progress for progress in self.__my_progresses if isinstance(progress, Progress) and progress.get_id() == progress_id),None)
 
     def search_course_by_id(self, course_id: uuid.UUID):
         for progress in self.__my_progresses:
