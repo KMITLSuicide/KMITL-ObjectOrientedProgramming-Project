@@ -58,7 +58,11 @@ class CourseLearn(CourseInfo):
     learn_materials_videos: list[CourseLearnMaterialVideo]
 
 class ProgressVideoData(BaseModel):
-    id: UUID
+    id: str
+    is_complete: bool
+
+class ProgressQuizData(BaseModel):
+    id: str
     is_complete: bool
 
 class CourseMaterialData(BaseModel):

@@ -5,11 +5,11 @@ from fastapi import APIRouter, Depends, Response, status, Body, HTTPException
 from pydantic import BaseModel
 
 from backend.controller_instance import controller
-from backend.definitions.progress import Progress, ProgressQuiz
+from backend.definitions.progress import Progress, ProgressQuiz, ProgressVideo
 from backend.definitions.course import Course, CourseMaterialQuiz, QuizQuestion
 from backend.definitions.user import User,Teacher
 from backend.lib.authentication import get_current_user
-from backend.definitions.api_data_model import CourseCardData, ProgressVideoData, AnswerQuestion
+from backend.definitions.api_data_model import CourseCardData, ProgressVideoData, ProgressQuizData, AnswerQuestion
 router = APIRouter()
 route_tags: List[str | Enum] = ["Course"]
 
@@ -77,9 +77,9 @@ def get_normalized_progress_videos(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID
 ):
-    progress = next((progress for progress in current_user.get_my_progresses() if isinstance(progress, Progress) and progress.get_id() == progress_id), None)
+    progress = current_user.search_progress_by_id(progress_id)
     if not isinstance(progress, Progress):
-      return "Error, progress_id not found. Please check your progress_id"
+      raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
     return progress.get_normalized_progress_videos()
 
 @router.get("/user/normalized_quizes/{progress_id}", tags=["Quiz"])
@@ -87,10 +87,30 @@ def get_normalized_progress_quizes(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID
 ):
-    progress = next((progress for progress in current_user.get_my_progresses() if isinstance(progress, Progress) and progress.get_id() == progress_id), None)
+    progress = current_user.search_progress_by_id(progress_id)
     if not isinstance(progress, Progress):
-      return "Error, progress_id not found. Please check your progress_id"
+      raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
+    
     return progress.get_normalized_progress_quizes()
+
+
+@router.get("/user/progress_videos/{progress_id}", tags=["Video"])
+
+def get_progress_videos(current_user: Annotated[User, Depends(get_current_user)],progress_id: UUID):
+    progress = current_user.search_progress_by_id(progress_id)
+    if not isinstance(progress, Progress):
+      raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
+    
+    create_progress_videos_base_model(progress.get_progress_videos())
+
+
+@router.get("/user/progress_quizes/{progress_id}", tags=["Quiz"])
+
+def get_progress_quizes(current_user: Annotated[User, Depends(get_current_user)],progress_id: UUID):
+    progress = current_user.search_progress_by_id(progress_id)
+    if not isinstance(progress, Progress):
+      raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
+    create_progress_quiz_base_model(progress.get_progress_quizes())
 
 
 @router.put("/user/study_video/{progress_id}", tags=["Video"])
@@ -105,10 +125,10 @@ def study_video_by_id(
             }
         ]),],
 ):
-    progress = next((progress for progress in current_user.get_my_progresses() if isinstance(progress, Progress) and progress.get_id() == progress_id), None)
+    progress = current_user.search_progress_by_id(progress_id)
     if not isinstance(progress, Progress):
       return "Error, progress_id not found. Please check your progress_id"
-    progress.set_learned_video_by_id(progress_data.id,progress_data.is_complete)
+    progress.set_learned_video_by_id(UUID(progress_data.id),progress_data.is_complete)
 
     return progress.get_normalized_progress_videos()
 
@@ -199,3 +219,18 @@ async def get_my_account_info(current_user: Annotated[User, Depends(get_current_
         "name": current_user.get_name(),
         "email": current_user.get_email(),
         }
+
+def create_progress_videos_base_model(videos : list[ProgressVideo]):
+    return [
+            ProgressVideoData(
+            id=str(video.get_id()),
+            is_complete=video.get_learned()
+        ) for video in videos if isinstance(video, ProgressVideo)
+    ]
+def create_progress_quiz_base_model(quizes : list[ProgressQuiz]):
+    return [
+            ProgressQuizData(
+            id=str(quiz.get_id()),
+            is_complete=quiz.get_completed()
+        ) for quiz in quizes if isinstance(quiz, ProgressQuiz)
+    ]
