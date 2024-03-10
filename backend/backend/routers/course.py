@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import Annotated, List
 import uuid
+from backend.lib.convert_course_to_card_data import convert_course_to_card_data
 from fastapi import APIRouter, Depends, HTTPException, status, Body, Response
 from pydantic import BaseModel
 import random
@@ -80,7 +81,7 @@ def new_course(
     teacher.add_my_teaching(course)
     category.add_course(course)
 
-    return course
+    return convert_course_to_card_data(course)
 
 
 @router.put("/course/{course_id}/edit", tags=["Course"])
@@ -161,8 +162,5 @@ def delte_course(
 
     if isinstance(user_review, CourseReview):
         course.remove_review(user_review)
-        
+
     current_user.remove_course(course)
-    
-
-
