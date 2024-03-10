@@ -47,7 +47,11 @@ class CourseMaterial:
 
     def get_description(self):
         return self.__description
-
+    def set_name(self, name : str):
+        self.__name = name
+    
+    def set_description(self, description: str):
+        self.__description =description
 
 
 class CourseMaterialVideo(CourseMaterial):
@@ -63,7 +67,14 @@ class CourseMaterialVideo(CourseMaterial):
 
     def get_url(self):
         return self.__url
-
+    
+    def edit(self,name: Optional[str] = None,description: Optional[str] = None,url: Optional[str] = None):
+        if name != None:
+            super().set_name(name)
+        if description != None:
+            super().set_description(description)
+        if url != None:
+            self.__url = url
 
 class CourseMaterialImage(CourseMaterial):  # Question: Is CourseMaterialImage  video?
     def __init__(self, url: str, name: str, description: str) -> None:
@@ -78,7 +89,14 @@ class CourseMaterialImage(CourseMaterial):  # Question: Is CourseMaterialImage  
 
     def get_url(self):
         return self.__url
-
+    
+    def edit(self,name: Optional[str] = None,description: Optional[str] = None,url: Optional[str] = None):
+        if name != None:
+            super().set_name(name)
+        if description != None:
+            super().set_description(description)
+        if url != None:
+            self.__url = url
 
 class CourseMaterialQuiz(CourseMaterial):
     def __init__(self, name: str, description: str) -> None:
@@ -246,7 +264,7 @@ class Course:
         return False
 
     # Tajdang commit
-    def add_videos(self, video: CourseMaterialVideo):
+    def add_video(self, video: CourseMaterialVideo):
         if isinstance(video, CourseMaterialVideo):
             self.__videos.append(video)
             return True
@@ -327,6 +345,12 @@ class Course:
     
     def remove_quiz(self, quiz: CourseMaterialQuiz):
         self.__quizes.remove(quiz)
+
+    def remove_video(self, video: CourseMaterialVideo):
+        self.__videos.remove(video)
+    
+    def remove_image(self, image: CourseMaterialImage):
+        self.__images.remove(image)
 
     def edit(self, previous_category : CourseCategory, name:Optional[str]= None, description:Optional[str] = None, price:Optional[int] = None,new_category:Optional[CourseCategory] = None):
         if price is not None:

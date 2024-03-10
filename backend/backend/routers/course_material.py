@@ -8,15 +8,21 @@ import random
 from backend.controller_instance import controller
 from backend.definitions.course import CourseCategory,CourseReview
 from backend.definitions.user import User,Teacher
-from backend.definitions.api_data_model import CourseCardData,CourseInfo, CourseLearn, CourseLearnMaterialImage, CourseLearnMaterialQuiz, CourseLearnMaterialQuizQuestions, CourseLearnMaterialVideo,CourseMaterialData,PostCourseData,AddImageToCoursePostData,QuizQuestionData,AddQuizToCoursePostData
 from backend.lib.authentication import get_current_user
 from pydantic import BaseModel
+from backend.definitions.api_data_model import( 
+    CourseInfo, CourseLearn, CourseLearnMaterialImage, 
+    CourseLearnMaterialQuiz, CourseLearnMaterialQuizQuestions, 
+    CourseLearnMaterialVideo, CourseMaterialData,AddImageToCoursePostData,
+    QuizQuestionData,AddQuizToCoursePostData,AddVideoToCoursePostData
+    )
 
 
 from backend.definitions.course import (
     Course,
     CourseMaterialImage,
     CourseMaterialQuiz,
+    CourseMaterialVideo,
     QuizQuestion,
 )
 router = APIRouter()
@@ -173,7 +179,170 @@ def add_image_to_course(
     )
     course.add_image(image)
 
+    return "success"
+
+@router.put("/course/{course_id}/edit_image/{image_id}", tags=["Image"])
+def edit_image(
+    course_id: str,
+    image_id: uuid.UUID,
+    course_material_data: Annotated[
+        AddImageToCoursePostData,
+        Body(
+            examples=[
+                {
+                    "name": "Which language is FastAPI built with",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                    "url": "fasdfasgadnfaslfd;asdf"
+                }
+            ],
+        ),
+    ],
+    response: Response,
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    course = controller.search_course_by_id(uuid.UUID(course_id))
+    if not isinstance(course, Course):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Course not found"
+
+    if not (current_user == controller.search_teacher_by_course(course)):
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return "Unauthorized"
+
+    image = course.search_image_by_id(image_id)
+
+    if not isinstance(image, CourseMaterialImage):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Image not found"
+
+    image.edit(course_material_data.name, course_material_data.description, course_material_data.url)
+    return get_learn_course_materials(course_id, current_user)
+
+@router.delete("/course/{course_id}/delete_image/{image_id}", tags=["Image"])
+def delete_image(
+    course_id: str,
+    image_id: uuid.UUID,
+    response: Response,
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    course = controller.search_course_by_id(uuid.UUID(course_id))
+    if not isinstance(course, Course):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Course not found"
+
+    if not (current_user == controller.search_teacher_by_course(course)):
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return "Unauthorized"
+
+    image = course.search_image_by_id(image_id)
+
+    if not isinstance(image, CourseMaterialImage):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "quiz is not instance of CourseMaterialQuiz"
+
+    course.remove_image(image)
+
+    return get_learn_course_materials(course_id, current_user)
+
+
+@router.post("/course/{course_id}/video", tags=["Video"])
+def add_video_to_course(
+    course_id: str,
+    add_image_to_course_data: Annotated[
+        AddVideoToCoursePostData,
+        Body(
+            examples=[
+                {
+                    "url": "https://fastapi.tiangolo.com/img/logo-margin/logo-teal.png",
+                    "name": "FastAPI Logo",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                }
+            ],
+        ),
+    ],
+    response: Response,
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    course = controller.search_course_by_id(uuid.UUID(course_id))
+    if not isinstance(course, Course):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Course not found"
+
+    if not (current_user == controller.search_teacher_by_course(course)):
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return "Unauthorized"
+
+    video = CourseMaterialVideo(
+        add_image_to_course_data.url,
+        add_image_to_course_data.name,
+        add_image_to_course_data.description,
+    )
+    course.add_video(video)
+
     return course
+
+@router.put("/course/{course_id}/edit_video/{video_id}", tags=["Video"])
+def edit_video(
+    course_id: str,
+    video_id: uuid.UUID,
+    video_data: Annotated[
+        AddVideoToCoursePostData,
+        Body(
+            examples=[
+                {
+                    "name": "Which language is FastAPI built with",
+                    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                    "url": "fasdfasgadnfaslfd;asdf"
+                }
+            ],
+        ),
+    ],
+    response: Response,
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    course = controller.search_course_by_id(uuid.UUID(course_id))
+    if not isinstance(course, Course):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Course not found"
+
+    if not (current_user == controller.search_teacher_by_course(course)):
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return "Unauthorized"
+
+    video = course.search_video_by_id(video_id)
+
+    if not isinstance(video, CourseMaterialVideo):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Video not found"
+
+    video.edit(video_data.name, video_data.description, video_data.url)
+    return "woohoo"
+
+@router.delete("/course/{course_id}/delete_video/{video_id}", tags=["Video"])
+def delete_video(
+    course_id: str,
+    video_id: uuid.UUID,
+    response: Response,
+    current_user: Annotated[User, Depends(get_current_user)],
+):
+    course = controller.search_course_by_id(uuid.UUID(course_id))
+    if not isinstance(course, Course):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "Course not found"
+
+    if not (current_user == controller.search_teacher_by_course(course)):
+        response.status_code = status.HTTP_401_UNAUTHORIZED
+        return "Unauthorized"
+
+    video = course.search_video_by_id(video_id)
+
+    if not isinstance(video, CourseMaterialVideo):
+        response.status_code = status.HTTP_400_BAD_REQUEST
+        return "quiz is not instance of CourseMaterialQuiz"
+
+    course.remove_video(video)
+
+    return get_learn_course_materials(course_id, current_user)
 
 @router.post("/course/{course_id}/quiz", tags=["Quiz"])
 def add_quiz_to_course(

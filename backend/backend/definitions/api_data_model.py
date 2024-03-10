@@ -74,6 +74,9 @@ class CourseMaterialData(BaseModel):
 class AddImageToCoursePostData(CourseMaterialData):
     url: str
 
+class AddVideoToCoursePostData(CourseMaterialData):
+    url:str
+
 class PostCourseData(BaseModel):
     name: str
     description: str
