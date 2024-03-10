@@ -5,7 +5,7 @@ import { CourseEditImage } from "~/src/components/course/edit/image";
 import { CourseLearnQuiz } from "~/src/components/course/edit/quiz";
 import { CourseLearnVideo } from "~/src/components/course/edit/video";
 import { toast } from "~/src/components/ui/use-toast";
-import { getCourseLearnDataFromAPI } from "~/src/lib/data/course";
+import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
 import type { CourseLearn } from "~/src/lib/definitions/course";
 
 const validTypes = ["quiz", "image", "video"];

@@ -14,37 +14,56 @@ import {
   FormMessage,
 } from "~/src/components/ui/form";
 import { toast } from "~/src/components/ui/use-toast";
+import { completeQuiz } from "~/src/lib/data/course-learn";
 import type { CourseLearnMaterialQuiz } from "~/src/lib/definitions/course";
 
 
 const FormSchema = z.object({
-  items: z.array(z.string()).refine((value) => value.some((item) => item), {
+  ids: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one item.",
   }),
 });
 
+async function sendData(courseID: string, quizID: string, data: { "ids": string[] }) {
+  const response = await completeQuiz(courseID, quizID, data);
+  if (response?.result === true) {
+    toast({
+      title: "Success",
+      description: "Quiz completed!",
+      variant: "default",
+    });
+  } else {
+    toast({
+      title: "Failed",
+      description: `Quiz not completed: ${response?.message}`,
+      variant: "destructive",
+    });
+  }
+}
+
 
 export function CourseLearnQuiz({
+  courseID,
   quizData
   } : {
+  courseID: string,
   quizData: CourseLearnMaterialQuiz
 }) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-    defaultValues: {
-      items: [],
-    },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "*NOT IMPLEMENTED* Submitted:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    // toast({
+    //   title: "*NOT IMPLEMENTED* Submitted:",
+    //   description: (
+    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+    //     </pre>
+    //   ),
+    // });
+
+    void sendData(courseID, quizData.id, data);
   }
   return (
     <>
@@ -52,7 +71,7 @@ export function CourseLearnQuiz({
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="items"
+            name="ids"
             render={() => (
               <FormItem>
                 <div className="mb-4">
@@ -65,7 +84,7 @@ export function CourseLearnQuiz({
                   <FormField
                     key={item.id}
                     control={form.control}
-                    name="items"
+                    name="ids"
                     render={({ field }) => {
                       return (
                         <FormItem
@@ -73,18 +92,19 @@ export function CourseLearnQuiz({
                           className="flex flex-row items-start space-x-3 space-y-0"
                         >
                           <FormControl>
-                            <Checkbox
-                              checked={field.value?.includes(item.id)}
-                              onCheckedChange={(checked) => {
-                                return checked
-                                  ? field.onChange([...field.value, item.id])
-                                  : field.onChange(
-                                      field.value?.filter(
-                                        (value) => value !== item.id,
-                                      ),
-                                    );
-                              }}
-                            />
+                          <Checkbox
+                            checked={field.value?.includes(item.id)}
+                            onCheckedChange={(checked) => {
+                              const fieldValue = field.value || []; // provide a default value
+                              return checked
+                                ? field.onChange([...fieldValue, item.id])
+                                : field.onChange(
+                                    fieldValue.filter(
+                                      (value) => value !== item.id,
+                                    ),
+                                  );
+                            }}
+                          />
                           </FormControl>
                           <FormLabel className="font-normal">
                             {item.question}
