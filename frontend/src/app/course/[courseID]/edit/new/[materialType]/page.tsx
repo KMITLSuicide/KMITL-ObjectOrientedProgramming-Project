@@ -5,7 +5,7 @@ import { CourseCreateImage } from "~/src/components/course/new/image";
 import { CourseCreateQuiz } from "~/src/components/course/new/quiz";
 import { CourseCreateVideo } from "~/src/components/course/new/video";
 import { toast } from "~/src/components/ui/use-toast";
-import { getCourseLearnDataFromAPI } from "~/src/lib/data/course";
+import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
 import type { CourseLearn } from "~/src/lib/definitions/course";
 
 const validTypes = ["quiz", "image", "video"];
@@ -50,7 +50,7 @@ export default function CourseViewMaterial({
       } else if (params.materialType === "image") {
         setMaterialComponent(<CourseCreateImage courseID={params.courseID} />);
       } else if (params.materialType === "video") {
-        setMaterialComponent(<CourseCreateVideo />);
+        setMaterialComponent(<CourseCreateVideo courseID={params.courseID} />);
       }
     }
   }, [courseData, params.materialType, params]);

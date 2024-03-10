@@ -55,7 +55,7 @@ export function CourseCreateImage(
     <>
       <h1 className="text-3xl font-bold">Create new image material</h1>
       <div className="max-h-2/3 flex flex-col space-y-2">
-        <h1 className="text-2xl font-bold">Preview</h1>
+        <h2 className="text-2xl font-bold">Preview</h2>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={watchedFields?.url ?? "/notexture.png"}
@@ -74,7 +74,7 @@ export function CourseCreateImage(
         <hr className="my-4 h-px border-0 bg-muted-foreground" />
       </div>
       <div className="h-fit space-y-2">
-        <h1 className="text-2xl font-bold">Edit</h1>
+        <h2 className="text-2xl font-bold">Edit</h2>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
