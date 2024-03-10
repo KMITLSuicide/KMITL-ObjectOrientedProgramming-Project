@@ -47,15 +47,9 @@ class CourseLearnMaterialQuiz(CourseLearnMaterial):
     questions: list[CourseLearnMaterialQuizQuestions]
 
 class CourseLearnMaterialImage(CourseLearnMaterial):
-    id: str
-    name: str
-    description: str
     url: str
 
 class CourseLearnMaterialVideo(CourseLearnMaterial):
-    id: str
-    name: str
-    description: str
     url: str
 
 class CourseLearn(CourseInfo):
@@ -73,6 +67,9 @@ class CourseMaterialData(BaseModel):
 
 class AddImageToCoursePostData(CourseMaterialData):
     url: str
+
+class AddVideoToCoursePostData(CourseMaterialData):
+    url:str
 
 class PostCourseData(BaseModel):
     name: str
