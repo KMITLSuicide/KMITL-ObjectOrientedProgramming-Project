@@ -16,7 +16,7 @@ route_tags: List[str | Enum] = ["Coupon"]
 class CouponData(BaseModel):
     coupon_id: str
     discount: int
-    
+
 class CouponCourseData(BaseModel):
     type: str
     coupon_id: str
@@ -24,13 +24,13 @@ class CouponCourseData(BaseModel):
     teacher_name: str
     course_name: str
     course_id: str
-    
+
 class CouponTeacherData(BaseModel):
     type: str
     coupon_id: str
     discount: int
     teacher_name: str
-    
+
 @router.get("/coupon", tags=["Debug Purposes"])
 def get_all_coupon():
     return_data = []
@@ -62,7 +62,7 @@ def get_all_coupon():
     return return_data
 
 
-@router.post("/teacher/add_coupon_course/{course_id}", tags=route_tags)
+@router.post("/teacher/coupon/course/{course_id}", tags=route_tags)
 def add_coupon_course(
     current_user: Annotated[Teacher, Depends(get_current_user)],
     course_id: UUID,
@@ -106,7 +106,7 @@ def add_coupon_course(
     return return_data
 
 
-@router.post("/teacher/add_coupon_teacher", tags=route_tags)
+@router.post("/teacher/coupon/teacher", tags=route_tags)
 def add_coupon_teacher(
     current_user: Annotated[Teacher, Depends(get_current_user)],
     add_coupon_data: Annotated[CouponData, Body(

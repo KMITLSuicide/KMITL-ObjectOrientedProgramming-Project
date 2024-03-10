@@ -81,7 +81,7 @@ def get_learn_course_materials(
     )
 
     return course_learn_data
-@router.get("/course/{course_id}/get_image/{image_id}", tags=["Image"])
+@router.get("/course/{course_id}/image/{image_id}", tags=["Image"])
 def get_image(course_id:uuid.UUID, image_id : uuid.UUID,current_user: Annotated[User, Depends(get_current_user)]):
     course = controller.search_course_by_id(course_id)
     if not isinstance(course, Course):
@@ -102,7 +102,7 @@ def get_image(course_id:uuid.UUID, image_id : uuid.UUID,current_user: Annotated[
     return  course_learn_image
 
 
-@router.post("/course/{course_id}/add_image", tags=["Image"])
+@router.post("/course/{course_id}/image", tags=["Image"])
 def add_image_to_course(
     course_id: str,
     add_image_to_course_data: Annotated[
@@ -138,7 +138,7 @@ def add_image_to_course(
 
     return str(image.get_id())
 
-@router.put("/course/{course_id}/edit_image/{image_id}", tags=["Image"])
+@router.put("/course/{course_id}/image/{image_id}", tags=["Image"])
 def edit_image(
     course_id: str,
     image_id: uuid.UUID,
@@ -175,7 +175,7 @@ def edit_image(
     image.edit(course_material_data.name, course_material_data.description, course_material_data.url)
     return get_image(uuid.UUID(course_id), image_id,current_user)
 
-@router.delete("/course/{course_id}/delete_image/{image_id}", tags=["Image"])
+@router.delete("/course/{course_id}/image/{image_id}", tags=["Image"])
 def delete_image(
     course_id: str,
     image_id: uuid.UUID,
@@ -202,7 +202,7 @@ def delete_image(
     return get_learn_course_materials(course_id, current_user)
 
 
-@router.get("/course/{course_id}/get_video/{video_id}", tags=["Video"])
+@router.get("/course/{course_id}/video/{video_id}", tags=["Video"])
 def get_video(course_id:uuid.UUID, video_id : uuid.UUID,current_user: Annotated[User, Depends(get_current_user)]):
     course = controller.search_course_by_id(course_id)
     if not isinstance(course, Course):
@@ -255,7 +255,7 @@ def add_video_to_course(
 
     return str(video.get_id())
 
-@router.put("/course/{course_id}/edit_video/{video_id}", tags=["Video"])
+@router.put("/course/{course_id}/video/{video_id}", tags=["Video"])
 def edit_video(
     course_id: str,
     video_id: uuid.UUID,
@@ -292,7 +292,7 @@ def edit_video(
     video.edit(video_data.name, video_data.description, video_data.url)
     return get_video(uuid.UUID(course_id), video_id,current_user)
 
-@router.delete("/course/{course_id}/delete_video/{video_id}", tags=["Video"])
+@router.delete("/course/{course_id}/video/{video_id}", tags=["Video"])
 def delete_video(
     course_id: str,
     video_id: uuid.UUID,
@@ -318,7 +318,7 @@ def delete_video(
 
     return get_learn_course_materials(course_id, current_user)
 
-@router.get("/course/{course_id}/get_quiz/{quiz_id}", tags=["Quiz"])
+@router.get("/course/{course_id}/quiz/{quiz_id}", tags=["Quiz"])
 def get_quiz(course_id:uuid.UUID, quiz_id : uuid.UUID,current_user: Annotated[User, Depends(get_current_user)]):
     course = controller.search_course_by_id(course_id)
     if not isinstance(course, Course):
@@ -379,7 +379,7 @@ def add_quiz_to_course(
 
     return str(quiz.get_id())
 
-@router.put("/course/{course_id}/edit/{quiz_id}", tags=["Quiz"])
+@router.put("/course/{course_id}/quiz/{quiz_id}", tags=["Quiz"])
 def edit_quiz(
     course_id: str,
     quiz_id: uuid.UUID,
@@ -416,7 +416,7 @@ def edit_quiz(
 
     return get_quiz(uuid.UUID(course_id), quiz_id, current_user)
 
-@router.delete("/course/{course_id}/delte/{quiz_id}", tags=["Quiz"])
+@router.delete("/course/{course_id}/quiz/{quiz_id}", tags=["Quiz"])
 def delete_quiz(
     course_id: str,
     quiz_id: uuid.UUID,
@@ -442,7 +442,7 @@ def delete_quiz(
 
     return get_learn_course_materials(course_id, current_user)
 
-@router.get("/course/{course_id}/edit/{quiz_id}/get/{question_id}", tags=["Question"])
+@router.get("/course/{course_id}/quiz/{quiz_id}/{question_id}", tags=["Question"])
 def get_question(
   course_id: str,
   quiz_id: uuid.UUID,
@@ -475,7 +475,7 @@ def get_question(
 
 
 
-@router.put("/course/{course_id}/edit/{quiz_id}/edit/{question_id}", tags=["Question"])
+@router.put("/course/{course_id}/quiz/{quiz_id}/{question_id}", tags=["Question"])
 def edit_question(
     course_id: str,
     quiz_id: uuid.UUID,
@@ -521,7 +521,7 @@ def edit_question(
         return message
     return get_question(course_id,quiz_id,question.get_id(),current_user)
 
-@router.post("/course/{course_id}/edit/{quiz_id}/add", tags=["Question"])
+@router.post("/course/{course_id}/quiz/{quiz_id}", tags=["Question"])
 def add_question(
     course_id: str,
     quiz_id: uuid.UUID,
@@ -556,7 +556,7 @@ def add_question(
 
     return quiz.add_question(QuizQuestion(QuizQuestionData.question, QuizQuestionData.correct))
 
-@router.delete("/course/{course_id}/edit/{quiz_id}/delete/{question_id}", tags=["Question"])
+@router.delete("/course/{course_id}/quiz/{quiz_id}/{question_id}", tags=["Question"])
 def delete_question(
   course_id: str,
   quiz_id: uuid.UUID,
