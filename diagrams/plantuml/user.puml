@@ -1,97 +1,83 @@
-@startuml FastAPI - User and Teacher Operations Sequence Diagram
+@startuml User
+actor "User" as UserActor
 
-actor User
+participant "UI" as Server
 participant Controller
-participant Teacher
-participant CourseCardData
-participant AccountInfo
-participant Response
+participant "User" as UserClass
 
-User -> Controller: view_my_learning(current_user)
+
+UserActor -> Server: View my Learning
+activate Server
+
+Server -> Controller: view_my_learning(current_user)
 activate Controller
-Controller -> current_user: view_my_learning()
-activate current_user
-current_user --> Controller: List of progress data
-deactivate current_user
-Controller -> Response: Return response with progress data
-activate Response
-Response --> User: My learning progress
-deactivate Response
+Controller -> UserClass: view_my_learning()
+activate UserClass
+UserClass --> Controller: my_progresses
+deactivate UserClass
+Controller --> Server: my_progresses
 deactivate Controller
 
-User -> Controller: view_video(current_user, video_name)
+Server --> UserActor: return my learning
+
+UserActor -> Server: view video
+Server -> Controller: view_video(current_user, video_name)
 activate Controller
-Controller -> current_user: view_video_by_name(video_name)
-activate current_user
-current_user --> Controller: Video object
-deactivate current_user
-Controller -> Response: Return response with video data
-activate Response
-Response --> User: Video information
-deactivate Response
+Controller -> UserClass: view_video_by_name(video_name)
+activate UserClass
+UserClass --> Controller: {"video": video}
+deactivate UserClass
+Controller --> Server: {"video": video}
 deactivate Controller
 
-User -> Controller: study_latest_course(current_user)
+Server --> UserActor: return video
+
+UserActor -> Server: study lastest course
+Server -> Controller: study_latest_course(current_user)
 activate Controller
-Controller -> current_user: get_latest_video()
-activate current_user
-current_user --> Controller: Latest video object
-deactivate current_user
-Controller -> Response: Return response with latest video data
-activate Response
-Response --> User: Latest video information
-deactivate Response
+Controller -> UserClass: get_latest_video()
+activate UserClass
+UserClass --> Controller: latest_video
+deactivate UserClass
+Controller --> Server: latest_video
 deactivate Controller
 
-User -> Controller: get_course_by_id(current_user, course_id)
+Server --> UserActor: return lastest course
+
+UserActor -> Server: search course by id from progression
+Server -> Controller: search_course_by_id_from_progression(current_user, course_id)
 activate Controller
-Controller -> current_user: search_course_by_id(course_id)
-activate current_user
-current_user --> Controller: Course object
-deactivate current_user
-Controller -> Response: Return response with course data
-activate Response
-Response --> User: Course information
-deactivate Response
+Controller -> UserClass: search_course_by_id(course_id)
+activate UserClass
+UserClass --> Controller: course
+deactivate UserClass
+Controller --> Server: course
 deactivate Controller
 
-User -> Controller: get_my_teaching(current_user)
+Server --> UserActor: return course id
+
+UserActor -> Server: Get my Teacher
+Server -> Controller: get_my_teaching(current_user)
 activate Controller
-Controller -> current_user: get_my_teachings()
-activate current_user
-alt current_user is not a Teacher
-    Controller -> Response: Return error message
-    activate Response
-    Response --> User: Error message
-    deactivate Response
-else
-    current_user --> Controller: List of teaching courses
-    Controller -> Response: Return response with teaching courses
-    activate Response
-    Response --> User: Teaching courses information
-    deactivate Response
-end
-deactivate current_user
+Controller -> UserClass: get_my_teachings()
+activate UserClass
+UserClass --> Controller: List of courses
+deactivate UserClass
+Controller --> Server: List of courses
 deactivate Controller
 
-User -> Controller: get_my_account_info(current_user)
+Server --> UserActor: get my teaching
+
+UserActor -> Server: get my account info
+Server -> Controller: get_my_account_info(current_user)
 activate Controller
-Controller -> current_user: get_id(), get_name(), get_email()
-activate current_user
-alt current_user is a Teacher
-    current_user --> Controller: Check if current_user is a Teacher
-    Controller -> Response: Return response with teacher account info
-    activate Response
-    Response --> User: Teacher account information
-    deactivate Response
-else
-    current_user --> Controller: User account info
-    Controller -> Response: Return response with user account info
-    activate Response
-    Response --> User: User account information
-    deactivate Response
-end
-deactivate current_user
+Controller -> UserClass: get_id(), get_name(), get_email()
+activate UserClass
+UserClass --> Controller: user info
+deactivate UserClass
+Controller --> Server: user info
 deactivate Controller
+
+Server --> UserActor: return account info
 
 @enduml

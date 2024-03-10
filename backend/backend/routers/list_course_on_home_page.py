@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body, HTTPException
 from pydantic import UUID4, BaseModel
 from uuid import UUID
 from enum import Enum
@@ -12,7 +12,7 @@ import random
 
 router = APIRouter()
 
-route_tags: List[str | Enum] = ["Course"]
+route_tags: List[str | Enum] = ["HomePage"]
 
 class ShowCourse(BaseModel):
     id: str
@@ -43,6 +43,7 @@ def random_course():
 
 @router.get("/course/homepage/random_reviewed_course", tags= route_tags)
 def random_reviewed_course():
+    random_amount = 3
     return_data: List[CourseCardData] = []
     all_course = controller.get_all_courses()
     for course in all_course:
@@ -56,7 +57,9 @@ def random_reviewed_course():
                     rating = course.get_average_rating(),
                     banner_image = course.get_banner_image_url()
                 ))
-    random_reviewed_course = random.sample(return_data, 3)
+    if len(return_data) <= random_amount:
+        raise HTTPException(status_code=404, detail="There is no reviewd course, yet")
+    random_reviewed_course = random.sample(return_data, random_amount)
     return random_reviewed_course
 
 @router.get("/course/homepage/suggestion", tags= route_tags)

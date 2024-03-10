@@ -1,5 +1,5 @@
 from typing import List, Union
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body, HTTPException
 from pydantic import UUID4
 
 from backend.definitions.course import Course
@@ -10,7 +10,7 @@ from backend.controller_instance import controller
 
 router = APIRouter()
 
-@router.get("/get_teacher_by_course_id/{course_id}")
+@router.get("/get_teacher_by_course_id/{course_id}",tags= ["Teacher"])
 def get_teacher_by_course_id(course_id:UUID4):
   course = controller.search_course_by_id(course_id)
   if course == None:
@@ -19,4 +19,4 @@ def get_teacher_by_course_id(course_id:UUID4):
     for course_in_teacher in teacher.get_my_teachings():
       if course == course_in_teacher:
         return teacher
-  return "Error: Teacher not match"
+  raise HTTPException(status_code=404, detail="Teacher. Please check your progress_id")

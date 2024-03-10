@@ -3,9 +3,6 @@ import uuid
 from typing import List, Literal, Optional
 from pydantic import UUID4
 
-# from backend.definitions.controller import Controller
-# from backend.controller_instance import controller
-# from backend.definitions.user import User, Teacher
 
 
 class QuizQuestion:
@@ -88,6 +85,12 @@ class CourseMaterialQuiz(CourseMaterial):
         super().__init__(name, description)
         self.__questions: List[QuizQuestion] = [QuizQuestion("default question", True)]
 
+    def remove_question(self, question: QuizQuestion):
+        if isinstance(question, QuizQuestion):
+            self.__questions.remove(question)
+            return True
+        return False
+
     def add_question(self, question: QuizQuestion):
         if isinstance(question, QuizQuestion):
             self.__questions.append(question)
@@ -95,7 +98,7 @@ class CourseMaterialQuiz(CourseMaterial):
         return False
     
     def search_question_by_id(self, id : uuid.UUID):
-        return next(quiz for quiz in self.__questions if isinstance(quiz, QuizQuestion) and quiz.get_id() == id)
+        return next((quiz for quiz in self.__questions if isinstance(quiz, QuizQuestion) and quiz.get_id() == id), None)
 
     def get_questions(self):
         return self.__questions
@@ -155,10 +158,9 @@ class CourseMaterialQuiz(CourseMaterial):
 
     def edit(self, name: Optional[str] = None, description: Optional[str] = None):
         if name is not None:
-            self.__name = name
+            self._CourseMaterial__name = name
         if description is not None:
-            self.__description = description
-            
+            self._CourseMaterial__description = description
 
 
         
@@ -176,17 +178,22 @@ class CourseReview:
 
     def get_star(self) -> Literal[1, 2, 3, 4, 5]:
         return self.__star
-    
-    def cal_average_star(self, star):
-        pass
 
     def get_comment(self):
         return self.__comment
+    
+    def set_star(self, star: Literal[1, 2, 3, 4, 5]):
+        self.__star = star
+
+    def set_comment(self, comment :str):
+        self.__comment = comment
 
 class Course:
     def __init__(
         self, name: str, description: str, price: int
     ) -> None:
+        if price < 0:
+            price = 0
         self.__id: UUID4 = uuid.uuid4()
         self.__name: str = name
         self.__description: str = description
@@ -198,6 +205,7 @@ class Course:
         # Question from Taj to phak: Should I collect latest video to course?
         self.__latest_video = None
         self.__banner_image_url: str = "/course/default-image.jpg"
+
 
     def set_name(self, name: str):
         if isinstance(name, str):
@@ -314,6 +322,38 @@ class Course:
                 return video
         return None
     
+    def remove_review(self, review: CourseReview):
+        self.__reviews.remove(review)
+    
+    def remove_quiz(self, quiz: CourseMaterialQuiz):
+        self.__quizes.remove(quiz)
+
+    def edit(self, previous_category : CourseCategory, name:Optional[str]= None, description:Optional[str] = None, price:Optional[int] = None,new_category:Optional[CourseCategory] = None):
+        if price is not None:
+            if price < 0:
+                price = 0
+            self.__price = price
+
+        if name is not None:
+            self.__name = name
+
+        if description is not None:
+            self.__description = description
+
+        
+        if new_category is not None:
+
+            if not isinstance(previous_category, CourseCategory):
+                return False,"category not found"
+            
+            previous_category.remove_course(self)
+
+            new_category.add_course(self)
+
+        return True,"edit success"
+
+
+    
 
 
 class CourseCategory:
@@ -327,6 +367,14 @@ class CourseCategory:
             self.__courses.append(course)
             return True
         return False
+
+    def remove_course(self, course: Course):
+        if isinstance(course, Course):
+            self.__courses.remove(course)
+            return True
+        return False
+
+
 
     def get_id(self):
         return self.__id
