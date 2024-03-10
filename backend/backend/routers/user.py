@@ -9,7 +9,7 @@ from backend.definitions.progress import Progress, ProgressQuiz, ProgressVideo
 from backend.definitions.course import Course, CourseMaterialQuiz, QuizQuestion
 from backend.definitions.user import User,Teacher
 from backend.lib.authentication import get_current_user
-from backend.definitions.api_data_model import CourseCardData, ProgressVideoData, ProgressQuizData, AnswerQuestion
+from backend.definitions.api_data_model import CourseCardData, ProgressVideoData, ProgressQuizData, AnswerQuestion, GetCorrectAnswer
 router = APIRouter()
 route_tags: List[str | Enum] = ["Course"]
 
@@ -113,6 +113,21 @@ def get_progress_quizes(current_user: Annotated[User, Depends(get_current_user)]
     
     return create_progress_quiz_base_model(progress.get_progress_quizes())
 
+@router.get("/teacher/get_correct_answer/{course_id}/{quiz_id}", tags=["Quiz"])
+
+def get_correct_answer(current_user:Annotated[User, Depends(get_current_user)], course_id: UUID, quiz_id: UUID):
+    course = controller.search_course_by_id(course_id)
+    if not isinstance(course, Course):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Course not found")
+
+    if not (current_user == controller.search_teacher_by_course(course)):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail = " Unauthorized")
+
+    quiz = course.search_quiz_by_id(quiz_id)
+    
+    if not isinstance(quiz, CourseMaterialQuiz):
+        raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail= "Quiz not found")
+    return create_correct_answer_base_model(quiz.get_questions())
 
 @router.put("/user/study_video/{progress_id}", tags=["Video"])
 def study_video_by_id(
@@ -234,4 +249,13 @@ def create_progress_quiz_base_model(quizes : list[ProgressQuiz]):
             id=str(quiz.get_id()),
             is_complete=quiz.get_completed()
         ) for quiz in quizes if isinstance(quiz, ProgressQuiz)
+    ]
+
+def create_correct_answer_base_model(questions: list[QuizQuestion]):
+    return [
+        GetCorrectAnswer(
+            question = question.get_question(),
+            correct= question.get_correct(),
+            id=str(question.get_id())
+        )for question in questions if isinstance(question, QuizQuestion)
     ]
