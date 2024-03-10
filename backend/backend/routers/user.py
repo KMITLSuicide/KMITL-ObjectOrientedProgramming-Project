@@ -101,7 +101,7 @@ def get_progress_videos(current_user: Annotated[User, Depends(get_current_user)]
     if not isinstance(progress, Progress):
       raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
     
-    create_progress_videos_base_model(progress.get_progress_videos())
+    return create_progress_videos_base_model(progress.get_progress_videos())
 
 
 @router.get("/user/progress_quizes/{progress_id}", tags=["Quiz"])
@@ -110,7 +110,8 @@ def get_progress_quizes(current_user: Annotated[User, Depends(get_current_user)]
     progress = current_user.search_progress_by_id(progress_id)
     if not isinstance(progress, Progress):
       raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
-    create_progress_quiz_base_model(progress.get_progress_quizes())
+    
+    return create_progress_quiz_base_model(progress.get_progress_quizes())
 
 
 @router.put("/user/study_video/{progress_id}", tags=["Video"])
