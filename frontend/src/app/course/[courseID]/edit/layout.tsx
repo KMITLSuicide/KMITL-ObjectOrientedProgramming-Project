@@ -10,7 +10,7 @@ import { useToast } from "~/src/components/ui/use-toast";
 import Link from "next/link";
 import { Button } from "~/src/components/ui/button";
 import { Book, Plus, SquarePen } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
 
 export default function CourseLearnLayout({
@@ -20,6 +20,8 @@ export default function CourseLearnLayout({
   children: React.ReactNode;
   params: { courseID: string };
 }) {
+  const path = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
   const [learnData, setLearnData] = useState<CourseLearn | null | undefined>(
@@ -39,6 +41,8 @@ export default function CourseLearnLayout({
 
   useEffect(() => {
     void fetchData(params.courseID);
+    console.log(path);
+    router.replace(path);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.courseID]);
 
