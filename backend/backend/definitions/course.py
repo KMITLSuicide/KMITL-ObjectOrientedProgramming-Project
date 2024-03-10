@@ -85,6 +85,12 @@ class CourseMaterialQuiz(CourseMaterial):
         super().__init__(name, description)
         self.__questions: List[QuizQuestion] = [QuizQuestion("default question", True)]
 
+    def remove_question(self, question: QuizQuestion):
+        if isinstance(question, QuizQuestion):
+            self.__questions.remove(question)
+            return True
+        return False
+
     def add_question(self, question: QuizQuestion):
         if isinstance(question, QuizQuestion):
             self.__questions.append(question)
@@ -318,6 +324,9 @@ class Course:
     
     def remove_review(self, review: CourseReview):
         self.__reviews.remove(review)
+    
+    def remove_quiz(self, quiz: CourseMaterialQuiz):
+        self.__quizes.remove(quiz)
 
     def edit(self, previous_category : CourseCategory, name:Optional[str]= None, description:Optional[str] = None, price:Optional[int] = None,new_category:Optional[CourseCategory] = None):
         if price is not None:

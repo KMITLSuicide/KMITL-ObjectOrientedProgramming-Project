@@ -19,6 +19,7 @@ from backend.routers import (
     teacher,
     get_teacher_by_course_id,
     add_coupon,
+    course_material
 )
 
 app = FastAPI()
@@ -36,6 +37,7 @@ app.include_router(buy_course.router)
 app.include_router(get_teacher_by_course_id.router)
 app.include_router(teacher.router)
 app.include_router(add_coupon.router)
+app.include_router(course_material.router)
 
 origins = ["http://localhost:3000", "https://localhost:3000", "*"]
 
