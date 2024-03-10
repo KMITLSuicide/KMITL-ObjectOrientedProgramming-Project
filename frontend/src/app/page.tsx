@@ -57,7 +57,7 @@ export default function Index() {
 
         <div className="w-3/4 space-y-2">
           <h2 className="text-center text-3xl font-semibold">
-            Reccommended courses
+            Recommended courses
           </h2>
           <div className="grid grid-cols-3 gap-4">
             {cardsData?.map((course) => {

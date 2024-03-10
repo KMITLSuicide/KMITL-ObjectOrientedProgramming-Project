@@ -80,8 +80,16 @@ export interface CourseLearnMaterialQuizQuestions {
   question: string;
 }
 
+export interface CourseLearnMaterialQuizQuestionsWithKey extends CourseLearnMaterialQuizQuestions {
+  correct: boolean;
+}
+
 export interface CourseLearnMaterialQuiz extends CourseLearnMaterial {
   questions: CourseLearnMaterialQuizQuestions[];
+}
+
+export interface CourseLearnMaterialQuizWithKey extends CourseLearnMaterial {
+  questions: CourseLearnMaterialQuizQuestionsWithKey[];
 }
 
 export interface CourseLearnMaterialImage extends CourseLearnMaterial {
@@ -96,4 +104,11 @@ export interface CourseLearn extends CourseInfo {
   learn_materials_quizes: CourseLearnMaterialQuiz[];
   learn_materials_images: CourseLearnMaterialImage[];
   learn_materials_videos: CourseLearnMaterialVideo[];
+}
+
+export interface CourseCreatePostData {
+  name: string;
+  description: string;
+  price: number;
+  category_id: string;
 }
