@@ -47,7 +47,11 @@ class CourseMaterial:
 
     def get_description(self):
         return self.__description
-
+    def set_name(self, name : str):
+        self.__name = name
+    
+    def set_description(self, description: str):
+        self.__description =description
 
 
 class CourseMaterialVideo(CourseMaterial):
@@ -63,7 +67,14 @@ class CourseMaterialVideo(CourseMaterial):
 
     def get_url(self):
         return self.__url
-
+    
+    def edit(self,name: Optional[str] = None,description: Optional[str] = None,url: Optional[str] = None):
+        if name != None:
+            super().set_name(name)
+        if description != None:
+            super().set_description(description)
+        if url != None:
+            self.__url = url
 
 class CourseMaterialImage(CourseMaterial):  # Question: Is CourseMaterialImage  video?
     def __init__(self, url: str, name: str, description: str) -> None:
@@ -78,7 +89,14 @@ class CourseMaterialImage(CourseMaterial):  # Question: Is CourseMaterialImage  
 
     def get_url(self):
         return self.__url
-
+    
+    def edit(self,name: Optional[str] = None,description: Optional[str] = None,url: Optional[str] = None):
+        if name != None:
+            super().set_name(name)
+        if description != None:
+            super().set_description(description)
+        if url != None:
+            self.__url = url
 
 class CourseMaterialQuiz(CourseMaterial):
     def __init__(self, name: str, description: str) -> None:
@@ -246,7 +264,7 @@ class Course:
         return False
 
     # Tajdang commit
-    def add_videos(self, video: CourseMaterialVideo):
+    def add_video(self, video: CourseMaterialVideo):
         if isinstance(video, CourseMaterialVideo):
             self.__videos.append(video)
             return True
@@ -308,13 +326,13 @@ class Course:
         return None
 
     def search_quiz_by_id(self, id: uuid.UUID):
-        return next(quiz for quiz in self.__quizes if isinstance(quiz, CourseMaterialQuiz) and quiz.get_id() == id)
+        return next((quiz for quiz in self.__quizes if isinstance(quiz, CourseMaterialQuiz) and quiz.get_id() == id), None)
     
     def search_video_by_id(self, id: uuid.UUID):
-        return next(video for video in self.__videos if isinstance(video, CourseMaterialVideo) and video.get_id() == id)
+        return next((video for video in self.__videos if isinstance(video, CourseMaterialVideo) and video.get_id() == id), None)
     
     def search_image_by_id(self, id: uuid.UUID):
-        return next(image for image in self.__images if isinstance(image, CourseMaterialImage) and image.get_id() == id)
+        return next((image for image in self.__images if isinstance(image, CourseMaterialImage) and image.get_id() == id),None)
 
     def search_video_by_name(self, name: str):
         for video in self.__videos:
@@ -327,6 +345,12 @@ class Course:
     
     def remove_quiz(self, quiz: CourseMaterialQuiz):
         self.__quizes.remove(quiz)
+
+    def remove_video(self, video: CourseMaterialVideo):
+        self.__videos.remove(video)
+    
+    def remove_image(self, image: CourseMaterialImage):
+        self.__images.remove(image)
 
     def edit(self, previous_category : CourseCategory, name:Optional[str]= None, description:Optional[str] = None, price:Optional[int] = None,new_category:Optional[CourseCategory] = None):
         if price is not None:
