@@ -1,11 +1,11 @@
 import type {
   CourseInfo,
   Course,
-  CourseLearn,
   CourseCreatePostData,
   CourseCardData,
   Review,
   PostReviewData,
+  CourseLearnMaterialQuizQuestionsWithKey,
 } from "~/src/lib/definitions/course";
 import api from "~/src/lib/data/api";
 
@@ -22,6 +22,22 @@ export async function getCourseDataFromAPI() {
     console.error(error);
     return null;
   }
+}
+
+export async function getQuizKey(courseID: string, quizID: string) {
+  try {
+    const response = await api.get<CourseLearnMaterialQuizQuestionsWithKey[]>(`/course/${courseID}/quiz/${quizID}/key`);
+
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+
 }
 
 export async function getCourseInfoFromAPI(courseID: string) {

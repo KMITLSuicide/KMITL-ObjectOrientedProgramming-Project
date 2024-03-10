@@ -90,7 +90,7 @@ export function CourseCreateQuiz(
 
   return (
     <>
-      <h2 className="text-3xl font-extrabold">Editing</h2>
+      <h2 className="text-3xl font-extrabold">New quiz material</h2>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField

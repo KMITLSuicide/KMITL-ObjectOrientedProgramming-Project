@@ -442,7 +442,7 @@ def delete_quiz(
 
     return get_learn_course_materials(course_id, current_user)
 
-@router.get("/course/{course_id}/quiz/{quiz_id}/{question_id}", tags=["Question"])
+@router.get("/course/{course_id}/quiz/{quiz_id}/question/{question_id}", tags=["Question"])
 def get_question(
   course_id: str,
   quiz_id: uuid.UUID,
@@ -475,7 +475,7 @@ def get_question(
 
 
 
-@router.put("/course/{course_id}/quiz/{quiz_id}/{question_id}", tags=["Question"])
+@router.put("/course/{course_id}/quiz/{quiz_id}/question/{question_id}", tags=["Question"])
 def edit_question(
     course_id: str,
     quiz_id: uuid.UUID,
@@ -521,7 +521,7 @@ def edit_question(
         return message
     return get_question(course_id,quiz_id,question.get_id(),current_user)
 
-@router.post("/course/{course_id}/quiz/{quiz_id}", tags=["Question"])
+@router.post("/course/{course_id}/quiz/{quiz_id}/question", tags=["Question"])
 def add_question(
     course_id: str,
     quiz_id: uuid.UUID,
@@ -556,7 +556,7 @@ def add_question(
 
     return quiz.add_question(QuizQuestion(QuizQuestionData.question, QuizQuestionData.correct))
 
-@router.delete("/course/{course_id}/quiz/{quiz_id}/{question_id}", tags=["Question"])
+@router.delete("/course/{course_id}/quiz/{quiz_id}/question/{question_id}", tags=["Question"])
 def delete_question(
   course_id: str,
   quiz_id: uuid.UUID,
