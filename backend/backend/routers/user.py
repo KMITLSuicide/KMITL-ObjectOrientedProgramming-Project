@@ -39,7 +39,7 @@ async def view_video_by_name(current_user: Annotated[User, Depends(get_current_u
     video = current_user.view_video_by_name(video_name)
     return {"video": video}
 
-@router.get("/user/latest_video", tags=["Video"])
+@router.get("/user/progress/latest/video", tags=["Video"])
 async def get_latest_video_form_user(current_user: Annotated[User, Depends(get_current_user)]):
     latest_video = current_user.get_latest_video()
     return latest_video
@@ -72,7 +72,7 @@ def get_my_teaching(current_user: Annotated[User, Depends(get_current_user)]):
 
 
 
-@router.get("/user/normalized_videos/{progress_id}", tags=["Video"])
+@router.get("/user/progress/{progress_id}/video/normalized", tags=["Video"])
 def get_normalized_progress_videos(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID
@@ -82,7 +82,7 @@ def get_normalized_progress_videos(
       raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
     return progress.get_normalized_progress_videos()
 
-@router.get("/user/normalized_quizes/{progress_id}", tags=["Quiz"])
+@router.get("/user/progress/{progress_id}/quiz", tags=["Quiz"])
 def get_normalized_progress_quizes(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID
@@ -90,32 +90,32 @@ def get_normalized_progress_quizes(
     progress = current_user.search_progress_by_id(progress_id)
     if not isinstance(progress, Progress):
       raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
-    
+
     return progress.get_normalized_progress_quizes()
 
 
-@router.get("/user/progress_videos/{progress_id}", tags=["Video"])
+@router.get("/user/progress/{progress_id}/video", tags=["Video"])
 
 def get_progress_videos(current_user: Annotated[User, Depends(get_current_user)],progress_id: UUID):
     progress = current_user.search_progress_by_id(progress_id)
     if not isinstance(progress, Progress):
       raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
-    
+
     return create_progress_videos_base_model(progress.get_progress_videos())
 
 
-@router.get("/user/progress_quizes/{progress_id}", tags=["Quiz"])
+@router.get("/user/progress/{progress_id}/quiz", tags=["Quiz"])
 
 def get_progress_quizes(current_user: Annotated[User, Depends(get_current_user)],progress_id: UUID):
     progress = current_user.search_progress_by_id(progress_id)
     if not isinstance(progress, Progress):
       raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
-    
+
     return create_progress_quiz_base_model(progress.get_progress_quizes())
 
-@router.get("/teacher/get_correct_answer/{course_id}/{quiz_id}", tags=["Quiz"])
+@router.get("/course/{course_id}/quiz/{quiz_id}/key", tags=["Quiz"])
 
-def get_correct_answer(current_user:Annotated[User, Depends(get_current_user)], course_id: UUID, quiz_id: UUID):
+def get_quiz_key(current_user:Annotated[User, Depends(get_current_user)], course_id: UUID, quiz_id: UUID):
     course = controller.search_course_by_id(course_id)
     if not isinstance(course, Course):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Course not found")
@@ -124,12 +124,12 @@ def get_correct_answer(current_user:Annotated[User, Depends(get_current_user)], 
         raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail = " Unauthorized")
 
     quiz = course.search_quiz_by_id(quiz_id)
-    
+
     if not isinstance(quiz, CourseMaterialQuiz):
         raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail= "Quiz not found")
     return create_correct_answer_base_model(quiz.get_questions())
 
-@router.put("/user/study_video/{progress_id}", tags=["Video"])
+@router.put("/user/progress/{progress_id}/video", tags=["Video"])
 def study_video_by_id(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID,
@@ -149,7 +149,7 @@ def study_video_by_id(
     return progress.get_normalized_progress_videos()
 
 
-@router.put("/user/complete_quiz_by_id/{progress_id}/{quiz_id}", tags=["Quiz"])
+@router.put("/user/progress/{progress_id}/quiz/{quiz_id}", tags=["Quiz"])
 def answer_quiz(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID,
