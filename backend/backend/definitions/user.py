@@ -56,6 +56,13 @@ class User:
                 return progress
         return None
 
+    def search_progress_by_course(self, course: Course):
+        for progress in self.__my_progresses:
+            course_from_progress = progress.get_course()
+            if course_from_progress == course:
+                return progress
+        return None
+
     def search_course_by_id(self, course_id: uuid.UUID):
         for progress in self.__my_progresses:
             course = progress.get_course()
@@ -106,6 +113,10 @@ class User:
                 return True
         return False
 
+    def remove_course(self, course:Course):
+        progress = self.search_progress_by_course(course)
+        if isinstance(progress, Progress):
+            self.__my_progresses.remove(progress)
 
 class Teacher(User):
     def __init__(
@@ -127,11 +138,18 @@ class Teacher(User):
         return self.__my_created_coupons
 
     def have_access_to_course(self, course: Course):
+        
         for my_course in self.get_my_teachings():
             if my_course == course:
                 return True
+        for progress in self.get_my_progresses():
+            if progress.get_course() == course:
+                return True
         return False
-
+    
+    def remove_course(self, course: Course):
+        super().remove_course(course)
+        self.__my_teachings.remove(course)
 
 class Cart:
     def __init__(self):
