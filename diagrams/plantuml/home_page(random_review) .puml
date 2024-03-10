@@ -1,0 +1,23 @@
+@startuml Home Page
+actor User
+
+participant "UI" as Server
+participant Controller
+
+
+User -> Server: random_reviewed_course
+Server -> Controller: random_reviewed_course()
+activate Controller
+Controller -> Controller: get_all_courses()
+activate Controller
+Controller -> Controller: generate CourseCardData for reviewed courses
+activate Controller
+Controller -> Controller: random.sample(return_data, 3)
+activate Controller
+Controller --> Server: random_reviewed_course result
+deactivate Controller
+
+Server --> User: return_random_reviewed_course
+
+
+@enduml

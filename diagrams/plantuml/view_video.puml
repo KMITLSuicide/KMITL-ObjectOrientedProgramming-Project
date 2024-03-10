@@ -1,0 +1,20 @@
+@startuml User
+actor "User" as UserActor
+
+participant "UI" as Server
+participant Controller
+participant "User" as UserClass
+
+UserActor -> Server: view video
+Server -> Controller: view_video(current_user, video_name)
+activate Controller
+Controller -> UserClass: view_video_by_name(video_name)
+activate UserClass
+UserClass --> Controller: {"video": video}
+deactivate UserClass
+Controller --> Server: {"video": video}
+deactivate Controller
+
+Server --> UserActor: return video
+
+@enduml

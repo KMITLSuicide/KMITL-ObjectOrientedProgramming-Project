@@ -1,0 +1,20 @@
+@startuml Add Coupon
+actor Teacher
+
+participant "UI" as Server
+participant Controller
+
+
+Teacher -> Server: add_coupon_teacher
+Server -> Controller: add_coupon_teacher()
+activate Controller
+Controller -> Controller: add_coupon_teacher()
+activate Controller
+Controller -> Controller: get_all_coupons()
+activate Controller
+Controller --> Server: List of coupons
+deactivate Controller
+
+Server --> Teacher: return_list_of_coupon 
+
+@enduml

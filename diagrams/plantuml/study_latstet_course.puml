@@ -1,0 +1,21 @@
+@startuml User
+actor "User" as UserActor
+
+participant "UI" as Server
+participant Controller
+participant "User" as UserClass
+
+
+UserActor -> Server: study lastest course
+Server -> Controller: study_latest_course(current_user)
+activate Controller
+Controller -> UserClass: get_latest_video()
+activate UserClass
+UserClass --> Controller: latest_video
+deactivate UserClass
+Controller --> Server: latest_video
+deactivate Controller
+
+Server --> UserActor: return lastest course
+
+@enduml
