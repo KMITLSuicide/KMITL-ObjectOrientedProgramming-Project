@@ -32,7 +32,7 @@ import { getCategoryNamesFromAPI } from "~/src/lib/data/category";
 import type { CategoryNames } from "~/src/lib/definitions/category";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "~/src/lib/utils";
-import { createCourseToAPI } from "~/src/lib/data/course";
+import { createCourseToAPI } from "~/src/lib/data/course-create";
 import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
