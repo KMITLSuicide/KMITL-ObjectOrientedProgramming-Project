@@ -71,7 +71,7 @@ export async function getReviews(courseID: string) {
 
 export async function createReviews(courseID: string, data: PostReviewData) {
   try {
-    const response = await api.post<Review[]>(`/course/${courseID}/create_review`, data);
+    const response = await api.post<Review[]>(`/course/${courseID}/review`, data);
 
     if (response.status == 200) {
       return response.data;

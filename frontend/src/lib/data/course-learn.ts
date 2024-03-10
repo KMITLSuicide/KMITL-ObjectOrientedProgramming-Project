@@ -18,7 +18,7 @@ export async function getCourseLearnDataFromAPI(courseID: string) {
 }
 export async function completeQuiz(courseID: string, quizID: string, data: { "ids": string[] }) {
   try {
-    const response = await api.put<CompleteQuizResponse>(`/user/complete_quiz_by_id/${courseID}/${quizID}`, data);
+    const response = await api.put<CompleteQuizResponse>(`/user/progress/${courseID}/quiz/${quizID}`, data);
     console.log(response);
 
     if (response.status == 200) {
