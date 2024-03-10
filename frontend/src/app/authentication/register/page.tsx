@@ -54,7 +54,7 @@ export default function Register() {
         title: "Register success",
         description: "You have successfully registered",
       });
-      router.push("/account");
+      window.location.href = "/";
     } else {
       toast({
         title: "Register failed",

@@ -36,8 +36,7 @@ export default function LogIn() {
     const loginStatus = await login(data);
 
     if (loginStatus) {
-      router.push("/");
-      router.refresh();
+      window.location.href = "/";
     } else {
       toast({
         title: "Login failed",

@@ -5,12 +5,12 @@ import CourseLearnSidebar, {
   type SidebarCategory,
   type SidebarItem,
 } from "~/src/components/course/sidebar";
-import { getCourseLearnDataFromAPI } from "~/src/lib/data/course";
 import { type CourseLearn } from "~/src/lib/definitions/course";
 import { useToast } from "~/src/components/ui/use-toast";
 import Link from "next/link";
 import { Button } from "~/src/components/ui/button";
 import { Book } from "lucide-react";
+import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
 
 export default function CourseLearnLayout({
   children,

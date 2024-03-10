@@ -105,3 +105,22 @@ export interface CourseLearn extends CourseInfo {
   learn_materials_images: CourseLearnMaterialImage[];
   learn_materials_videos: CourseLearnMaterialVideo[];
 }
+
+export interface CourseCreatePostData {
+  name: string;
+  description: string;
+  price: number;
+  category_id: string;
+}
+
+export interface Review {
+  user_id: string;
+  user_name: string;
+  star: number;
+  comment: string;
+}
+
+export interface PostReviewData {
+  star: number;
+  comment: string;
+}

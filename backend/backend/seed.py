@@ -188,7 +188,7 @@ def seed(controller: Controller):
                     )
             elif material_type == "videos":
                 for material in materials_list:
-                    course.add_videos(
+                    course.add_video(
                         CourseMaterialVideo(
                             material["url"],
                             material["name"],
