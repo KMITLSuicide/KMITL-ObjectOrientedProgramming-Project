@@ -50,24 +50,34 @@ export default function CourseLearnLayout({
   const sidebarImagesItems = learnData?.learn_materials_images.map(
     (element): SidebarItem => {
       return {
+        id: element.id,
         name: element.name,
         link: `/course/${params.courseID}/learn/image/${element.id}`,
+        progressSavable: false,
+        learnedChangable: false,
       };
     },
   );
   const sidebarQuizItems = learnData?.learn_materials_quizes.map(
     (element): SidebarItem => {
       return {
+        id: element.id,
         name: element.name,
         link: `/course/${params.courseID}/learn/quiz/${element.id}`,
+        progressSavable: true,
+        learnedChangable: false,
       };
     },
   );
   const sidebarVideosItems = learnData?.learn_materials_videos.map(
     (element): SidebarItem => {
       return {
+        id: element.id,
         name: element.name,
         link: `/course/${params.courseID}/learn/video/${element.id}`,
+        progressSavable: true,
+        learnedChangable: true,
+
       };
     },
   );
