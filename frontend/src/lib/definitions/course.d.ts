@@ -112,3 +112,15 @@ export interface CourseCreatePostData {
   price: number;
   category_id: string;
 }
+
+export interface Review {
+  user_id: string;
+  user_name: string;
+  star: number;
+  comment: string;
+}
+
+export interface PostReviewData {
+  star: number;
+  comment: string;
+}
