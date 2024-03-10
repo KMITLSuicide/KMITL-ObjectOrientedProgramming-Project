@@ -46,7 +46,7 @@ export default function CourseViewMaterial({
       }
 
       if(params.materialType === "quiz") {
-        setMaterialComponent(<CourseCreateQuiz />);
+        setMaterialComponent(<CourseCreateQuiz courseID={params.courseID} />);
       } else if (params.materialType === "image") {
         setMaterialComponent(<CourseCreateImage courseID={params.courseID} />);
       } else if (params.materialType === "video") {

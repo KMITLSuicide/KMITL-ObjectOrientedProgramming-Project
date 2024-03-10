@@ -1,6 +1,5 @@
 "use client";
 
-import type { CourseLearnMaterialImage } from "~/src/lib/definitions/course";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
 import { z } from "zod";

@@ -17,3 +17,10 @@ export interface CreateMaterialImagePostData extends CreateMaterialBasePostData 
 export interface CreateMaterialVideoPostData extends CreateMaterialBasePostData {
   url: string
 }
+
+export interface CreateMaterialQuizPostData extends CreateMaterialBasePostData {
+  questions: {
+    question: string;
+    correct: boolean;
+  }[];
+}
