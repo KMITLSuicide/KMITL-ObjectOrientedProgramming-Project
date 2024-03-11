@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "~/src/components/ui/use-toast";
-import { getCourseLearnDataFromAPI } from "~/src/lib/data/course";
+import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
 import { type CourseLearn } from "~/src/lib/definitions/course";
 
 export default function CourseLearn({

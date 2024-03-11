@@ -47,15 +47,9 @@ class CourseLearnMaterialQuiz(CourseLearnMaterial):
     questions: list[CourseLearnMaterialQuizQuestions]
 
 class CourseLearnMaterialImage(CourseLearnMaterial):
-    id: str
-    name: str
-    description: str
     url: str
 
 class CourseLearnMaterialVideo(CourseLearnMaterial):
-    id: str
-    name: str
-    description: str
     url: str
 
 class CourseLearn(CourseInfo):
@@ -64,7 +58,11 @@ class CourseLearn(CourseInfo):
     learn_materials_videos: list[CourseLearnMaterialVideo]
 
 class ProgressVideoData(BaseModel):
-    id: UUID
+    id: str
+    is_complete: bool
+
+class ProgressQuizData(BaseModel):
+    id: str
     is_complete: bool
 
 class CourseMaterialData(BaseModel):
@@ -73,6 +71,9 @@ class CourseMaterialData(BaseModel):
 
 class AddImageToCoursePostData(CourseMaterialData):
     url: str
+
+class AddVideoToCoursePostData(CourseMaterialData):
+    url:str
 
 class PostCourseData(BaseModel):
     name: str
@@ -83,6 +84,9 @@ class PostCourseData(BaseModel):
 class QuizQuestionData(BaseModel):
     question: str
     correct: bool
+
+class GetCorrectAnswer(QuizQuestionData):
+    id: str
 
 
 class AddQuizToCoursePostData(CourseMaterialData):

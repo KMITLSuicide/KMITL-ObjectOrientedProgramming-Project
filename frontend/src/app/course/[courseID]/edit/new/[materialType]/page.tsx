@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { CourseLearnImage } from "~/src/components/course/learn/image";
-import { CourseLearnQuiz } from "~/src/components/course/learn/quiz";
-import { CourseLearnVideo } from "~/src/components/course/learn/video";
+import { CourseCreateImage } from "~/src/components/course/new/image";
+import { CourseCreateQuiz } from "~/src/components/course/new/quiz";
+import { CourseCreateVideo } from "~/src/components/course/new/video";
 import { toast } from "~/src/components/ui/use-toast";
 import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
 import type { CourseLearn } from "~/src/lib/definitions/course";
@@ -13,7 +13,7 @@ const validTypes = ["quiz", "image", "video"];
 export default function CourseViewMaterial({
   params,
 }: {
-  params: { courseID: string, materialType: string, materialID: string};
+  params: { courseID: string, materialType: string };
 }) {
   const [courseData, setCourseData] = useState<CourseLearn | null | undefined>(undefined);
   const [materialComponent, setMaterialComponent] = useState<React.ReactNode | null>(null);
@@ -46,41 +46,14 @@ export default function CourseViewMaterial({
       }
 
       if(params.materialType === "quiz") {
-        const quiz = courseData?.learn_materials_quizes.find((quiz) => quiz.id === params.materialID);
-        if (quiz === undefined) {
-          toast({
-            title: "Error",
-            description: "Invalid quiz",
-            variant: "destructive",
-          });
-          return;
-        }
-        setMaterialComponent(<CourseLearnQuiz courseID={params.courseID} quizData={quiz} />);
+        setMaterialComponent(<CourseCreateQuiz courseID={params.courseID} />);
       } else if (params.materialType === "image") {
-        const image = courseData?.learn_materials_images.find((image) => image.id === params.materialID);
-        if (image === undefined) {
-          toast({
-            title: "Error",
-            description: "Invalid image",
-            variant: "destructive",
-          });
-          return;
-        }
-        setMaterialComponent(<CourseLearnImage imageData={image} />);
+        setMaterialComponent(<CourseCreateImage courseID={params.courseID} />);
       } else if (params.materialType === "video") {
-        const video = courseData?.learn_materials_videos.find((video) => video.id === params.materialID);
-        if (video === undefined) {
-          toast({
-            title: "Error",
-            description: "Invalid video",
-            variant: "destructive",
-          });
-          return;
-        }
-        setMaterialComponent(<CourseLearnVideo videoData={video} />);
+        setMaterialComponent(<CourseCreateVideo courseID={params.courseID} />);
       }
     }
-  }, [courseData, params.materialID, params.materialType, params]);
+  }, [courseData, params.materialType, params]);
 
   return (
     <div className="flex h-full flex-col space-y-2">

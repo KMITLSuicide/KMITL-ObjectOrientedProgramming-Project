@@ -18,11 +18,11 @@ class BuyCourseData(BaseModel):
 
 
 
-@router.post("/user/buy_course/{course_id}", tags=route_tags)
+@router.post("/user/buy/course/{course_id}", tags=route_tags)
 def buy_course(
     current_user: Annotated[User, Depends(get_current_user)],
     course_id: UUID,
-    buy_course_data: Annotated[BuyCourseData, Body(            
+    buy_course_data: Annotated[BuyCourseData, Body(
             examples=[
                 {
                     "status": True,

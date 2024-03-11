@@ -3,9 +3,6 @@ import uuid
 from typing import List, Literal, Optional
 from pydantic import UUID4
 
-# from backend.definitions.controller import Controller
-# from backend.controller_instance import controller
-# from backend.definitions.user import User, Teacher
 
 
 class QuizQuestion:
@@ -50,7 +47,11 @@ class CourseMaterial:
 
     def get_description(self):
         return self.__description
-
+    def set_name(self, name : str):
+        self.__name = name
+    
+    def set_description(self, description: str):
+        self.__description =description
 
 
 class CourseMaterialVideo(CourseMaterial):
@@ -66,7 +67,14 @@ class CourseMaterialVideo(CourseMaterial):
 
     def get_url(self):
         return self.__url
-
+    
+    def edit(self,name: Optional[str] = None,description: Optional[str] = None,url: Optional[str] = None):
+        if name != None:
+            super().set_name(name)
+        if description != None:
+            super().set_description(description)
+        if url != None:
+            self.__url = url
 
 class CourseMaterialImage(CourseMaterial):  # Question: Is CourseMaterialImage  video?
     def __init__(self, url: str, name: str, description: str) -> None:
@@ -81,12 +89,28 @@ class CourseMaterialImage(CourseMaterial):  # Question: Is CourseMaterialImage  
 
     def get_url(self):
         return self.__url
-
+    
+    def edit(self,name: Optional[str] = None,description: Optional[str] = None,url: Optional[str] = None):
+        if name != None:
+            super().set_name(name)
+        if description != None:
+            super().set_description(description)
+        if url != None:
+            self.__url = url
 
 class CourseMaterialQuiz(CourseMaterial):
     def __init__(self, name: str, description: str) -> None:
         super().__init__(name, description)
         self.__questions: List[QuizQuestion] = [QuizQuestion("default question", True)]
+
+    def remove_question(self, question: QuizQuestion):
+        if isinstance(question, QuizQuestion):
+            self.__questions.remove(question)
+            if not self.is_valid_quiz():
+                self.__questions.append(question)
+                return False,"Quiz, must have atleast 1 correct answer"
+            return True, "Yes"
+        return False, "Question, not found"
 
     def add_question(self, question: QuizQuestion):
         if isinstance(question, QuizQuestion):
@@ -95,7 +119,7 @@ class CourseMaterialQuiz(CourseMaterial):
         return False
     
     def search_question_by_id(self, id : uuid.UUID):
-        return next(quiz for quiz in self.__questions if isinstance(quiz, QuizQuestion) and quiz.get_id() == id)
+        return next((quiz for quiz in self.__questions if isinstance(quiz, QuizQuestion) and quiz.get_id() == id), None)
 
     def get_questions(self):
         return self.__questions
@@ -155,10 +179,9 @@ class CourseMaterialQuiz(CourseMaterial):
 
     def edit(self, name: Optional[str] = None, description: Optional[str] = None):
         if name is not None:
-            self.__name = name
+            self._CourseMaterial__name = name
         if description is not None:
-            self.__description = description
-            
+            self._CourseMaterial__description = description
 
 
         
@@ -176,17 +199,22 @@ class CourseReview:
 
     def get_star(self) -> Literal[1, 2, 3, 4, 5]:
         return self.__star
-    
-    def cal_average_star(self, star):
-        pass
 
     def get_comment(self):
         return self.__comment
+    
+    def set_star(self, star: Literal[1, 2, 3, 4, 5]):
+        self.__star = star
+
+    def set_comment(self, comment :str):
+        self.__comment = comment
 
 class Course:
     def __init__(
         self, name: str, description: str, price: int
     ) -> None:
+        if price < 0:
+            price = 0
         self.__id: UUID4 = uuid.uuid4()
         self.__name: str = name
         self.__description: str = description
@@ -198,6 +226,7 @@ class Course:
         # Question from Taj to phak: Should I collect latest video to course?
         self.__latest_video = None
         self.__banner_image_url: str = "/course/default-image.jpg"
+
 
     def set_name(self, name: str):
         if isinstance(name, str):
@@ -238,7 +267,7 @@ class Course:
         return False
 
     # Tajdang commit
-    def add_videos(self, video: CourseMaterialVideo):
+    def add_video(self, video: CourseMaterialVideo):
         if isinstance(video, CourseMaterialVideo):
             self.__videos.append(video)
             return True
@@ -300,19 +329,57 @@ class Course:
         return None
 
     def search_quiz_by_id(self, id: uuid.UUID):
-        return next(quiz for quiz in self.__quizes if isinstance(quiz, CourseMaterialQuiz) and quiz.get_id() == id)
+        return next((quiz for quiz in self.__quizes if isinstance(quiz, CourseMaterialQuiz) and quiz.get_id() == id), None)
     
     def search_video_by_id(self, id: uuid.UUID):
-        return next(video for video in self.__videos if isinstance(video, CourseMaterialVideo) and video.get_id() == id)
+        return next((video for video in self.__videos if isinstance(video, CourseMaterialVideo) and video.get_id() == id), None)
     
     def search_image_by_id(self, id: uuid.UUID):
-        return next(image for image in self.__images if isinstance(image, CourseMaterialImage) and image.get_id() == id)
+        return next((image for image in self.__images if isinstance(image, CourseMaterialImage) and image.get_id() == id),None)
 
     def search_video_by_name(self, name: str):
         for video in self.__videos:
             if video.get_name() == name:
                 return video
         return None
+    
+    def remove_review(self, review: CourseReview):
+        self.__reviews.remove(review)
+    
+    def remove_quiz(self, quiz: CourseMaterialQuiz):
+        self.__quizes.remove(quiz)
+
+    def remove_video(self, video: CourseMaterialVideo):
+        self.__videos.remove(video)
+    
+    def remove_image(self, image: CourseMaterialImage):
+        self.__images.remove(image)
+
+    def edit(self, previous_category : CourseCategory, name:Optional[str]= None, description:Optional[str] = None, price:Optional[int] = None,new_category:Optional[CourseCategory] = None):
+        if price is not None:
+            if price < 0:
+                price = 0
+            self.__price = price
+
+        if name is not None:
+            self.__name = name
+
+        if description is not None:
+            self.__description = description
+
+        
+        if new_category is not None:
+
+            if not isinstance(previous_category, CourseCategory):
+                return False,"category not found"
+            
+            previous_category.remove_course(self)
+
+            new_category.add_course(self)
+
+        return True,"edit success"
+
+
     
 
 
@@ -327,6 +394,14 @@ class CourseCategory:
             self.__courses.append(course)
             return True
         return False
+
+    def remove_course(self, course: Course):
+        if isinstance(course, Course):
+            self.__courses.remove(course)
+            return True
+        return False
+
+
 
     def get_id(self):
         return self.__id
