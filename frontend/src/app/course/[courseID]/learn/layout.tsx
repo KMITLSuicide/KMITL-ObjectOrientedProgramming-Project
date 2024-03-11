@@ -11,6 +11,8 @@ import Link from "next/link";
 import { Button } from "~/src/components/ui/button";
 import { Book } from "lucide-react";
 import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
+import { Progress } from "~/src/components/ui/progress";
+import { useSearchParams } from "next/navigation";
 
 export default function CourseLearnLayout({
   children,
@@ -19,10 +21,15 @@ export default function CourseLearnLayout({
   children: React.ReactNode;
   params: { courseID: string };
 }) {
+  const searchParams = useSearchParams();
   const { toast } = useToast();
   const [learnData, setLearnData] = useState<CourseLearn | null | undefined>(
     undefined,
   );
+  const [progressTotal, setProgressTotal] = useState<number>(0);
+  const [progressNormalizedImage, setProgressNormalizedImage] = useState<number>(0);
+  const [progressNormalizedQuiz, setProgressNormalizedQuiz] = useState<number>(0);
+  const [progressNormalizedVideo, setProgresNormalizedVideo] = useState<number>(0);
   useEffect(() => {
     void getCourseLearnDataFromAPI(params.courseID).then((data) => {
       setLearnData(data);
@@ -47,13 +54,26 @@ export default function CourseLearnLayout({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [learnData]);
 
+  useEffect(() => {
+    if (searchParams.get("fetchProgress") === "true") {
+      // void getCourseLearnDataFromAPI(params.courseID).then((data) => {
+      //   setLearnData(data);
+      //   if (data === null) {
+      //     toast({
+      //       title: "Error",
+      //       description: "Failed to fetch data",
+      //       variant: "destructive",
+      //     })}
+      // });
+    }
+  }, [searchParams]);
+
   const sidebarImagesItems = learnData?.learn_materials_images.map(
     (element): SidebarItem => {
       return {
         id: element.id,
         name: element.name,
         link: `/course/${params.courseID}/learn/image/${element.id}`,
-        progressSavable: false,
         learnedChangable: false,
       };
     },
@@ -64,7 +84,6 @@ export default function CourseLearnLayout({
         id: element.id,
         name: element.name,
         link: `/course/${params.courseID}/learn/quiz/${element.id}`,
-        progressSavable: true,
         learnedChangable: false,
       };
     },
@@ -75,9 +94,7 @@ export default function CourseLearnLayout({
         id: element.id,
         name: element.name,
         link: `/course/${params.courseID}/learn/video/${element.id}`,
-        progressSavable: true,
         learnedChangable: true,
-
       };
     },
   );
@@ -86,14 +103,23 @@ export default function CourseLearnLayout({
     {
       name: "Images",
       sidebarItems: sidebarImagesItems ?? [],
+      progressNormalized: progressNormalizedImage,
+      setProgressNormalized: setProgressNormalizedImage,
+      progressSavable: false,
     },
     {
       name: "Quizes",
       sidebarItems: sidebarQuizItems ?? [],
+      progressNormalized: progressNormalizedQuiz,
+      setProgressNormalized: setProgressNormalizedQuiz,
+      progressSavable: true,
     },
     {
       name: "Videos",
       sidebarItems: sidebarVideosItems ?? [],
+      progressNormalized: progressNormalizedVideo,
+      setProgressNormalized: setProgresNormalizedVideo,
+      progressSavable: true,
     },
   ];
 
@@ -115,9 +141,22 @@ export default function CourseLearnLayout({
               </p>
             </Link>
           </Button>
+
+          <div className="mt-4 space-y-1">
+            <p className="text-sm">Course progress</p>
+            <div className="flex flex-row items-center space-x-2">
+              <p className="text-xs">{(progressTotal * 100)}%</p>
+              <Progress
+                value={progressTotal * 100}
+              />
+            </div>
+          </div>
+
           <CourseLearnSidebar
             className="px-5"
             sidebarCategories={sidebarCategories}
+            courseID={params.courseID}
+            setProgressTotal={setProgressTotal}
           />
         </div>
       </div>

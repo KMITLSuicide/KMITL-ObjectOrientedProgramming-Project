@@ -35,10 +35,10 @@ export async function completeQuiz(courseID: string, quizID: string, data: { "id
 
 export async function completeVideo(courseID: string, data: CompleteVideoPostData) {
   try {
-    const response = await api.put(`/user/progress/${courseID}/video`, data);
+    const response = await api.put<number>(`/user/progress/${courseID}/video`, data);
 
     if (response.status == 200) {
-      return true;
+      return response.data;
     } else {
       return false;
     }
