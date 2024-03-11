@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Button } from "~/src/components/ui/button";
 import { toast } from "~/src/components/ui/use-toast";
 import {
@@ -26,6 +26,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Checkbox } from "~/src/components/ui/checkbox";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getCourseInfoFromAPI } from "~/src/lib/data/course";
+import { LoaderCircleIcon } from "lucide-react";
 
 const FormSchema = z.object({
   billingCountry: z.string().min(1),
@@ -33,7 +34,20 @@ const FormSchema = z.object({
   paymentMethod: z.string().min(1),
 });
 
-export default function CheckoutPage() {
+export default function CheckoutPageWrapper() {
+  return (
+    <Suspense fallback={
+      <>
+        <LoaderCircleIcon className="animate-spin" />
+        <div>Loading...</div>
+      </>
+    }>
+      <CheckoutPage />
+    </Suspense>
+  );
+}
+
+function CheckoutPage() {
   const router = useRouter();
   const [cardsData, setCardsData] = useState<
   CourseCardData[] | null | undefined
