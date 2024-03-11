@@ -1,11 +1,12 @@
 from enum import Enum
 from uuid import UUID
 from typing import List, Annotated, Literal, Annotated
-from fastapi import APIRouter, Depends, Response, status, Body, Depends
+from fastapi import APIRouter, Depends, Response, status, Body, Depends, HTTPException
 from pydantic import BaseModel
 from backend.controller_instance import controller
 from backend.definitions.progress import Progress
 from backend.definitions.course import Course
+from backend.definitions.order import Payment
 from backend.definitions.user import User,Teacher
 from backend.lib.authentication import get_current_user
 router = APIRouter()
@@ -13,24 +14,65 @@ router = APIRouter()
 route_tags: List[str | Enum] = ["Course"]
 
 class BuyCourseData(BaseModel):
-    status: bool
-    coupon_id: UUID | None
+    address: str
+    is_paid: bool
+    payment_method: str
 
 
 
-@router.post("/user/buy/course/{course_id}", tags=route_tags)
-def buy_course(
+@router.post("/user/check_out/{course_id}", tags=route_tags)
+def checkout(
     current_user: Annotated[User, Depends(get_current_user)],
     course_id: UUID,
     buy_course_data: Annotated[BuyCourseData, Body(
             examples=[
                 {
-                    "status": True,
-                    "coupon_id": "adfasbasdfaskldfjasdfka",
+                    "address": "Thailand",
+                    "is_paid": False,
+                    "payment_method": "PayPal"
                 }
             ]),],
 ):
-    result = controller.buy_course(
-        current_user, buy_course_data.status, course_id, buy_course_data.coupon_id
-    )
-    return result
+    course = controller.search_course_by_id(course_id)
+    if not isinstance(course, Course):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail= "Course not found")
+    
+    if current_user.have_access_to_course(course):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail= "User already have the course")
+    
+    payment_method = controller.search_payment_by_name(buy_course_data.payment_method)
+    if not isinstance(payment_method, Payment):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail= "Payment method not found")
+    
+
+    return current_user.try_to_buy_courses([course], buy_course_data.is_paid, payment_method, buy_course_data.address)
+
+@router.post("/user/buy_course_from_cart/{course_id}", tags=route_tags)
+def buy_course_from_cart(
+    current_user: Annotated[User, Depends(get_current_user)],
+    buy_course_data: Annotated[BuyCourseData, Body(
+            examples=[
+                {
+                    "address": "Thailand",
+                    "is_paid": False,
+                    "payment_method": "PayPal"
+                }
+            ]),],
+):
+
+    courses = current_user.get_cart().get_courses()
+
+    if not courses:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You don't have any course in the cart")
+
+    for course in courses:
+        if current_user.have_access_to_course(course):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already has the course")
+
+    
+    payment_method = controller.search_payment_by_name(buy_course_data.payment_method)
+    if not isinstance(payment_method, Payment):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail= "Payment method not found")
+    
+
+    return current_user.try_to_buy_courses(courses, buy_course_data.is_paid, payment_method, buy_course_data.address)

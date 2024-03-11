@@ -14,6 +14,13 @@ class CourseCardDataWithLabel(BaseModel):
     label: str
     cards: list[CourseCardData]
 
+class OrderData(BaseModel):
+    id : str
+    course_list_name: list[str]
+    price: float
+    address: str
+    payment_method: str
+    status:bool
 
 class CourseInfo(BaseModel):
     id: str
