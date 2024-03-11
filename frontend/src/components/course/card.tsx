@@ -10,14 +10,17 @@ import {
 import Image from "next/image";
 import { Config } from "~/src/config";
 import Link from "next/link";
+import { Progress } from "~/src/components/ui/progress";
 
 export function CourseCard({
   course,
+  progress,
   className,
   customLink,
   showPrice = true,
 }: {
   course: CourseCardData;
+  progress?: number;
   className?: string;
   customLink?: string;
   showPrice?: boolean;
@@ -52,6 +55,18 @@ export function CourseCard({
                 currency: Config.currency,
                 minimumFractionDigits: 0,
               })}
+            </div>
+          </CardFooter>
+        )}
+        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
+        {(progress || progress === 0) && (
+          <CardFooter>
+            <div className="flex flex-row items-center space-x-2 w-full">
+              <p className="text-sm">{(progress * 100)}%</p>
+              <Progress
+                value={progress * 100}
+                className="flex-grow outline outline-1 outline-offset-1 outline-muted-foreground rounded-md h-2"
+              />
             </div>
           </CardFooter>
         )}
