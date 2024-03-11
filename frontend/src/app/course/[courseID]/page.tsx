@@ -71,18 +71,6 @@ export default function CourseView({
     }
   }
 
-  async function onSubmitBuyNow(data: z.infer<typeof BuySchema>) {
-    // const result = await postAddCartItem(data.id);
-    const result = null;
-    if (result === null) {
-      toast({
-        title: "Error - NOT IMPLEMENTED",
-        description: JSON.stringify(data, null, 2),
-        variant: "destructive",
-      });
-    }
-  }
-
   const reviewForm = useForm<z.infer<typeof ReviewSchema>>({
     resolver: zodResolver(ReviewSchema),
   })
@@ -329,16 +317,11 @@ export default function CourseView({
                 </form>
               </Form>
 
-              <Form {...buyForm}>
-                <form
-                  onSubmit={buyForm.handleSubmit(onSubmitBuyNow)}
-                  className="w-fit space-y-2"
-                >
-                  <Button variant="default" type="submit">
-                    Buy now!
-                  </Button>
-                </form>
-              </Form>
+              <Button variant="default" type="submit" asChild>
+                <Link href={`/cart/checkout?buynow=${params.courseID}`}>
+                  Buy now!
+                </Link>
+              </Button>
             </div>
           </div>
         </div>
