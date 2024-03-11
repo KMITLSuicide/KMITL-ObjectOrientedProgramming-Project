@@ -28,7 +28,7 @@ export default function CategoryIDPage({
         })}
     }
     void fetchData();
-  }, []);
+  }, [params.categoryID]);
 
   return (
     <div className="flex w-full justify-center">

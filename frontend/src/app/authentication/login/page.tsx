@@ -16,14 +16,11 @@ import {
   FormMessage,
 } from "~/src/components/ui/form";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { LoginSchema, login } from "~/src/lib/data/authentication";
 
 const FormSchema = LoginSchema;
 
 export default function LogIn() {
-  const router = useRouter();
-
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {

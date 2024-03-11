@@ -4,7 +4,6 @@ import ThemeToggle from "~/src/components/navbar/theme-toggle";
 import AccountIcon from "~/src/components/navbar/account-icon";
 import { NavLinks, type NavItems } from "~/src/components/navbar/nav-links";
 import { Search, ShoppingCart } from "lucide-react";
-import { Button } from "~/src/components/ui/button";
 import Link from "next/link";
 
 const navItemsLeft: NavItems[] = [
