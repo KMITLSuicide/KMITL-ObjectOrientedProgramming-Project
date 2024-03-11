@@ -50,7 +50,7 @@ export async function completeVideo(courseID: string, data: Progress) {
 
 export async function getNormalizedProgress(courseID: string) {
   try {
-    const response = await api.get<number>(`/user/progress/${courseID}/total`);
+    const response = await api.get<number>(`/user/progress/${courseID}/normalized`);
 
     if (response.status == 200) {
       return response.data;
