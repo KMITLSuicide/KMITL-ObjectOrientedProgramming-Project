@@ -89,7 +89,7 @@ export function CourseEditQuiz({
         }
       }
     }
-    router.refresh();
+    router.push(`/course/${courseID}/edit/quiz/${initQuizData.id}?fetch=true`);
   }
 
   const watchedFields = useWatch({ control: form.control });

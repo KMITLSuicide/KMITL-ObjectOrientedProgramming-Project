@@ -5,18 +5,26 @@ import { CourseEditImage } from "~/src/components/course/edit/image";
 import { CourseEditQuiz } from "~/src/components/course/edit/quiz";
 import { CourseLearnVideo } from "~/src/components/course/edit/video";
 import { toast } from "~/src/components/ui/use-toast";
-import { getQuizKey } from "~/src/lib/data/course";
-import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
-import type { CourseLearn, CourseLearnMaterialQuizQuestionsWithKey, CourseLearnMaterialQuizWithKey } from "~/src/lib/definitions/course";
+import { getCourseInfoFromAPI, getQuizKey } from "~/src/lib/data/course";
+import { getImageInfo, getQuizInfo, getVideoInfo } from "~/src/lib/data/course-learn";
+import type { CourseInfo, CourseLearnMaterialQuizQuestionsWithKey, CourseLearnMaterialQuizWithKey } from "~/src/lib/definitions/course";
 
 const validTypes = ["quiz", "image", "video"];
+
+function toastErrorFetchingData() {
+  toast({
+    title: "Error",
+    description: "Data fetching failed",
+    variant: "destructive",
+  });
+}
 
 export default function CourseViewMaterial({
   params,
 }: {
   params: { courseID: string, materialType: string, materialID: string};
 }) {
-  const [courseData, setCourseData] = useState<CourseLearn | null | undefined>(undefined);
+  const [courseData, setCourseData] = useState<CourseInfo | null | undefined>(undefined);
   const [materialComponent, setMaterialComponent] = useState<React.ReactNode | null>(null);
   const [quizKey, setQuizKey] = useState<CourseLearnMaterialQuizQuestionsWithKey[] | null | undefined>(undefined);
 
@@ -34,7 +42,7 @@ export default function CourseViewMaterial({
 
   useEffect(() => {
     async function fetchData(courseID: string) {
-      const apiData = await getCourseLearnDataFromAPI(courseID);
+      const apiData = await getCourseInfoFromAPI(courseID);
       setCourseData(apiData);
 
       if (apiData === null) {
@@ -47,6 +55,37 @@ export default function CourseViewMaterial({
     void fetchData(params.courseID);
   }, [params.courseID]);
 
+  async function fetchData(type: string, courseID: string, materialID: string) {
+    if(type === "quiz") {
+      const quiz = await getQuizInfo(courseID, materialID)
+      if (quiz === null) {
+        toastErrorFetchingData();
+        return;
+      }
+      const quizWithKey: CourseLearnMaterialQuizWithKey = {
+        id: quiz.id,
+        name: quiz.name,
+        description: quiz.description,
+        questions: quizKey ?? [],
+      };
+      return (<CourseEditQuiz courseID={params.courseID} quizData={quizWithKey} />);
+    } else if (type === "image") {
+      const image = await getImageInfo(courseID, materialID);
+      if (image === null) {
+        toastErrorFetchingData();
+        return;
+      }
+      return (<CourseEditImage courseID={params.courseID} imageData={image} />);
+    } else if (type === "video") {
+      const video = await getVideoInfo(courseID, materialID);
+      if (video === null) {
+        toastErrorFetchingData();
+        return;
+      }
+      return (<CourseLearnVideo courseID={params.courseID} videoData={video} />);
+    }
+  }
+
   useEffect(() => {
     if (courseData !== undefined) {
       if (!validTypes.includes(params.materialType)) {
@@ -58,48 +97,10 @@ export default function CourseViewMaterial({
         return;
       }
 
-      if(params.materialType === "quiz") {
-        const quiz = courseData?.learn_materials_quizes.find((quiz) => quiz.id === params.materialID);
-        if (quiz === undefined) {
-          toast({
-            title: "Error",
-            description: "Invalid quiz",
-            variant: "destructive",
-          });
-          return;
-        }
-        const quizWithKey: CourseLearnMaterialQuizWithKey = {
-          id: quiz.id,
-          name: quiz.name,
-          description: quiz.description,
-          questions: quizKey ?? [],
-        };
-        setMaterialComponent(<CourseEditQuiz courseID={params.courseID} quizData={quizWithKey} />);
-      } else if (params.materialType === "image") {
-        const image = courseData?.learn_materials_images.find((image) => image.id === params.materialID);
-        if (image === undefined) {
-          toast({
-            title: "Error",
-            description: "Invalid image",
-            variant: "destructive",
-          });
-          return;
-        }
-        setMaterialComponent(<CourseEditImage imageData={image} />);
-      } else if (params.materialType === "video") {
-        const video = courseData?.learn_materials_videos.find((video) => video.id === params.materialID);
-        if (video === undefined) {
-          toast({
-            title: "Error",
-            description: "Invalid video",
-            variant: "destructive",
-          });
-          return;
-        }
-        setMaterialComponent(<CourseLearnVideo videoData={video} />);
-      }
+      void fetchData(params.materialType, params.courseID, params.materialID).then(setMaterialComponent);
     }
-  }, [courseData, params.materialID, params.materialType, params, quizKey]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseData, params.courseID, params.materialID, params.materialType]);
 
   return (
     <div className="flex h-full flex-col space-y-2">

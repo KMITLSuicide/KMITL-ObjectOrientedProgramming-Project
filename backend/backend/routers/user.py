@@ -8,8 +8,9 @@ from backend.controller_instance import controller
 from backend.definitions.progress import Progress, ProgressQuiz, ProgressVideo
 from backend.definitions.course import Course, CourseMaterialQuiz, QuizQuestion
 from backend.definitions.user import User,Teacher
+from backend.definitions.order import Order
 from backend.lib.authentication import get_current_user
-from backend.definitions.api_data_model import CourseCardData, ProgressVideoData, ProgressQuizData, AnswerQuestion, GetCorrectAnswer
+from backend.definitions.api_data_model import CourseCardData, ProgressVideoData, ProgressQuizData, AnswerQuestion, GetCorrectAnswer, GetOrderData, OrderData
 router = APIRouter()
 route_tags: List[str | Enum] = ["Course"]
 
@@ -34,18 +35,18 @@ def view_my_learning(current_user : Annotated[User,Depends(get_current_user)]):
         )
     return search_results
 
-@router.get("/user/video_by_name/{video_name}", tags= ["Video"])
+@router.get("/user/video_by_name/{video_name}", tags= ["Debug Purposes"])
 async def view_video_by_name(current_user: Annotated[User, Depends(get_current_user)], video_name: str):
     video = current_user.view_video_by_name(video_name)
     return {"video": video}
 
-@router.get("/user/progress/latest/video", tags=["Video"])
+@router.get("/user/progress/latest/video", tags=["Video", "Progress"])
 async def get_latest_video_form_user(current_user: Annotated[User, Depends(get_current_user)]):
     latest_video = current_user.get_latest_video()
     return latest_video
 
 
-@router.get("/user/search_progression/{course_id}", tags=["Course"])
+@router.get("/user/search_progression/{course_id}", tags=["Debug Purposes"])
 def search_course_by_id_from_progression(current_user: Annotated[User, Depends(get_current_user)], course_id: UUID):
     course = current_user.search_course_by_id(course_id)
     return course
@@ -72,7 +73,7 @@ def get_my_teaching(current_user: Annotated[User, Depends(get_current_user)]):
 
 
 
-@router.get("/user/progress/{progress_id}/video/normalized", tags=["Video"])
+@router.get("/user/progress/{progress_id}/video/normalized", tags=["Video", "Progress"])
 def get_normalized_progress_videos(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID
@@ -82,7 +83,7 @@ def get_normalized_progress_videos(
       raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
     return progress.get_normalized_progress_videos()
 
-@router.get("/user/progress/{progress_id}/quiz/normalized", tags=["Quiz"])
+@router.get("/user/progress/{progress_id}/quiz/normalized", tags=["Quiz", "Progress"])
 def get_normalized_progress_quizes(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID
@@ -94,7 +95,7 @@ def get_normalized_progress_quizes(
     return progress.get_normalized_progress_quizes()
 
 
-@router.get("/user/progress/{progress_id}/video", tags=["Video"])
+@router.get("/user/progress/{progress_id}/video", tags=["Video", "Progress"])
 
 def get_progress_videos(current_user: Annotated[User, Depends(get_current_user)],progress_id: UUID):
     progress = current_user.search_progress_by_id(progress_id)
@@ -104,7 +105,7 @@ def get_progress_videos(current_user: Annotated[User, Depends(get_current_user)]
     return create_progress_videos_base_model(progress.get_progress_videos())
 
 
-@router.get("/user/progress/{progress_id}/quiz", tags=["Quiz"])
+@router.get("/user/progress/{progress_id}/quiz", tags=["Quiz", "Progress"])
 
 def get_progress_quizes(current_user: Annotated[User, Depends(get_current_user)],progress_id: UUID):
     progress = current_user.search_progress_by_id(progress_id)
@@ -113,7 +114,7 @@ def get_progress_quizes(current_user: Annotated[User, Depends(get_current_user)]
 
     return create_progress_quiz_base_model(progress.get_progress_quizes())
 
-@router.get("/user/progress/{progress_id}/normalized", tags= ["Progress"])
+@router.get("/user/progress/{progress_id}/normalized", tags= ["Progress", "Progress"])
 
 def get_normalized_total_progress(current_user: Annotated[User, Depends(get_current_user)],progress_id: UUID):
     progress = current_user.search_progress_by_id(progress_id)
@@ -138,7 +139,7 @@ def get_quiz_key(current_user:Annotated[User, Depends(get_current_user)], course
         raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail= "Quiz not found")
     return create_correct_answer_base_model(quiz.get_questions())
 
-@router.put("/user/progress/{progress_id}/video", tags=["Video"])
+@router.put("/user/progress/{progress_id}/video", tags=["Video", "Progress"])
 def study_video_by_id(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID,
@@ -158,7 +159,7 @@ def study_video_by_id(
     return progress.get_normalized_progress_videos()
 
 
-@router.put("/user/progress/{progress_id}/quiz/{quiz_id}", tags=["Quiz"])
+@router.put("/user/progress/{progress_id}/quiz/{quiz_id}", tags=["Quiz", "Progress"])
 def answer_quiz(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID,
@@ -223,8 +224,28 @@ def get_valid_answers(quiz: CourseMaterialQuiz, answer_ids: List[UUID]) -> List[
 
     return valid_answers
 
+@router.get("/user/orders", tags=["Order"])
+def get_all_orders(current_user: Annotated[User, Depends(get_current_user)]):
+    orders = current_user.get_orders()
+    return create_orders_base_model(orders)
 
 
+@router.get("/user/order/{order_id}", tags=["Order"])
+def get_order_by_id(current_user: Annotated[User, Depends(get_current_user)],order_id: UUID):
+    order = current_user.search_order_by_id(order_id)
+
+    if not isinstance(order, Order):
+        raise HTTPException(status_code=400, detail="Order not found")
+    get_order_data = GetOrderData(
+                id = str(order.get_id()),
+                course_list_name=[course.get_name() for course in order.get_courses() if (isinstance(course.get_name(), str))],
+                price = order.get_price(),
+                address= order.get_address(),
+                payment_method= order.get_payment_method().get_name(),
+                status=
+                order.get_status()
+            )
+    return get_order_data
 
 class AccountInfo(BaseException):
     type: Literal['user', 'teacher']
@@ -267,4 +288,13 @@ def create_correct_answer_base_model(questions: list[QuizQuestion]):
             correct= question.get_correct(),
             id=str(question.get_id())
         )for question in questions if isinstance(question, QuizQuestion)
+    ]
+def create_orders_base_model(orders: list[Order]):
+    return [
+            OrderData(
+            id = str(order.get_id()),
+            price = order.get_price(),
+            status=
+             order.get_status()
+            )for order in orders if isinstance(order, Order)
     ]

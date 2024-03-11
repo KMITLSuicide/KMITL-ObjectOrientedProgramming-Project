@@ -5,7 +5,8 @@ from pydantic import EmailStr
 
 from backend.definitions.course import Course
 from backend.definitions.progress import Progress
-from backend.definitions.order import Payment,Order,Coupon
+from backend.definitions.order import Payment,Order
+from backend.definitions.api_data_model import GetOrderData
 
 class User:
     # Constants
@@ -19,8 +20,6 @@ class User:
         self.__my_progresses: List[Progress] = []
         self.__cart: Cart = Cart()
         self.__latest_progress: Union[Progress, None] = None
-        self.__address = "thailand"#default is null
-        self.__payment_method = Payment("credit cart")
         self.__orders: List[Order] = []
 
     def get_my_progresses(self):
@@ -109,6 +108,9 @@ class User:
 
     def get_orders(self):
         return self.__orders
+    
+    def search_order_by_id(self, order_id:uuid.UUID):
+        return next((order for order in self.__orders if order.get_id() == order_id),None)
 
     def have_access_to_course(self, course: Course):
         for progress in self.__my_progresses:
@@ -121,13 +123,38 @@ class User:
         if isinstance(progress, Progress):
             self.__my_progresses.remove(progress)
 
+    def try_to_buy_courses(self, courses:list[Course], is_paid: bool, payment_method: Payment, address : str):
+        if is_paid:
+            progresses = [Progress(course) for course in courses]
+
+            for progress in progresses:
+                self.add_progress(progress) 
+                self.set_latest_progress(progress) 
+        copy_courses = [course for course in courses]
+        order = Order(address= address, payment= payment_method, courses= copy_courses, status= is_paid)
+        self.__orders.append(order)
+        order_data: GetOrderData = GetOrderData(
+            id = str(order.get_id()),
+            course_list_name=[course.get_name() for course in order.get_courses() if (isinstance(course.get_name(), str))],
+            price = order.get_price(),
+            address= order.get_address(),
+            payment_method= order.get_payment_method().get_name(),
+            status=
+             order.get_status()
+            )
+        
+        if is_paid:
+            courses_in_cart = self.__cart.get_courses()
+            self.__cart.remove_courses([course for course in courses_in_cart if course in courses])
+        return order_data
+
+    
 class Teacher(User):
     def __init__(
         self, name: EmailStr, email: EmailStr, hashed_password: EmailStr
     ) -> None:
         super().__init__(name, email, hashed_password)
         self.__my_teachings: List[Course] = []
-        self.__my_created_coupons: List[Coupon] = []
 
     def get_my_teachings(self):
         return self.__my_teachings
@@ -137,8 +164,6 @@ class Teacher(User):
             self.__my_teachings.append(course)
             return True
 
-    def get_my_coupons(self):
-        return self.__my_created_coupons
 
     def have_access_to_course(self, course: Course):
         
@@ -167,3 +192,9 @@ class Cart:
 
     def remove_course(self, course):
         self.__courses.remove(course)
+    
+    def remove_courses(self, courses: list[Course]):
+        for course in courses:
+            if course in self.__courses:
+                self.__courses.remove(course)
+

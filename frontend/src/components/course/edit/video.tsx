@@ -16,18 +16,23 @@ import {
 } from "~/src/components/ui/form";
 import { Input } from "~/src/components/ui/input";
 import { toast } from "~/src/components/ui/use-toast";
+import { editMaterialVideo } from "~/src/lib/data/course-edit";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
-  url: z.string().url(),
+  url: z.string().min(1),
 });
 
 export function CourseLearnVideo ({
+  courseID,
   videoData: initVideoData
   } : {
+  courseID: string;
   videoData: CourseLearnMaterialVideo
 }) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -40,13 +45,20 @@ export function CourseLearnVideo ({
   const watchedFields = useWatch({ control: form.control });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+    void editMaterialVideo(courseID, initVideoData.id, data).then((response) => {
+      if (response === false) {
+        toast({
+          title: "Error",
+          description: "Failed to update video",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Video updated",
+        });
+        router.push(`/course/${courseID}/edit/video/${initVideoData.id}?fetch=true`);
+      }
     });
   }
 

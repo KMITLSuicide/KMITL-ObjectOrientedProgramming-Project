@@ -11,7 +11,7 @@ import Link from "next/link";
 import { Button } from "~/src/components/ui/button";
 import { Book, Plus, SquarePen } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { getCourseLearnDataFromAPI, getSidebarItemsImage, getSidebarItemsQuiz, getSidebarItemsVideo } from "~/src/lib/data/course-learn";
+import { getSidebarItemsImage, getSidebarItemsQuiz, getSidebarItemsVideo } from "~/src/lib/data/course-learn";
 import { getCourseInfoFromAPI } from "~/src/lib/data/course";
 
 function showErrorToast(title: string, description: string) {
@@ -43,7 +43,7 @@ export default function CourseLearnLayout({
   );
 
   async function fetchData(courseID: string) {
-    const data = await getCourseLearnDataFromAPI(courseID);
+    const data = await getCourseInfoFromAPI(courseID);
     setCourseInfo(data);
     if (data === null) {
       toast({
@@ -62,7 +62,8 @@ export default function CourseLearnLayout({
 
   useEffect(() => {
     if (searchParams.has("fetch")) {
-      void fetchData(params.courseID);
+      // void fetchData(params.courseID);
+      window.location.href = pathName;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams.get("fetch")]);

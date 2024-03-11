@@ -21,12 +21,17 @@ def add_course_to_cart(current_user: Annotated[User, Depends(get_current_user)],
 
     obj_course = controller.search_course_by_id(UUID(course_id))
 
-    if isinstance(current_user, User):
-        obj_cart = current_user.get_cart()
+    if not isinstance(obj_course, Course):
+        raise HTTPException(status_code=400)#Fail
+
+    obj_cart = current_user.get_cart()
 
     if obj_course in obj_cart.get_courses():
         raise HTTPException(status_code=400)#Fail
-        
+
+    if(current_user.have_access_to_course(obj_course)):
+          raise HTTPException(status_code=400)#Fail  
+    
     obj_cart.add_course(obj_course)
 
     for course in obj_cart.get_courses():
