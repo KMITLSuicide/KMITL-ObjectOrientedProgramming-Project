@@ -62,7 +62,8 @@ export default function CourseLearnLayout({
 
   useEffect(() => {
     if (searchParams.has("fetch")) {
-      void fetchData(params.courseID);
+      // void fetchData(params.courseID);
+      window.location.href = pathName;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams.get("fetch")]);

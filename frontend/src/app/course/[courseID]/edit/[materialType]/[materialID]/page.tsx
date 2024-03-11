@@ -75,14 +75,14 @@ export default function CourseViewMaterial({
         toastErrorFetchingData();
         return;
       }
-      return (<CourseEditImage imageData={image} />);
+      return (<CourseEditImage courseID={params.courseID} imageData={image} />);
     } else if (type === "video") {
       const video = await getVideoInfo(courseID, materialID);
       if (video === null) {
         toastErrorFetchingData();
         return;
       }
-      return (<CourseLearnVideo videoData={video} />);
+      return (<CourseLearnVideo courseID={params.courseID} videoData={video} />);
     }
   }
 

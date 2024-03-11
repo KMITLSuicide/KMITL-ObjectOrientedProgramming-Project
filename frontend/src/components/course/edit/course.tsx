@@ -96,7 +96,6 @@ export function CourseEdit({
       });
       router.refresh();
     }});
-
   }
 
   return (
