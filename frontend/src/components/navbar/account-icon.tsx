@@ -20,7 +20,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/src/components/ui/dropdown-menu";
-import { toast } from "~/src/components/ui/use-toast";
 import { getAccountDataFromAPI } from "~/src/lib/data/account/account";
 import { logout } from "~/src/lib/data/authentication";
 import { type AccountInfo } from "~/src/lib/definitions/account";
@@ -32,7 +31,7 @@ export default function AccountIcon() {
 
   useEffect(() => {
     const token = Cookies.get('token');
-    setToken(token);
+    setToken(token ?? null);
   }, []);
 
   useEffect(() => {
@@ -48,7 +47,7 @@ export default function AccountIcon() {
       setAccountData(data);
     });
     router.refresh();
-  }, [token]);
+  }, [router, token]);
 
   return (
     <DropdownMenu>
