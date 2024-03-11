@@ -1,4 +1,5 @@
 "use client";
+export const runtime = 'edge';
 
 import { ChevronsUpDown } from "lucide-react";
 import Image from "next/image";
