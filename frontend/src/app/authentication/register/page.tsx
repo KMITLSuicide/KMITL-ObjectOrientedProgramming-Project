@@ -18,7 +18,6 @@ import {
 import Link from "next/link";
 import { RadioGroup, RadioGroupItem } from "~/src/components/ui/radio-group";
 import { register } from "~/src/lib/data/authentication";
-import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   type: z.union([z.literal("user"), z.literal("teacher")]),
@@ -34,7 +33,6 @@ const FormSchema = z.object({
 });
 
 export default function Register() {
-  const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
