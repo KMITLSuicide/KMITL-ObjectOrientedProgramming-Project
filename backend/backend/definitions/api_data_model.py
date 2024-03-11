@@ -16,6 +16,11 @@ class CourseCardDataWithLabel(BaseModel):
 
 class OrderData(BaseModel):
     id : str
+    price: float
+    status:bool
+
+class GetOrderData(OrderData):
+    id : str
     course_list_name: list[str]
     price: float
     address: str
@@ -99,3 +104,5 @@ class GetCorrectAnswer(QuizQuestionData):
 class AddQuizToCoursePostData(CourseMaterialData):
     questions: list[QuizQuestionData]
 
+class PaymentData(BaseModel):
+    name: str

@@ -4,10 +4,10 @@ import uuid
 # from backend.definitions.order import Payment
 
 class Payment:
-    def __init__(self, name) -> None:        
+    def __init__(self, name:str) -> None:        
         self.__payment_method = name
         
-    def get_name(self):
+    def get_name(self)->str:
         return self.__payment_method
 
 

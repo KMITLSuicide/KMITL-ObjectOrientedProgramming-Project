@@ -6,7 +6,7 @@ from pydantic import EmailStr
 from backend.definitions.course import Course
 from backend.definitions.progress import Progress
 from backend.definitions.order import Payment,Order
-from backend.definitions.api_data_model import OrderData
+from backend.definitions.api_data_model import GetOrderData
 
 class User:
     # Constants
@@ -108,6 +108,9 @@ class User:
 
     def get_orders(self):
         return self.__orders
+    
+    def search_order_by_id(self, order_id:uuid.UUID):
+        return next((order for order in self.__orders if order.get_id() == order_id),None)
 
     def have_access_to_course(self, course: Course):
         for progress in self.__my_progresses:
@@ -130,7 +133,7 @@ class User:
         copy_courses = [course for course in courses]
         order = Order(address= address, payment= payment_method, courses= copy_courses, status= is_paid)
         self.__orders.append(order)
-        order_data: OrderData = OrderData(
+        order_data: GetOrderData = GetOrderData(
             id = str(order.get_id()),
             course_list_name=[course.get_name() for course in order.get_courses() if (isinstance(course.get_name(), str))],
             price = order.get_price(),

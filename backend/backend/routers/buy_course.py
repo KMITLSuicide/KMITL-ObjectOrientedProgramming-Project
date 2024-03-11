@@ -9,6 +9,7 @@ from backend.definitions.course import Course
 from backend.definitions.order import Payment
 from backend.definitions.user import User,Teacher
 from backend.lib.authentication import get_current_user
+from backend.definitions.api_data_model import PaymentData
 router = APIRouter()
 
 route_tags: List[str | Enum] = ["Course"]
@@ -76,3 +77,9 @@ def buy_course_from_cart(
     
 
     return current_user.try_to_buy_courses(courses, buy_course_data.is_paid, payment_method, buy_course_data.address)
+
+
+@router.get('/payment_method',tags= ["Payment Method"])
+def get_all_payment_method():
+    payments = controller.get_payments()
+    return [PaymentData(name=str(payment.get_name()))for payment in payments if isinstance(payment, Payment)]
