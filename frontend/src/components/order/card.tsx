@@ -25,24 +25,55 @@ const FormSchema = z.object({
   id: z.string().min(1),
 });
 
-export function OrderCard() {
-  const course = {
-    course_list: ['course1', 'course2', 'course3'],
-    price: 10000,
-    address: 'place',
-    payment_method: 'visa',
-    status: true
+export function OrderCard({
+  course,
+  className,
+  customLink,
+  updateCart,
+}: {
+  course: CourseCardData;
+  className?: string;
+  customLink?: string;
+  updateCart: () => void;
+}) {
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      id: course.id ?? "",
+    },
+  });
+
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    const result = await deleteCartItem(data.id);
+    if (result === null) {
+      toast({
+        title: "Error",
+        description: "Failed to delete item from cart",
+        variant: "destructive",
+      });
+    } else {
+      void updateCart();
+    }
   }
+
   return (
     <Card
-      className={`w-full cursor-pointer transition-colors hover:bg-secondary`}
+      key={course.id}
+      className={`w-full cursor-pointer transition-colors hover:bg-secondary ${className}`}
     >
       <div className="flex h-full w-full flex-row items-center pr-6 space-x-2">
         <Link
-          href={`/order/orderid`}
+          href={customLink ? customLink : `/course/${course.id}`}
           className="flex h-full w-full flex-row items-center"
         >
           <CardHeader className="flex flex-col">
+            <Image
+              className="w-32 rounded-sm"
+              alt={`image of course ${course.name}`}
+              src={course.banner_image}
+              width={128}
+              height={96}
+            />
           </CardHeader>
           <CardContent className="flex flex-grow flex-col justify-center space-y-2 p-0">
             <CardTitle>{course.name}</CardTitle>
