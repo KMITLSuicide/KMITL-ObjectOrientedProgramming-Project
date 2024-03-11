@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -24,31 +25,34 @@ const FormSchema = z.object({
   }),
 });
 
-async function sendData(courseID: string, quizID: string, data: { "ids": string[] }) {
-  const response = await completeQuiz(courseID, quizID, data);
-  if (response?.result === true) {
-    toast({
-      title: "Success",
-      description: "Quiz completed!",
-      variant: "default",
-    });
-  } else {
-    toast({
-      title: "Failed",
-      description: `Quiz not completed: ${response?.message}`,
-      variant: "destructive",
-    });
-  }
-}
 
 
 export function CourseLearnQuiz({
   courseID,
   quizData
-  } : {
+} : {
   courseID: string,
   quizData: CourseLearnMaterialQuiz
 }) {
+  const router = useRouter();
+  async function sendData(courseID: string, quizID: string, data: { "ids": string[] }) {
+    const response = await completeQuiz(courseID, quizID, data);
+    if (response?.result === true) {
+      toast({
+        title: "Success",
+        description: "Quiz completed!",
+        variant: "default",
+      });
+      router.push(`/course/${courseID}/learn?fetchProgress=true`);
+    } else {
+      toast({
+        title: "Failed",
+        description: `Quiz not completed: ${response?.message}`,
+        variant: "destructive",
+      });
+    }
+  }
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
