@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Annotated, List
+from typing import Annotated, List, Sequence
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, status, Body, Response
 from pydantic import BaseModel
@@ -82,6 +82,39 @@ def get_learn_course_materials(
     )
 
     return course_learn_data
+@router.get("/course/{course_id}/image", tags=["Course Material"])
+def get_images(course_id:uuid.UUID,current_user: Annotated[User, Depends(get_current_user)]):
+    course = controller.search_course_by_id(course_id)
+
+    if not isinstance(course, Course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "course not found")
+    
+    if not current_user.have_access_to_course(course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "User doesn't have access")
+    return create_course_materials_data(course.get_images())
+
+@router.get("/course/{course_id}/video", tags=["Course Material"])
+def get_videos(course_id:uuid.UUID,current_user: Annotated[User, Depends(get_current_user)]):
+    course = controller.search_course_by_id(course_id)
+    
+    if not isinstance(course, Course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "course not found")
+    
+    if not current_user.have_access_to_course(course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "User doesn't have access")
+    return create_course_materials_data(course.get_videos())
+
+@router.get("/course/{course_id}/quiz", tags=["Course Material"])
+def get_quizes(course_id:uuid.UUID,current_user: Annotated[User, Depends(get_current_user)]):
+    course = controller.search_course_by_id(course_id)
+    
+    if not isinstance(course, Course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "course not found")
+    
+    if not current_user.have_access_to_course(course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "User doesn't have access")
+    return create_course_materials_data(course.get_quizes())
+
 @router.get("/course/{course_id}/image/{image_id}", tags=["Image"])
 def get_image(course_id:uuid.UUID, image_id : uuid.UUID,current_user: Annotated[User, Depends(get_current_user)]):
     course = controller.search_course_by_id(course_id)
@@ -652,3 +685,17 @@ def create_course_info(course: Course):
         materials_videos=[video.get_name() for video in course.get_videos()],
     )
     return course_info
+
+class EachCourseMaterialData(BaseModel):
+    id: str
+    name :str
+
+
+def create_course_materials_data(course_material_list: Sequence[CourseMaterialImage | CourseMaterialVideo | CourseMaterialQuiz]):
+    # Check if all elements in the list have the same type
+    if not all(type(course_material) == type(course_material_list[0]) for course_material in course_material_list):
+        raise TypeError("All elements in the list must be of the same type")
+
+    return [
+        EachCourseMaterialData(id=str(course_material.get_id()), name=course_material.get_name()) for course_material in course_material_list
+    ]
