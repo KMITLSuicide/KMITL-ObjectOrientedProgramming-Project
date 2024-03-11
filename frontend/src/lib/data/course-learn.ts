@@ -1,6 +1,6 @@
 import api from "~/src/lib/data/api";
 import type { CourseLearn } from "~/src/lib/definitions/course";
-import type { CompleteQuizResponse, CompleteVideoPostData, ImageInfo, QuizInfo, VideoInfo } from "~/src/lib/definitions/course-learn";
+import type { CompleteQuizResponse, Progress, ImageInfo, QuizInfo, VideoInfo } from "~/src/lib/definitions/course-learn";
 
 export async function getCourseLearnDataFromAPI(courseID: string) {
   try {
@@ -33,7 +33,7 @@ export async function completeQuiz(courseID: string, quizID: string, data: { "id
   }
 }
 
-export async function completeVideo(courseID: string, data: CompleteVideoPostData) {
+export async function completeVideo(courseID: string, data: Progress) {
   try {
     const response = await api.put<number>(`/user/progress/${courseID}/video`, data);
 
@@ -45,6 +45,21 @@ export async function completeVideo(courseID: string, data: CompleteVideoPostDat
   } catch (error) {
     console.error(error);
     return false;
+  }
+}
+
+export async function getNormalizedProgress(courseID: string) {
+  try {
+    const response = await api.get<number>(`/user/progress/${courseID}/total`);
+
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 }
 

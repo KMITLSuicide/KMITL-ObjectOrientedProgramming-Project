@@ -4,7 +4,7 @@ export interface CompleteQuizResponse{
   "progress_normalized": number
 }
 
-export interface CompleteVideoPostData{
+export interface Progress{
   "id": string,
   "is_complete": boolean
 }

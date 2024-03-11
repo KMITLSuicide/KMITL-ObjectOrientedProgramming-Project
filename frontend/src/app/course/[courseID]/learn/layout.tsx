@@ -10,7 +10,7 @@ import { useToast } from "~/src/components/ui/use-toast";
 import Link from "next/link";
 import { Button } from "~/src/components/ui/button";
 import { Book } from "lucide-react";
-import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
+import { getCourseLearnDataFromAPI, getNormalizedProgress } from "~/src/lib/data/course-learn";
 import { Progress } from "~/src/components/ui/progress";
 import { useSearchParams } from "next/navigation";
 
@@ -25,12 +25,31 @@ export default function CourseLearnLayout({
   const { toast } = useToast();
   const [learnData, setLearnData] = useState<CourseLearn | null | undefined>(
     undefined,
-  );
-  const [progressTotal, setProgressTotal] = useState<number>(0);
-  const [progressNormalizedImage, setProgressNormalizedImage] = useState<number>(0);
-  const [progressNormalizedQuiz, setProgressNormalizedQuiz] = useState<number>(0);
-  const [progressNormalizedVideo, setProgresNormalizedVideo] = useState<number>(0);
-  useEffect(() => {
+    );
+    const [progressTotal, setProgressTotal] = useState<number>(0);
+    const [progressNormalizedImage, setProgressNormalizedImage] = useState<number>(0);
+    const [progressNormalizedQuiz, setProgressNormalizedQuiz] = useState<number>(0);
+    const [progressNormalizedVideo, setProgresNormalizedVideo] = useState<number>(0);
+
+    async function fetchProgressTotal() {
+      const response = await getNormalizedProgress(params.courseID);
+      if (response === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch progress",
+          variant: "destructive",
+        });
+        return;
+      }
+      setProgressTotal(response);
+    }
+
+    useEffect(() => {
+      void fetchProgressTotal();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
     void getCourseLearnDataFromAPI(params.courseID).then((data) => {
       setLearnData(data);
       if (data === null) {
@@ -156,7 +175,7 @@ export default function CourseLearnLayout({
             className="px-5"
             sidebarCategories={sidebarCategories}
             courseID={params.courseID}
-            setProgressTotal={setProgressTotal}
+            updateProgressTotal={fetchProgressTotal}
           />
         </div>
       </div>

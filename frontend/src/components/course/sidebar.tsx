@@ -10,7 +10,7 @@ import { Progress } from "~/src/components/ui/progress";
 export interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   sidebarCategories: SidebarCategory[];
   courseID: string;
-  setProgressTotal: (progress: number) => void;
+  updateProgressTotal: () => void;
 }
 
 export interface SidebarCategory {
@@ -33,9 +33,9 @@ export default function CourseLearnSidebar({
   className,
   sidebarCategories,
   courseID,
-  setProgressTotal,
+  updateProgressTotal,
 }: SidebarProps) {
-  async function saveProgress(id: string, complete: boolean, setProgressFunction: (progress: number) => void) {
+  async function saveProgress(id: string, complete: boolean, progressSetter: (progress: number) => void) {
     const response = await completeVideo(courseID, {
       id: id,
       is_complete: complete,
@@ -48,7 +48,8 @@ export default function CourseLearnSidebar({
         variant: "destructive",
       });
     } else {
-      setProgressFunction(response);
+      progressSetter(response);
+      updateProgressTotal();
     }
   }
   return (
