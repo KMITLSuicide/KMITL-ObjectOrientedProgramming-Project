@@ -10,7 +10,7 @@ from backend.definitions.course import Course, CourseMaterialQuiz, QuizQuestion
 from backend.definitions.user import User,Teacher
 from backend.definitions.order import Order
 from backend.lib.authentication import get_current_user
-from backend.definitions.api_data_model import CourseCardData, ProgressVideoData, ProgressQuizData, AnswerQuestion, GetCorrectAnswer, OrderData
+from backend.definitions.api_data_model import CourseCardData, ProgressVideoData, ProgressQuizData, AnswerQuestion, GetCorrectAnswer, GetOrderData, OrderData
 router = APIRouter()
 route_tags: List[str | Enum] = ["Course"]
 
@@ -224,10 +224,29 @@ def get_valid_answers(quiz: CourseMaterialQuiz, answer_ids: List[UUID]) -> List[
 
     return valid_answers
 
-@router.get("/user/order", tags=["Order"])
+@router.get("/user/orders", tags=["Order"])
 def get_all_orders(current_user: Annotated[User, Depends(get_current_user)]):
     orders = current_user.get_orders()
     return create_orders_base_model(orders)
+
+
+@router.get("/user/order/{order_id}", tags=["Order"])
+def get_order_by_id(current_user: Annotated[User, Depends(get_current_user)],order_id: UUID):
+    order = current_user.search_order_by_id(order_id)
+
+    if not isinstance(order, Order):
+        raise HTTPException(status_code=400, detail="Order not found")
+    get_order_data = GetOrderData(
+                id = str(order.get_id()),
+                course_list_name=[course.get_name() for course in order.get_courses() if (isinstance(course.get_name(), str))],
+                price = order.get_price(),
+                address= order.get_address(),
+                payment_method= order.get_payment_method().get_name(),
+                status=
+                order.get_status()
+            )
+    return get_order_data
+
 class AccountInfo(BaseException):
     type: Literal['user', 'teacher']
     id: str
@@ -274,10 +293,7 @@ def create_orders_base_model(orders: list[Order]):
     return [
             OrderData(
             id = str(order.get_id()),
-            course_list_name=[course.get_name() for course in order.get_courses() if (isinstance(course.get_name(), str))],
             price = order.get_price(),
-            address= order.get_address(),
-            payment_method= order.get_payment_method().get_name(),
             status=
              order.get_status()
             )for order in orders if isinstance(order, Order)

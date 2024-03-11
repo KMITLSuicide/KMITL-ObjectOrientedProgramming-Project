@@ -25,7 +25,7 @@ class Controller:
             []
         )  # Question: is user going to collect to be Teacher
         self.__teachers: List[Teacher] = []
-        self.__pay_ments:List[Payment] = [Payment("Credit Card"), Payment("PayPal"),Payment("Bank Transfer")]
+        self.__payments:List[Payment] = [Payment("Credit Card"), Payment("PayPal"),Payment("Bank Transfer")]
 
 
     def add_category(self, category: CourseCategory):
@@ -33,6 +33,10 @@ class Controller:
             self.__categories.append(category)
             return True
         return False
+
+    def get_payments(self):
+        return self.__payments
+
 
     def get_all_courses(self):
         courses: List[Course] = []
@@ -160,7 +164,7 @@ class Controller:
         return None
 
     def search_payment_by_name(self, name: str):
-        return next((payment for payment in self.__pay_ments if payment.get_name() == name), None)
+        return next((payment for payment in self.__payments if payment.get_name() == name), None)
 
     def search_user_by_id(self, user_id):
         for user in self.__users:
