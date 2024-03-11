@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "~/src/components/ui/form";
 import { Config } from "~/src/config";
-import { getMyCart } from "~/src/lib/data/cart";
+import { cartCheckout, getMyCart, getPaymentMethods } from "~/src/lib/data/cart";
 import type { CourseCardData } from "~/src/lib/definitions/course";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -21,32 +21,24 @@ import { Input } from "~/src/components/ui/input";
 import { ScrollArea } from "~/src/components/ui/scroll-area";
 import { CourseCardInCheckout } from "~/src/components/course/checkout-card";
 import { RadioGroup, RadioGroupItem } from "~/src/components/ui/radio-group";
+import type { PaymentMethodWithID } from "~/src/lib/definitions/cart";
+import { v4 as uuidv4 } from "uuid";
+import { Checkbox } from "~/src/components/ui/checkbox";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   billingCountry: z.string().min(1),
+  paid: z.boolean(),
   paymentMethod: z.string().min(1),
 });
 
-const paymentMethods = [
-  {
-    value: "creditCard",
-    label: "Credit Card",
-  },
-  {
-    value: "paypal",
-    label: "Paypal",
-  },
-  {
-    value: "bankTransfer",
-    label: "Bank Transfer",
-  },
-];
-
 export default function CheckoutPage() {
+  const router = useRouter();
   const [cardsData, setCardsData] = useState<
     CourseCardData[] | null | undefined
   >(undefined);
   const [totalPrice, setTotalPrice] = useState<number | undefined>(undefined);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethodWithID[]>([]);
 
   async function fetchData() {
     const apiData = await getMyCart();
@@ -65,6 +57,22 @@ export default function CheckoutPage() {
   }, []);
 
   useEffect(() => {
+    void getPaymentMethods().then((response) => {
+      if (response === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch payment methods",
+          variant: "destructive",
+        });
+      }
+      const paymentMethodWithID = response?.map((method) => {
+        return { ...method, id: uuidv4() };
+      });
+      setPaymentMethods(paymentMethodWithID ?? []);
+    });
+  }, []);
+
+  useEffect(() => {
     if (cardsData) {
       let total = 0;
       cardsData.forEach((course) => {
@@ -79,13 +87,32 @@ export default function CheckoutPage() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+    // toast({
+    //   title: "You submitted the following values:",
+    //   description: (
+    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+    //     </pre>
+    //   ),
+    // });
+    void cartCheckout({
+      address: data.billingCountry,
+      is_paid: data.paid,
+      payment_method: data.paymentMethod,
+    }).then((response) => {
+      if (response === null) {
+        toast({
+          title: "Error",
+          description: "Failed to checkout",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Checkout successful",
+        });
+        router.push(`/account/order/${response.id}`)
+      }
     });
   }
 
@@ -112,7 +139,7 @@ export default function CheckoutPage() {
                       <h2 className="text-xl font-bold">Billing country</h2>
 
                       <FormControl>
-                        <Input placeholder={Config.countryName} {...field} />
+                        <Input placeholder={String(Config.countryName)} {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -134,14 +161,14 @@ export default function CheckoutPage() {
                           {paymentMethods.map((method) => {
                             return (
                               <FormItem
-                                key={method.value}
+                                key={method.id}
                                 className="flex items-center space-x-3 space-y-0"
                               >
                                 <FormControl>
-                                  <RadioGroupItem value={method.value} />
+                                  <RadioGroupItem value={method.name} />
                                 </FormControl>
                                 <FormLabel className="font-normal">
-                                  {method.label}
+                                  {method.name}
                                 </FormLabel>
                               </FormItem>
                             );
@@ -149,6 +176,25 @@ export default function CheckoutPage() {
                         </RadioGroup>
                       </FormControl>
                       <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="paid"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 ">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>
+                          I have paid.
+                        </FormLabel>
+                      </div>
                     </FormItem>
                   )}
                 />
