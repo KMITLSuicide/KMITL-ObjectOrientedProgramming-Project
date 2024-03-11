@@ -12,6 +12,7 @@ export default function ViewOrder({
   params: { orderID: string }
 }) {
   const [order, setOrder] = useState<Order | null | undefined>(undefined);
+  const [date, setDate] = useState<Date | null>(null);
   useEffect(() => {
     void getOrder(params.orderID).then((data) => {
       setOrder(data);
@@ -22,6 +23,9 @@ export default function ViewOrder({
           variant: "destructive",
         });
       }
+      if (data?.time_stamp) {
+        setDate(new Date(data?.time_stamp * 1000));
+      }
     });
   }, [params.orderID]);
 
@@ -29,7 +33,10 @@ export default function ViewOrder({
     <div className="flex w-full justify-center">
       <div className="w-full max-w-screen-lg space-y-4">
         <h1 className="text-3xl font-bold">Your Order</h1>
-        <p className="text-sm text-muted-foreground">{order?.id}</p>
+        <div>
+          <h3 className="text-base">Placed on: {date?.toLocaleString()}</h3>
+          <p className="text-sm text-muted-foreground">ID: {order?.id}</p>
+        </div>
         <div>
           <h2 className="text-xl font-bold">In this order:</h2>
           <ul className="ml-4 list-disc">
