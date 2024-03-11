@@ -34,18 +34,18 @@ def view_my_learning(current_user : Annotated[User,Depends(get_current_user)]):
         )
     return search_results
 
-@router.get("/user/video_by_name/{video_name}", tags= ["Video"])
+@router.get("/user/video_by_name/{video_name}", tags= ["Debug Purposes"])
 async def view_video_by_name(current_user: Annotated[User, Depends(get_current_user)], video_name: str):
     video = current_user.view_video_by_name(video_name)
     return {"video": video}
 
-@router.get("/user/progress/latest/video", tags=["Video"])
+@router.get("/user/progress/latest/video", tags=["Video", "Progress"])
 async def get_latest_video_form_user(current_user: Annotated[User, Depends(get_current_user)]):
     latest_video = current_user.get_latest_video()
     return latest_video
 
 
-@router.get("/user/search_progression/{course_id}", tags=["Course"])
+@router.get("/user/search_progression/{course_id}", tags=["Debug Purposes"])
 def search_course_by_id_from_progression(current_user: Annotated[User, Depends(get_current_user)], course_id: UUID):
     course = current_user.search_course_by_id(course_id)
     return course
@@ -72,7 +72,7 @@ def get_my_teaching(current_user: Annotated[User, Depends(get_current_user)]):
 
 
 
-@router.get("/user/progress/{progress_id}/video/normalized", tags=["Video"])
+@router.get("/user/progress/{progress_id}/video/normalized", tags=["Video", "Progress"])
 def get_normalized_progress_videos(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID
@@ -82,7 +82,7 @@ def get_normalized_progress_videos(
       raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
     return progress.get_normalized_progress_videos()
 
-@router.get("/user/progress/{progress_id}/quiz/normalized", tags=["Quiz"])
+@router.get("/user/progress/{progress_id}/quiz/normalized", tags=["Quiz", "Progress"])
 def get_normalized_progress_quizes(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID
@@ -94,7 +94,7 @@ def get_normalized_progress_quizes(
     return progress.get_normalized_progress_quizes()
 
 
-@router.get("/user/progress/{progress_id}/video", tags=["Video"])
+@router.get("/user/progress/{progress_id}/video", tags=["Video", "Progress"])
 
 def get_progress_videos(current_user: Annotated[User, Depends(get_current_user)],progress_id: UUID):
     progress = current_user.search_progress_by_id(progress_id)
@@ -104,7 +104,7 @@ def get_progress_videos(current_user: Annotated[User, Depends(get_current_user)]
     return create_progress_videos_base_model(progress.get_progress_videos())
 
 
-@router.get("/user/progress/{progress_id}/quiz", tags=["Quiz"])
+@router.get("/user/progress/{progress_id}/quiz", tags=["Quiz", "Progress"])
 
 def get_progress_quizes(current_user: Annotated[User, Depends(get_current_user)],progress_id: UUID):
     progress = current_user.search_progress_by_id(progress_id)
@@ -113,7 +113,7 @@ def get_progress_quizes(current_user: Annotated[User, Depends(get_current_user)]
 
     return create_progress_quiz_base_model(progress.get_progress_quizes())
 
-@router.get("/user/progress/{progress_id}/normalized", tags= ["Progress"])
+@router.get("/user/progress/{progress_id}/normalized", tags= ["Progress", "Progress"])
 
 def get_normalized_total_progress(current_user: Annotated[User, Depends(get_current_user)],progress_id: UUID):
     progress = current_user.search_progress_by_id(progress_id)
@@ -138,7 +138,7 @@ def get_quiz_key(current_user:Annotated[User, Depends(get_current_user)], course
         raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail= "Quiz not found")
     return create_correct_answer_base_model(quiz.get_questions())
 
-@router.put("/user/progress/{progress_id}/video", tags=["Video"])
+@router.put("/user/progress/{progress_id}/video", tags=["Video", "Progress"])
 def study_video_by_id(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID,
@@ -158,7 +158,7 @@ def study_video_by_id(
     return progress.get_normalized_progress_videos()
 
 
-@router.put("/user/progress/{progress_id}/quiz/{quiz_id}", tags=["Quiz"])
+@router.put("/user/progress/{progress_id}/quiz/{quiz_id}", tags=["Quiz", "Progress"])
 def answer_quiz(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID,

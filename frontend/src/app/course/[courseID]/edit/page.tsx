@@ -2,19 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "~/src/components/ui/use-toast";
-import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
-import { type CourseLearn } from "~/src/lib/definitions/course";
+import { getCourseInfoFromAPI } from "~/src/lib/data/course";
+import type { CourseInfo } from "~/src/lib/definitions/course";
 
 export default function CourseEdit({
   params,
 }: {
   params: { courseID: string };
 }) {
-  const [learnData, setLearnData] = useState<CourseLearn | null | undefined>(
+  const [learnData, setLearnData] = useState<CourseInfo | null | undefined>(
     undefined,
   );
   useEffect(() => {
-    void getCourseLearnDataFromAPI(params.courseID).then((data) => {
+    void getCourseInfoFromAPI(params.courseID).then((data) => {
       setLearnData(data);
       if (data === null) {
         toast({
