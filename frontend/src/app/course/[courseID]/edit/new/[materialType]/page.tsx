@@ -5,8 +5,8 @@ import { CourseCreateImage } from "~/src/components/course/new/image";
 import { CourseCreateQuiz } from "~/src/components/course/new/quiz";
 import { CourseCreateVideo } from "~/src/components/course/new/video";
 import { toast } from "~/src/components/ui/use-toast";
-import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
-import type { CourseLearn } from "~/src/lib/definitions/course";
+import { getCourseInfoFromAPI } from "~/src/lib/data/course";
+import type { CourseInfo } from "~/src/lib/definitions/course";
 
 const validTypes = ["quiz", "image", "video"];
 
@@ -15,12 +15,12 @@ export default function CourseViewMaterial({
 }: {
   params: { courseID: string, materialType: string };
 }) {
-  const [courseData, setCourseData] = useState<CourseLearn | null | undefined>(undefined);
+  const [courseData, setCourseData] = useState<CourseInfo | null | undefined>(undefined);
   const [materialComponent, setMaterialComponent] = useState<React.ReactNode | null>(null);
 
   useEffect(() => {
     async function fetchData(courseID: string) {
-      const apiData = await getCourseLearnDataFromAPI(courseID);
+      const apiData = await getCourseInfoFromAPI(courseID);
       setCourseData(apiData);
 
       if (apiData === null) {
