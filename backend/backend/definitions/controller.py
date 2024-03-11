@@ -191,7 +191,7 @@ class Controller:
 
         course = self.search_course_by_id(course_id)
         if not isinstance(course, Course):
-            return "Error: Course not found"
+            return "Error: Course not found"#
 
         teacher = self.search_teacher_by_course(course)
         if not isinstance(teacher, Teacher):
