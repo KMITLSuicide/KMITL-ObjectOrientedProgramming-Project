@@ -182,16 +182,15 @@ class Controller:
         return "Error: Teacher not found"
 
     def buy_course(self, user: User, status: bool, course_id: UUID, coupon_id):
-
-        if status != True:
-            return "Error: You haven't paid for course yet"
-
         if course_id == None:
             return "Error Enter course id"
 
         course = self.search_course_by_id(course_id)
         if not isinstance(course, Course):
             return "Error: Course not found"
+        for progress_in_user in user.get_my_progresses():
+                if progress_in_user.get_course() == course:
+                    return "Error: You already have this course!"
 
         teacher = self.search_teacher_by_course(course)
         if not isinstance(teacher, Teacher):
@@ -210,12 +209,10 @@ class Controller:
 
             discount = coupon.get_discount()
         self.create_order(user, course, discount, status)
-        for progress_in_user in user.get_my_progresses():
-                if progress_in_user.get_course() == course:
-                    return "Error: You already have this course!"
         progress = Progress(course)
-        user.add_progress(progress)
-        user.set_latest_progress(progress)
+        if status == True:
+            user.add_progress(progress)
+            user.set_latest_progress(progress)
         return True
 
     def search_coupon_by_id(self, coupon_id):

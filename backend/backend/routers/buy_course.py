@@ -21,9 +21,9 @@ class BuyCourseData(BaseModel):
 
 
 class Bill(BaseModel):
-    status:str
-    username:str
-    course_name:str
+    status:bool
+    user_id:UUID
+    course_id:UUID
     coupon_id:str
     price:int
     discount:int
@@ -60,9 +60,9 @@ def buy_course(
             buy_course_data.coupon_id = "None"
         return_data.append(
             Bill(
-                status="Success",
-                username=current_user.get_name(),
-                course_name=course.get_name(),
+                status=buy_course_data.status,
+                user_id=current_user.get_id(),
+                course_id=course.get_id(),
                 coupon_id=buy_course_data.coupon_id,
                 price=course.get_price(),
                 discount=discounts,
