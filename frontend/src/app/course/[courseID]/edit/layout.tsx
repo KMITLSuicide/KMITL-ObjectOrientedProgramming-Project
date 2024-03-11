@@ -1,17 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CourseLearnSidebar, {
   type SidebarCategory,
   type SidebarItem,
-} from "~/src/components/course/sidebar";
-import { type CourseLearn } from "~/src/lib/definitions/course";
-import { useToast } from "~/src/components/ui/use-toast";
+} from "~/src/components/course/sidebar-plain";
+import type { CourseInfo } from "~/src/lib/definitions/course";
+import { toast, useToast } from "~/src/components/ui/use-toast";
 import Link from "next/link";
 import { Button } from "~/src/components/ui/button";
 import { Book, Plus, SquarePen } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
+import { getCourseLearnDataFromAPI, getSidebarItemsImage, getSidebarItemsQuiz, getSidebarItemsVideo } from "~/src/lib/data/course-learn";
+import { getCourseInfoFromAPI } from "~/src/lib/data/course";
+
+function showErrorToast(title: string, description: string) {
+  toast({
+    title: title,
+    description: description,
+    variant: "destructive",
+  });
+}
 
 export default function CourseLearnLayout({
   children,
@@ -20,17 +29,22 @@ export default function CourseLearnLayout({
   children: React.ReactNode;
   params: { courseID: string };
 }) {
-  const path = usePathname();
+  const pathName = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const [learnData, setLearnData] = useState<CourseLearn | null | undefined>(
+  const [courseInfo, setCourseInfo] = useState<CourseInfo | null | undefined>(
     undefined,
+  );
+  const [sidebarQuizItems, setSidebarQuizItems] = useState<SidebarItem[]>([]);
+  const [sidebarVideosItems, setSidebarVideosItems] = useState<SidebarItem[]>([]);
+  const [sidebarImagesItems, setSidebarImagesItems] = useState<SidebarItem[]>(
+    [],
   );
 
   async function fetchData(courseID: string) {
     const data = await getCourseLearnDataFromAPI(courseID);
-    setLearnData(data);
+    setCourseInfo(data);
     if (data === null) {
       toast({
         title: "Error",
@@ -41,17 +55,20 @@ export default function CourseLearnLayout({
 
   useEffect(() => {
     void fetchData(params.courseID);
-    console.log(path);
-    router.replace(path);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log(pathName);
+    router.replace(pathName);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params.courseID]);
 
-  if (searchParams.has("fetch")) {
-    void fetchData(params.courseID);
-  }
+  useEffect(() => {
+    if (searchParams.has("fetch")) {
+      void fetchData(params.courseID);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams.get("fetch")]);
 
   useEffect(() => {
-    if (learnData === null) {
+    if (courseInfo === null) {
       toast({
         title: "Access Denied",
         description: "You don't have access to this course.",
@@ -59,47 +76,115 @@ export default function CourseLearnLayout({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [learnData]);
+  }, [courseInfo]);
 
-  const sidebarImagesItems = learnData?.learn_materials_images.map(
-    (element): SidebarItem => {
-      return {
-        name: element.name,
-        link: `/course/${params.courseID}/edit/image/${element.id}`,
-      };
-    },
-  );
-  const sidebarQuizItems = learnData?.learn_materials_quizes.map(
-    (element): SidebarItem => {
-      return {
-        name: element.name,
-        link: `/course/${params.courseID}/edit/quiz/${element.id}`,
-      };
-    },
-  );
-  const sidebarVideosItems = learnData?.learn_materials_videos.map(
-    (element): SidebarItem => {
-      return {
-        name: element.name,
-        link: `/course/${params.courseID}/edit/video/${element.id}`,
-      };
-    },
-  );
+  useEffect(() => {
+    void getCourseInfoFromAPI(params.courseID).then((data) => {
+      setCourseInfo(data);
+      if (data === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch data",
+          variant: "destructive",
+        });
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const sidebarCategories: SidebarCategory[] = [
-    {
-      name: "Images",
-      sidebarItems: sidebarImagesItems ?? [],
-    },
-    {
-      name: "Quizes",
-      sidebarItems: sidebarQuizItems ?? [],
-    },
-    {
-      name: "Videos",
-      sidebarItems: sidebarVideosItems ?? [],
-    },
-  ];
+  useEffect(() => {
+    if (courseInfo === null) {
+      toast({
+        title: "Access Denied",
+        description: "You don't have access to this course.",
+        variant: "destructive",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courseInfo]);
+
+  useEffect(() => {
+    const fetchSidebarQuizItems = async () => {
+      try {
+        const apiSidebarItems = await getSidebarItemsQuiz(params.courseID);
+        if (apiSidebarItems === null) {
+          showErrorToast("Error", "Failed to fetch quiz items");
+          return;
+        }
+        const items = apiSidebarItems.map((element): SidebarItem => ({
+          name: element.name,
+          link: `/course/${params.courseID}/edit/quiz/${element.id}`,
+        }));
+        setSidebarQuizItems(items);
+      } catch (error) {
+        showErrorToast("Error", "Failed to fetch quiz items");
+      }
+    };
+
+    void fetchSidebarQuizItems();
+  }, [params.courseID]);
+
+  useEffect(() => {
+    const fetchSidebarVideosItems = async () => {
+      try {
+        const apiSidebarItems = await getSidebarItemsVideo(params.courseID);
+        if (apiSidebarItems === null) {
+          showErrorToast("Error", "Failed to fetch video items");
+          return;
+        }
+        const items = apiSidebarItems.map((element): SidebarItem => ({
+          name: element.name,
+          link: `/course/${params.courseID}/edit/video/${element.id}`,
+        }));
+        setSidebarVideosItems(items);
+      } catch (error) {
+        showErrorToast("Error", "Failed to fetch video items");
+      }
+    };
+
+    void fetchSidebarVideosItems();
+  }, [params.courseID]);
+
+  useEffect(() => {
+    const fetchSidebarImagesItems = async () => {
+      try {
+        const apiSidebarItems = await getSidebarItemsImage(params.courseID);
+        if (apiSidebarItems === null) {
+          showErrorToast("Error", "Failed to fetch image items");
+          return;
+        }
+        const items = apiSidebarItems.map((element): SidebarItem => ({
+          name: element.name,
+          link: `/course/${params.courseID}/edit/image/${element.id}`,
+        }));
+        setSidebarImagesItems(items);
+      } catch (error) {
+        showErrorToast("Error", "Failed to fetch image items");
+      }
+    };
+
+    void fetchSidebarImagesItems();
+  }, [params.courseID]);
+
+  const sidebarCategories = useMemo(() => {
+    const categories: SidebarCategory[] = [
+      {
+        name: "Images",
+        sidebarItems: sidebarImagesItems ?? [],
+      },
+      {
+        name: "Quizes",
+        sidebarItems: sidebarQuizItems ?? [],
+      },
+      {
+        name: "Videos",
+        sidebarItems: sidebarVideosItems ?? [],
+      },
+    ];
+
+    return categories;
+  }, [sidebarImagesItems, sidebarQuizItems, sidebarVideosItems]);
+
 
   return (
     <div className="flex h-full w-full justify-center">
@@ -113,10 +198,10 @@ export default function CourseLearnLayout({
               asChild
               className="flex-grow justify-normal rounded-lg bg-primary px-4 py-2 text-left text-xl font-bold space-x-2"
             >
-              <Link href={`/course/${learnData?.id}/edit`}>
+              <Link href={`/course/${courseInfo?.id}/edit`}>
               <SquarePen />
               <p>
-                {learnData?.name}
+                {courseInfo?.name}
               </p>
               </Link>
             </Button>
@@ -126,7 +211,7 @@ export default function CourseLearnLayout({
               className=""
               size='icon'
             >
-              <Link href={`/course/${learnData?.id}/learn`}>
+              <Link href={`/course/${courseInfo?.id}/learn`}>
                 <Book />
               </Link>
           </Button>
@@ -137,7 +222,7 @@ export default function CourseLearnLayout({
               asChild
               className="flex-grow justify-normal rounded-lg bg-primary px-4 py-2 text-left text-lg font-semibold space-x-2"
             >
-              <Link href={`/course/${learnData?.id}/edit/new`} className="flex">
+              <Link href={`/course/${courseInfo?.id}/edit/new`} className="flex">
                 <Plus />
                 <p>
                   New material

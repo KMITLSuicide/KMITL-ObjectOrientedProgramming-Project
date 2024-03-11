@@ -9,6 +9,11 @@ export interface Progress{
   "is_complete": boolean
 }
 
+export interface SidebarItem {
+  id: string;
+  name: string;
+}
+
 export interface VideoInfo {
   id: string;
   name: string;

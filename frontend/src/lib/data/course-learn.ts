@@ -1,6 +1,6 @@
 import api from "~/src/lib/data/api";
 import type { CourseLearn } from "~/src/lib/definitions/course";
-import type { CompleteQuizResponse, Progress, ImageInfo, QuizInfo, VideoInfo } from "~/src/lib/definitions/course-learn";
+import type { CompleteQuizResponse, Progress, ImageInfo, QuizInfo, VideoInfo, SidebarItem } from "~/src/lib/definitions/course-learn";
 
 export async function getCourseLearnDataFromAPI(courseID: string) {
   try {
@@ -108,10 +108,54 @@ export async function getProgressQuiz(courseID: string) {
   }
 }
 
-
 export async function getProgressQuizNormalized(courseID: string) {
   try {
     const response = await api.get<number>(`/user/progress/${courseID}/quiz/normalized`);
+
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function getSidebarItemsImage(courseID: string) {
+  try {
+    const response = await api.get<SidebarItem[]>(`/course/${courseID}/image`);
+
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function getSidebarItemsVideo(courseID: string) {
+  try {
+    const response = await api.get<SidebarItem[]>(`/course/${courseID}/video`);
+
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function getSidebarItemsQuiz(courseID: string) {
+  try {
+    const response = await api.get<SidebarItem[]>(`/course/${courseID}/quiz`);
 
     if (response.status == 200) {
       return response.data;

@@ -91,13 +91,15 @@ export default function CourseLearnSidebar({
               <h2 className="mb-2 text-lg font-semibold tracking-tight">
                 {category.name}
               </h2>
-              {category.progressSavable && (<div className="flex flex-row items-center space-x-2">
-                <p className="text-xs">{(category.progressNormalized * 100)}%</p>
-                <Progress
-                  value={category.progressNormalized * 100}
-                  className="h-2"
-                />
-              </div>)}
+              {category.progressSavable && (
+                <div className="flex flex-row items-center space-x-2">
+                  <p className="text-xs">{(category.progressNormalized * 100)}%</p>
+                  <Progress
+                    value={category.progressNormalized * 100}
+                    className="h-2"
+                  />
+                </div>
+              )}
               <div className="space-y-1">{sidebarItems}</div>
             </div>
           );

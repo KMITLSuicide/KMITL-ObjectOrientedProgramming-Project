@@ -5,22 +5,25 @@ import CourseLearnSidebar, {
   type SidebarCategory,
   type SidebarItem,
 } from "~/src/components/course/sidebar";
-import { type CourseLearn } from "~/src/lib/definitions/course";
+import type { CourseInfo } from "~/src/lib/definitions/course";
 import { toast } from '~/src/components/ui/use-toast';
 import Link from "next/link";
 import { Button } from "~/src/components/ui/button";
 import { Book } from "lucide-react";
 import {
-  getCourseLearnDataFromAPI,
   getProgressNormalized,
   getProgressQuiz,
   getProgressQuizNormalized,
   getProgressVideo,
   getProgressVideoNormalized,
+  getSidebarItemsImage,
+  getSidebarItemsQuiz,
+  getSidebarItemsVideo,
 } from "~/src/lib/data/course-learn";
 import { Progress as ProgressBar } from "~/src/components/ui/progress";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Progress as ProgressType } from "~/src/lib/definitions/course-learn";
+import { getCourseInfoFromAPI } from "~/src/lib/data/course";
 
 function showErrorToast(title: string, description: string) {
   toast({
@@ -40,7 +43,7 @@ export default function CourseLearnLayout({
   const router = useRouter();
   const pathName = usePathname();
   const searchParams = useSearchParams();
-  const [learnData, setLearnData] = useState<CourseLearn | null | undefined>(
+  const [courseInfo, setCourseInfo] = useState<CourseInfo | null | undefined>(
     undefined,
   );
   const [progressTotal, setProgressTotal] = useState<number>(0);
@@ -56,6 +59,8 @@ export default function CourseLearnLayout({
   const [progressVideo, setProgressVideo] = useState<ProgressType[] | undefined>(
     undefined,
   );
+  const [sidebarQuizItems, setSidebarQuizItems] = useState<SidebarItem[]>([]);
+  const [sidebarVideosItems, setSidebarVideosItems] = useState<SidebarItem[]>([]);
   const [sidebarImagesItems, setSidebarImagesItems] = useState<SidebarItem[]>(
     [],
   );
@@ -127,8 +132,8 @@ export default function CourseLearnLayout({
   }
 
   useEffect(() => {
-    void getCourseLearnDataFromAPI(params.courseID).then((data) => {
-      setLearnData(data);
+    void getCourseInfoFromAPI(params.courseID).then((data) => {
+      setCourseInfo(data);
       if (data === null) {
         toast({
           title: "Error",
@@ -141,7 +146,7 @@ export default function CourseLearnLayout({
   }, []);
 
   useEffect(() => {
-    if (learnData === null) {
+    if (courseInfo === null) {
       toast({
         title: "Access Denied",
         description: "You don't have access to this course.",
@@ -149,7 +154,7 @@ export default function CourseLearnLayout({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [learnData]);
+  }, [courseInfo]);
 
   useEffect(() => {
     void fetchProgressNormalized();
@@ -172,10 +177,15 @@ export default function CourseLearnLayout({
   }, [pathName, router, searchParams]);
 
 
-  const sidebarQuizItems = useMemo(() => {
-    return learnData?.learn_materials_quizes.map(
-      (element): SidebarItem => {
-        return {
+  useEffect(() => {
+    const fetchSidebarQuizItems = async () => {
+      try {
+        const apiSidebarItems = await getSidebarItemsQuiz(params.courseID);
+        if (apiSidebarItems === null) {
+          showErrorToast("Error", "Failed to fetch quiz items");
+          return;
+        }
+        const items = apiSidebarItems.map((element): SidebarItem => ({
           id: element.id,
           name: element.name,
           link: `/course/${params.courseID}/learn/quiz/${element.id}`,
@@ -187,15 +197,25 @@ export default function CourseLearnLayout({
               [element.id]: learned,
             }));
           },
-        };
+        }));
+        setSidebarQuizItems(items);
+      } catch (error) {
+        showErrorToast("Error", "Failed to fetch quiz items");
       }
-    );
-  }, [learnData?.learn_materials_quizes, params.courseID, learnedItems]);
+    };
 
-  const sidebarVideosItems = useMemo(() => {
-    return learnData?.learn_materials_videos.map(
-      (element): SidebarItem => {
-        return {
+    void fetchSidebarQuizItems();
+  }, [params.courseID, learnedItems]);
+
+  useEffect(() => {
+    const fetchSidebarVideosItems = async () => {
+      try {
+        const apiSidebarItems = await getSidebarItemsVideo(params.courseID);
+        if (apiSidebarItems === null) {
+          showErrorToast("Error", "Failed to fetch video items");
+          return;
+        }
+        const items = apiSidebarItems.map((element): SidebarItem => ({
           id: element.id,
           name: element.name,
           link: `/course/${params.courseID}/learn/video/${element.id}`,
@@ -206,28 +226,43 @@ export default function CourseLearnLayout({
               ...prevItems,
               [element.id]: learned,
             }));
-          },
-        };
+          }
+        }));
+        setSidebarVideosItems(items);
+      } catch (error) {
+        showErrorToast("Error", "Failed to fetch video items");
       }
-    );
-  }, [learnData?.learn_materials_videos, params.courseID, learnedItems]);
+    };
+
+    void fetchSidebarVideosItems();
+  }, [params.courseID, learnedItems]);
+
 
   useEffect(() => {
-    if (learnData) {
+    void getSidebarItemsImage(params.courseID).then((data) => {
+      if (data === null) {
+        showErrorToast("Error", "Failed to fetch image items");
+        return;
+      }
       setSidebarImagesItems(
-        learnData.learn_materials_images.map(
-          (element): SidebarItem => {
-            return {
-              id: element.id,
-              name: element.name,
-              link: `/course/${params.courseID}/learn/image/${element.id}`,
-              learnedChangable: false,
-            };
-          }
-        )
+        data.map((element): SidebarItem => {
+          return {
+            id: element.id,
+            name: element.name,
+            link: `/course/${params.courseID}/learn/image/${element.id}`,
+            learnedChangable: false,
+            learned: learnedItems[element.id] ?? false,
+            setLearned: (learned: boolean) => {
+              setLearnedItems((prevItems) => ({
+                ...prevItems,
+                [element.id]: learned,
+              }))
+            },
+          };
+        }),
       );
-    }
-  }, [learnData, params.courseID]);
+    })
+  }, [learnedItems, params.courseID]);
 
   const sidebarCategories = useMemo(() => {
     const categories: SidebarCategory[] = [
@@ -275,9 +310,9 @@ export default function CourseLearnLayout({
             asChild
             className="w-full justify-normal space-x-2 rounded-lg bg-primary px-4 py-2 text-left text-xl font-bold"
           >
-            <Link href={`/course/${learnData?.id}/learn`}>
+            <Link href={`/course/${courseInfo?.id}/learn`}>
               <Book />
-              <p>{learnData?.name}</p>
+              <p>{courseInfo?.name}</p>
             </Link>
           </Button>
 
