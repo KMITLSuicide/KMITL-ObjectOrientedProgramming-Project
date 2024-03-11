@@ -1,0 +1,27 @@
+@startuml Buy Course
+
+actor User
+
+participant "Web Server" as Server
+participant Controller
+
+
+User -> Server: buy_course
+activate Server
+
+Server -> Controller: buy_course(current_user, course_id, buy_course_data)
+activate Controller
+Controller -> Controller: get_current_user()
+activate Controller
+Controller -> Controller: buy_course(current_user, buy_course_data.status, course_id, buy_course_data.coupon_id)
+activate Controller
+Controller -> User: buy_course(status, course_id, coupon_id)
+activate User
+User --> Controller: result
+deactivate User
+Controller --> Server: result
+deactivate Controller
+
+Server --> User: return_result
+
+@enduml

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Annotated, List
+from typing import Annotated, List, Sequence
 import uuid
 from fastapi import APIRouter, Depends, HTTPException, status, Body, Response
 from pydantic import BaseModel
@@ -14,7 +14,8 @@ from backend.definitions.api_data_model import(
     CourseInfo, CourseLearn, CourseLearnMaterialImage,
     CourseLearnMaterialQuiz, CourseLearnMaterialQuizQuestions,
     CourseLearnMaterialVideo, CourseMaterialData,AddImageToCoursePostData,
-    QuizQuestionData,AddQuizToCoursePostData,AddVideoToCoursePostData
+    QuizQuestionData,AddQuizToCoursePostData,AddVideoToCoursePostData,
+    GetCorrectAnswer
     )
 
 
@@ -60,7 +61,7 @@ def get_learn_course_materials(
     if not isinstance(course_info, CourseInfo):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="User does not have access to course",
+            detail="courseinfo error, please check your course_id",
         )
 
     course_learn_data = CourseLearn(
@@ -81,6 +82,39 @@ def get_learn_course_materials(
     )
 
     return course_learn_data
+@router.get("/course/{course_id}/image", tags=["Course Material"])
+def get_images(course_id:uuid.UUID,current_user: Annotated[User, Depends(get_current_user)]):
+    course = controller.search_course_by_id(course_id)
+
+    if not isinstance(course, Course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "course not found")
+    
+    if not current_user.have_access_to_course(course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "User doesn't have access")
+    return create_course_materials_data(course.get_images())
+
+@router.get("/course/{course_id}/video", tags=["Course Material"])
+def get_videos(course_id:uuid.UUID,current_user: Annotated[User, Depends(get_current_user)]):
+    course = controller.search_course_by_id(course_id)
+    
+    if not isinstance(course, Course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "course not found")
+    
+    if not current_user.have_access_to_course(course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "User doesn't have access")
+    return create_course_materials_data(course.get_videos())
+
+@router.get("/course/{course_id}/quiz", tags=["Course Material"])
+def get_quizes(course_id:uuid.UUID,current_user: Annotated[User, Depends(get_current_user)]):
+    course = controller.search_course_by_id(course_id)
+    
+    if not isinstance(course, Course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "course not found")
+    
+    if not current_user.have_access_to_course(course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "User doesn't have access")
+    return create_course_materials_data(course.get_quizes())
+
 @router.get("/course/{course_id}/image/{image_id}", tags=["Image"])
 def get_image(course_id:uuid.UUID, image_id : uuid.UUID,current_user: Annotated[User, Depends(get_current_user)]):
     course = controller.search_course_by_id(course_id)
@@ -195,7 +229,7 @@ def delete_image(
 
     if not isinstance(image, CourseMaterialImage):
         response.status_code = status.HTTP_400_BAD_REQUEST
-        return "quiz is not instance of CourseMaterialQuiz"
+        return "Image not found"
 
     course.remove_image(image)
 
@@ -209,8 +243,11 @@ def get_video(course_id:uuid.UUID, video_id : uuid.UUID,current_user: Annotated[
         raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "course not found")
     video = course.search_video_by_id(video_id)
     if not isinstance(video, CourseMaterialVideo):
-        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail=" image not found")
-
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail=" video not found")
+    
+    if not current_user.have_access_to_course(course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "User doesn't have access")
+    
     course_learn_video: CourseLearnMaterialVideo = CourseLearnMaterialVideo(
                             id=str(video.get_id()),
                             name=video.get_name(),
@@ -227,7 +264,7 @@ def add_video_to_course(
         Body(
             examples=[
                 {
-                    "url": "https://youube.com",
+                    "url": "https://youtube.com",
                     "name": "youtbe",
                     "description": "add video",
                 }
@@ -264,9 +301,9 @@ def edit_video(
         Body(
             examples=[
                 {
-                    "name": "Which language is FastAPI built with",
+                    "name": "Tajdang dance clip",
                     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-                    "url": "fasdfasgadnfaslfd;asdf"
+                    "url": "Phuwit.com"
                 }
             ],
         ),
@@ -312,7 +349,7 @@ def delete_video(
 
     if not isinstance(video, CourseMaterialVideo):
         response.status_code = status.HTTP_400_BAD_REQUEST
-        return "quiz is not found"
+        return "Video is not found"
 
     course.remove_video(video)
 
@@ -326,7 +363,10 @@ def get_quiz(course_id:uuid.UUID, quiz_id : uuid.UUID,current_user: Annotated[Us
 
     quiz = course.search_quiz_by_id(quiz_id)
     if not isinstance(quiz, CourseMaterialQuiz):
-        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail=" image not found")
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail="quiz  not found")
+
+    if not current_user.have_access_to_course(course):
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "User doesn't have access")
 
     course_learn_quiz : CourseLearnMaterialQuiz=  CourseLearnMaterialQuiz(
                 id=str(quiz.get_id()),
@@ -388,7 +428,7 @@ def edit_quiz(
         Body(
             examples=[
                 {
-                    "name": "Which language is FastAPI built with",
+                    "name": "Is Tajdang the smartest guy in the world?",
                     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
                 }
             ],
@@ -410,7 +450,7 @@ def edit_quiz(
 
     if not isinstance(quiz, CourseMaterialQuiz):
         response.status_code = status.HTTP_400_BAD_REQUEST
-        return "quiz is not instance of CourseMaterialQuiz"
+        return "quiz not found"
 
     quiz.edit(coures_material_data.name, coures_material_data.description)
 
@@ -436,11 +476,12 @@ def delete_quiz(
 
     if not isinstance(quiz, CourseMaterialQuiz):
         response.status_code = status.HTTP_400_BAD_REQUEST
-        return "quiz is not instance of CourseMaterialQuiz"
+        return "quiz not found"
 
     course.remove_quiz(quiz)
 
     return get_learn_course_materials(course_id, current_user)
+
 
 @router.get("/course/{course_id}/quiz/{quiz_id}/question/{question_id}", tags=["Question"])
 def get_question(
@@ -465,8 +506,7 @@ def get_question(
 
     question = quiz.search_question_by_id(question_id)
     if not isinstance(question, QuizQuestion):
-        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST)
-        return "question not found"
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail="question not found")
 
     question_learn = CourseLearnMaterialQuizQuestions(id = str(question.get_id()),question= question.get_question())
 
@@ -509,7 +549,7 @@ def edit_question(
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "quiz not found"
 
-    question = quiz.search_question_by_id(quiz_id)
+    question = quiz.search_question_by_id(question_id)
 
     if not isinstance(question, QuizQuestion):
         response.status_code = status.HTTP_400_BAD_REQUEST
@@ -554,7 +594,9 @@ def add_question(
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "quiz not found"
 
-    return quiz.add_question(QuizQuestion(QuizQuestionData.question, QuizQuestionData.correct))
+    question = QuizQuestion(quiz_material_data.question, quiz_material_data.correct)
+    quiz.add_question(question)
+    return get_question(course_id, quiz_id, question.get_id(), current_user)
 
 @router.delete("/course/{course_id}/quiz/{quiz_id}/question/{question_id}", tags=["Question"])
 def delete_question(
@@ -579,18 +621,15 @@ def delete_question(
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "quiz not found"
 
-    question = quiz.search_question_by_id(quiz_id)
-    if not isinstance(quiz, CourseMaterialQuiz):
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return "quiz not found"
-
     question = quiz.search_question_by_id(question_id)
 
     if not isinstance(question, QuizQuestion):
         response.status_code = status.HTTP_400_BAD_REQUEST
         return "question not found"
 
-    quiz.remove_question(question)
+    success, message = quiz.remove_question(question)
+    if not success:
+        raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail= message)
     return get_learn_course_materials(course_id, current_user)
 
 def create_images_base_model(images : list[CourseMaterialImage]):
@@ -646,3 +685,17 @@ def create_course_info(course: Course):
         materials_videos=[video.get_name() for video in course.get_videos()],
     )
     return course_info
+
+class EachCourseMaterialData(BaseModel):
+    id: str
+    name :str
+
+
+def create_course_materials_data(course_material_list: Sequence[CourseMaterialImage | CourseMaterialVideo | CourseMaterialQuiz]):
+    # Check if all elements in the list have the same type
+    if not all(type(course_material) == type(course_material_list[0]) for course_material in course_material_list):
+        raise TypeError("All elements in the list must be of the same type")
+
+    return [
+        EachCourseMaterialData(id=str(course_material.get_id()), name=course_material.get_name()) for course_material in course_material_list
+    ]

@@ -1,0 +1,20 @@
+@startuml Study Video By Id
+actor "User" as UserActor
+
+participant "UI" as Server
+participant Controller
+participant "User" as UserClass
+
+UserActor -> Server: study_video_by_id
+Server -> Controller: study_video_by_id(current_user, progress_id, progress_data)
+activate Controller
+Controller -> UserClass: set_learned_video_by_id(progress_data.id, progress_data.is_complete)
+activate UserClass
+UserClass --> Controller: updated_normalized_progress_videos
+deactivate UserClass
+Controller --> Server: updated_normalized_progress_videos
+deactivate Controller
+
+Server --> UserActor: return_study_video
+
+@enduml

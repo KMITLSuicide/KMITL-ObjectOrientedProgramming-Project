@@ -1,0 +1,23 @@
+@startuml User
+actor "User" as UserActor
+
+participant "UI" as Server
+participant Controller
+participant "User" as UserClass
+
+
+UserActor -> Server: View my Learning
+activate Server
+
+Server -> Controller: view_my_learning(current_user)
+activate Controller
+Controller -> UserClass: view_my_learning()
+activate UserClass
+UserClass --> Controller: my_progresses
+deactivate UserClass
+Controller --> Server: my_progresses
+deactivate Controller
+
+Server --> UserActor: return my learning
+
+@enduml

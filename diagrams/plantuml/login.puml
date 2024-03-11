@@ -1,0 +1,19 @@
+@startuml Authentication
+actor User
+
+participant "Web Server" as Server
+participant Controller
+
+
+User -> Server: login_for_access_token
+activate Server
+
+Server -> Controller: login_for_access_token(form_data)
+activate Controller
+Controller -> Controller: authenticate_user(form_data.username, form_data.password)
+activate Controller
+Controller --> Server: User instance
+deactivate Controller
+Server --> User: return_access_token
+
+@enduml

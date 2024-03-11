@@ -1,0 +1,24 @@
+@startuml Add Coupon
+actor Teacher
+
+participant "UI" as Server
+participant Controller
+
+
+Teacher -> Server: add_coupon_course
+Server -> Controller: add_coupon_course()
+activate Controller
+Controller -> Controller: search_course_by_id(course_id)
+activate Controller
+Controller --> Server: "Error: Course is not instance"
+deactivate Controller
+Controller -> Controller: add_coupon_course()
+activate Controller
+Controller -> Controller: get_all_coupons()
+activate Controller
+Controller --> Server: List of coupons
+deactivate Controller
+
+Server --> Teacher: return_list_of_coupons
+
+@enduml

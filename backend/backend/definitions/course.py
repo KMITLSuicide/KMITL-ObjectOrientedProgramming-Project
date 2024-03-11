@@ -106,8 +106,11 @@ class CourseMaterialQuiz(CourseMaterial):
     def remove_question(self, question: QuizQuestion):
         if isinstance(question, QuizQuestion):
             self.__questions.remove(question)
-            return True
-        return False
+            if not self.is_valid_quiz():
+                self.__questions.append(question)
+                return False,"Quiz, must have atleast 1 correct answer"
+            return True, "Yes"
+        return False, "Question, not found"
 
     def add_question(self, question: QuizQuestion):
         if isinstance(question, QuizQuestion):
