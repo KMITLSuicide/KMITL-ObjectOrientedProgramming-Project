@@ -8,8 +8,9 @@ from backend.controller_instance import controller
 from backend.definitions.progress import Progress, ProgressQuiz, ProgressVideo
 from backend.definitions.course import Course, CourseMaterialQuiz, QuizQuestion
 from backend.definitions.user import User,Teacher
+from backend.definitions.order import Order
 from backend.lib.authentication import get_current_user
-from backend.definitions.api_data_model import CourseCardData, ProgressVideoData, ProgressQuizData, AnswerQuestion, GetCorrectAnswer
+from backend.definitions.api_data_model import CourseCardData, ProgressVideoData, ProgressQuizData, AnswerQuestion, GetCorrectAnswer, OrderData
 router = APIRouter()
 route_tags: List[str | Enum] = ["Course"]
 
@@ -223,9 +224,10 @@ def get_valid_answers(quiz: CourseMaterialQuiz, answer_ids: List[UUID]) -> List[
 
     return valid_answers
 
-
-
-
+@router.get("/user/order", tags=["Order"])
+def get_all_orders(current_user: Annotated[User, Depends(get_current_user)]):
+    orders = current_user.get_orders()
+    return create_orders_base_model(orders)
 class AccountInfo(BaseException):
     type: Literal['user', 'teacher']
     id: str
@@ -267,4 +269,16 @@ def create_correct_answer_base_model(questions: list[QuizQuestion]):
             correct= question.get_correct(),
             id=str(question.get_id())
         )for question in questions if isinstance(question, QuizQuestion)
+    ]
+def create_orders_base_model(orders: list[Order]):
+    return [
+            OrderData(
+            id = str(order.get_id()),
+            course_list_name=[course.get_name() for course in order.get_courses() if (isinstance(course.get_name(), str))],
+            price = order.get_price(),
+            address= order.get_address(),
+            payment_method= order.get_payment_method().get_name(),
+            status=
+             order.get_status()
+            )for order in orders if isinstance(order, Order)
     ]

@@ -123,19 +123,27 @@ class User:
     def try_to_buy_courses(self, courses:list[Course], is_paid: bool, payment_method: Payment, address : str):
         if is_paid:
             progresses = [Progress(course) for course in courses]
+
             for progress in progresses:
                 self.add_progress(progress) 
-                self.set_latest_progress(progress)  
-        order = Order(address= address, payment= payment_method, courses= courses, status= is_paid)
+                self.set_latest_progress(progress) 
+        copy_courses = [course for course in courses]
+        order = Order(address= address, payment= payment_method, courses= copy_courses, status= is_paid)
         self.__orders.append(order)
         order_data: OrderData = OrderData(
             id = str(order.get_id()),
-            course_list_name=[(course.get_name() for course in order.get_courses())], 
+            course_list_name=[course.get_name() for course in order.get_courses() if (isinstance(course.get_name(), str))],
             price = order.get_price(),
             address= order.get_address(),
             payment_method= order.get_payment_method().get_name(),
-            status= order.get_status()
+            status=
+             order.get_status()
             )
+        
+        if is_paid:
+            courses_in_cart = self.__cart.get_courses()
+            self.__cart.remove_courses([course for course in courses_in_cart if course in courses])
+        return order_data
 
     
 class Teacher(User):
@@ -181,3 +189,9 @@ class Cart:
 
     def remove_course(self, course):
         self.__courses.remove(course)
+    
+    def remove_courses(self, courses: list[Course]):
+        for course in courses:
+            if course in self.__courses:
+                self.__courses.remove(course)
+
