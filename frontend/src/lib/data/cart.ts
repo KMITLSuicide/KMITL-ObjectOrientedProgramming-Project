@@ -1,7 +1,7 @@
 import api from "~/src/lib/data/api";
 import type { BuyPostData, PaymentMethod } from "~/src/lib/definitions/cart";
 import type { CourseCardData } from "~/src/lib/definitions/course";
-import { Order } from "~/src/lib/definitions/order";
+import type { Order } from "~/src/lib/definitions/order";
 
 export async function getMyCart() {
   try {

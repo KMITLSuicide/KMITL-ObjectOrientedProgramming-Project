@@ -27,7 +27,7 @@ export default function CoursesByTeacher({
         })}
     }
     void fetchData();
-  }, []);
+  }, [params.teacherID]);
 
   return (
     <div className="flex w-full justify-center">
