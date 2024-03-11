@@ -1,0 +1,76 @@
+@startuml Udemy Sequence Diagram (Functions)
+
+actor "User" as UserActor
+
+participant "UI" as Server
+participant Controller
+participant Course
+participant "User" as UserClass
+
+UserActor -> Server: delete_image(course_id, image_id, response, current_user)
+activate Server
+Server -> Controller: search_course_by_id(course_id)
+activate Controller
+Controller --> Server: course
+deactivate Controller
+Server -> UserClass: search_teacher_by_course(course)
+activate UserClass
+UserClass --> UserClass: check_authorization(current_user, teacher)
+UserClass --> Server: teacher
+deactivate UserClass
+Server -> Controller: search_image_by_id(image_id)
+activate Controller
+Controller --> Server: image
+deactivate Controller
+Controller -> Course: remove_image(image)
+deactivate Controller
+Server --> UserActor: get_learn_course_materials(course_id, current_user)
+deactivate Server
+
+UserActor -> Server: get_video(course_id, video_id, current_user)
+activate Server
+Server -> Controller: search_course_by_id(course_id)
+activate Controller
+Controller --> Server: course
+deactivate Controller
+Server -> User: have_access_to_course(course)
+Server -> Controller: search_video_by_id(video_id)
+activate Controller
+Controller --> Server: video
+deactivate Controller
+Server --> UserActor: course_learn_video
+deactivate Server
+
+UserActor -> Server: add_video_to_course(course_id, add_video_to_course_data, response, current_user)
+activate Server
+Server -> Controller: search_course_by_id(course_id)
+activate Controller
+Controller --> Server: course
+deactivate Controller
+Server -> User: search_teacher_by_course(course)
+User --> User: check_authorization(current_user, teacher)
+Server -> Controller: create_CourseMaterialVideo(url, name, description)
+activate Controller
+Controller -> Course: add_video(video)
+deactivate Controller
+Server --> UserActor: video_id
+deactivate Server
+
+UserActor -> Server: edit_video(course_id, video_id, video_data, response, current_user)
+activate Server
+Server -> Controller: search_course_by_id(course_id)
+activate Controller
+Controller --> Server: course
+deactivate Controller
+Server -> User: search_teacher_by_course(course)
+User --> User: check_authorization(current_user, teacher)
+Server -> Controller: search_video_by_id(video_id)
+activate Controller
+Controller --> Server: video
+deactivate Controller
+Controller -> CourseMaterialVideo: edit(name, description, url)
+activate CourseMaterialVideo
+Server --> UserActor: get_video(course_id, video_id, current_user)
+deactivate Server
+
+@enduml
