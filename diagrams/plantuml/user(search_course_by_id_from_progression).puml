@@ -1,0 +1,21 @@
+@startuml User
+actor "User" as UserActor
+
+participant "UI" as Server
+participant Controller
+participant "User" as UserClass
+
+
+UserActor -> Server: search course by id from progression
+Server -> Controller: search_course_by_id_from_progression(current_user, course_id)
+activate Controller
+Controller -> UserClass: search_course_by_id(course_id)
+activate UserClass
+UserClass --> Controller: course
+deactivate UserClass
+Controller --> Server: course
+deactivate Controller
+
+Server --> UserActor: return course id
+
+@enduml

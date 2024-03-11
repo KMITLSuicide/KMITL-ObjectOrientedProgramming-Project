@@ -1,0 +1,67 @@
+@startuml Udemy Use Case Diagram
+
+actor User
+actor Teacher
+actor Controller
+
+usecase "View Courses" as UC1 
+  User --> UC1
+  Controller --> UC1
+
+
+usecase "Buy Course" as UC2 
+  User --> UC2
+  Controller --> UC2
+
+
+usecase "Add Course" as UC3 
+  Teacher --> UC3
+
+
+usecase "Update Course" as UC4 
+  Teacher --> UC4
+
+
+usecase "Delete Course" as UC5 
+  Teacher --> UC5
+
+
+usecase "Update Profile" as UC6 
+  User --> UC6
+
+
+usecase "List Payment Methods" as UC7 
+  Controller --> UC7
+
+
+usecase "Validate Coupon" as UC8 
+  Controller --> UC8
+
+
+usecase "Add to Cart" as UC9 
+  User --> UC9
+
+
+usecase "Remove from Cart" as UC10 
+  User --> UC10
+
+
+usecase "Make Payment" as UC11 
+  User --> UC11
+
+
+usecase "View Order History" as UC12 
+  User --> UC12
+
+
+usecase "Write Review" as UC13 
+  User --> UC13
+
+
+Controller --> UC9
+Controller --> UC10
+Controller --> UC11
+Controller --> UC12
+Controller --> UC13
+
+@enduml

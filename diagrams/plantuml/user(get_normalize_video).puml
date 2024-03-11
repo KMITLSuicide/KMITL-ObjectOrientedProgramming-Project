@@ -1,0 +1,21 @@
+@startuml Get Normalize Progress Video
+actor "User" as UserActor
+
+participant "UI" as Server
+participant Controller
+participant "User" as UserClass
+
+UserActor -> Server: get_normalize_progress_video
+Server -> Controller: get_normalized_progress_videos(current_user, progress_id)
+activate Controller
+Controller -> UserClass: get_normalized_progress_videos(progress_id)
+activate UserClass
+UserClass --> Controller: normalized_videos
+deactivate UserClass
+Controller --> Server: normalized_videos
+deactivate Controller
+
+Server --> UserActor: return_normalized_progress_videos
+
+
+@enduml

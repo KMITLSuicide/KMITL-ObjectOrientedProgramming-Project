@@ -21,7 +21,8 @@ class ProgressVideo():
     
     def set_learned(self, is_learn:bool):
         self.__learned = is_learn
-
+    def get_id(self):
+        return self.__video.get_id()
 
 class ProgressQuiz():
     def __init__(self, quiz: CourseMaterialQuiz) -> None:
@@ -36,8 +37,8 @@ class ProgressQuiz():
     
     def set_completed(self,is_complete:bool):
         self.__completed = is_complete
-
-
+    def get_id(self):
+        return self.__quiz.get_id()
 class Progress:
     def __init__(self, course: Course) -> None:
         self.__course = course
@@ -70,8 +71,33 @@ class Progress:
     def get_name(self):
         return self.__name
     
+    def get_normalized_total_progress(self, decimal_places=2):
+
+        videos = self.__progress_videos
+
+        learned_videos_count = 0
+
+        if videos:
+            learned_videos_count = sum(1 for video in videos if isinstance(video, ProgressVideo) and video.get_learned())
+
+        quizes = self.__progress_quizes
+
+        learned_quizes_count = 0
+
+        if quizes:
+            learned_quizes_count = sum(1 for quiz in quizes if isinstance(quiz, ProgressQuiz) and quiz.get_completed())
+
+
+        total_learned_count = learned_quizes_count + learned_videos_count
+
+        if len(quizes) + len(videos) == 0:
+            return 0
+
+        return round(total_learned_count / (len(quizes) + len(videos)), decimal_places)
 
     
+
+
     def get_normalized_progress_videos(self, decimal_places=2):
         videos = self.__progress_videos
 

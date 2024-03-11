@@ -1,0 +1,18 @@
+@startuml Get Course For Teacher
+
+actor User
+
+participant "UI" as Server
+participant Controller
+
+User -> Server: Get Course For Teacher
+Server -> Controller: get_courses_for_teacher(teacher_id)
+activate Controller
+Controller -> Controller: get_teacher_by_id(teacher_id)
+activate Controller
+Controller --> Server: List of courses for teacher
+deactivate Controller
+
+Server --> User: return course
+
+@enduml

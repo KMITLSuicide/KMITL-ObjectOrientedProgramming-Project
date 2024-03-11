@@ -5,7 +5,7 @@ import { CourseLearnImage } from "~/src/components/course/learn/image";
 import { CourseLearnQuiz } from "~/src/components/course/learn/quiz";
 import { CourseLearnVideo } from "~/src/components/course/learn/video";
 import { toast } from "~/src/components/ui/use-toast";
-import { getCourseLearnDataFromAPI } from "~/src/lib/data/course";
+import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
 import type { CourseLearn } from "~/src/lib/definitions/course";
 
 const validTypes = ["quiz", "image", "video"];
@@ -55,7 +55,7 @@ export default function CourseViewMaterial({
           });
           return;
         }
-        setMaterialComponent(<CourseLearnQuiz quizData={quiz} />);
+        setMaterialComponent(<CourseLearnQuiz courseID={params.courseID} quizData={quiz} />);
       } else if (params.materialType === "image") {
         const image = courseData?.learn_materials_images.find((image) => image.id === params.materialID);
         if (image === undefined) {
@@ -80,7 +80,7 @@ export default function CourseViewMaterial({
         setMaterialComponent(<CourseLearnVideo videoData={video} />);
       }
     }
-  }, [courseData, params.materialID, params.materialType]);
+  }, [courseData, params.materialID, params.materialType, params]);
 
   return (
     <div className="flex h-full flex-col space-y-2">

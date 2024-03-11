@@ -1,0 +1,20 @@
+@startuml User
+actor "User" as UserActor
+
+participant "UI" as Server
+participant Controller
+participant "User" as UserClass
+
+UserActor -> Server: get my account info
+Server -> Controller: get_my_account_info(current_user)
+activate Controller
+Controller -> UserClass: get_id(), get_name(), get_email()
+activate UserClass
+UserClass --> Controller: user info
+deactivate UserClass
+Controller --> Server: user info
+deactivate Controller
+
+Server --> UserActor: return account info
+
+@enduml

@@ -1,0 +1,20 @@
+@startuml Authentication
+actor User
+
+participant "Web Server" as Server
+participant Controller
+
+
+User -> Server: register
+Server -> Controller: register(form_data)
+activate Controller
+Controller -> Controller: get_password_hash(form_data.password)
+activate Controller
+Controller -> Controller: add_user(user)
+activate Controller
+Controller -> Controller: authenticate_user(form_data.username, form_data.password)
+activate Controller
+Controller --> Server: User instance or None
+deactivate Controller
+Server --> User: return_user_instance
+@enduml

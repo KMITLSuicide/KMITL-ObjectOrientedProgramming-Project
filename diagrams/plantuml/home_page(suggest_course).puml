@@ -1,0 +1,20 @@
+@startuml Home Page
+actor User
+
+participant "UI" as Server
+participant Controller
+
+
+User -> Server: suggest_course
+Server -> Controller: suggest_course()
+activate Controller
+Controller -> Controller: sort_course_by_rating()
+activate Controller
+Controller -> Controller: generate CourseCardData for sorted courses with reviews
+activate Controller
+Controller --> Server: suggest_course result
+deactivate Controller
+
+Server --> User: return_suggest_course
+
+@enduml

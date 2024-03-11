@@ -1,0 +1,20 @@
+@startuml User
+actor "User" as UserActor
+
+participant "UI" as Server
+participant Controller
+participant "User" as UserClass
+
+UserActor -> Server: Get my Teacher
+Server -> Controller: get_my_teaching(current_user)
+activate Controller
+Controller -> UserClass: get_my_teachings()
+activate UserClass
+UserClass --> Controller: List of courses
+deactivate UserClass
+Controller --> Server: List of courses
+deactivate Controller
+
+Server --> UserActor: get my teaching
+
+@enduml

@@ -1,0 +1,22 @@
+@startuml Search Course
+actor User
+
+participant "UI" as Server
+participant Controller
+participant Course
+
+User -> Server: Search Course
+activate Server
+
+Server -> Controller: get_search_course(course_name)
+activate Controller
+Controller -> Course: search_course_by_name(course_name)
+activate Course
+Course --> Controller: List of courses
+deactivate Course
+Controller --> Server: search_results
+deactivate Controller
+
+Server --> User: return_course
+
+@enduml

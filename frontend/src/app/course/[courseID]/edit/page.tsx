@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "~/src/components/ui/use-toast";
-import { getCourseLearnDataFromAPI } from "~/src/lib/data/course";
+import { getCourseLearnDataFromAPI } from "~/src/lib/data/course-learn";
 import { type CourseLearn } from "~/src/lib/definitions/course";
 
 export default function CourseEdit({
@@ -27,12 +27,9 @@ export default function CourseEdit({
 
   return (
     <div className="flex flex-col space-y-2">
-      <h4 className="text-lg font-light">Editing</h4>
+      <h4 className="text-lg bg-destructive text-destructive-foreground w-fit p-2 rounded-md">Editing</h4>
       <h1 className="text-4xl font-bold">{learnData?.name}</h1>
       <p className="text-lg">{learnData?.description}</p>
-      <p className="text-base font-light">
-        Please choose course material on the sidebar.
-      </p>
     </div>
   );
 }
