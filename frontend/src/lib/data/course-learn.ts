@@ -48,7 +48,7 @@ export async function completeVideo(courseID: string, data: Progress) {
   }
 }
 
-export async function getNormalizedProgress(courseID: string) {
+export async function getProgressNormalized(courseID: string) {
   try {
     const response = await api.get<number>(`/user/progress/${courseID}/normalized`);
 
@@ -78,9 +78,40 @@ export async function getProgressVideo(courseID: string) {
   }
 }
 
+export async function getProgressVideoNormalized(courseID: string) {
+  try {
+    const response = await api.get<number>(`/user/progress/${courseID}/video/normalized`);
+
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
 export async function getProgressQuiz(courseID: string) {
   try {
     const response = await api.get<Progress[]>(`/user/progress/${courseID}/quiz`);
+
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+
+export async function getProgressQuizNormalized(courseID: string) {
+  try {
+    const response = await api.get<number>(`/user/progress/${courseID}/quiz/normalized`);
 
     if (response.status == 200) {
       return response.data;

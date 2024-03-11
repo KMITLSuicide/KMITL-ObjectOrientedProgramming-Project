@@ -1,22 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CourseLearnSidebar, {
   type SidebarCategory,
   type SidebarItem,
 } from "~/src/components/course/sidebar";
 import { type CourseLearn } from "~/src/lib/definitions/course";
-import { useToast } from "~/src/components/ui/use-toast";
+import { toast } from '~/src/components/ui/use-toast';
 import Link from "next/link";
 import { Button } from "~/src/components/ui/button";
 import { Book } from "lucide-react";
 import {
   getCourseLearnDataFromAPI,
-  getNormalizedProgress,
+  getProgressNormalized,
+  getProgressQuiz,
+  getProgressQuizNormalized,
+  getProgressVideo,
+  getProgressVideoNormalized,
 } from "~/src/lib/data/course-learn";
 import { Progress as ProgressBar } from "~/src/components/ui/progress";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Progress as ProgressType } from "~/src/lib/definitions/course-learn";
+
+function showErrorToast(title: string, description: string) {
+  toast({
+    title: title,
+    description: description,
+    variant: "destructive",
+  });
+}
 
 export default function CourseLearnLayout({
   children,
@@ -25,8 +37,9 @@ export default function CourseLearnLayout({
   children: React.ReactNode;
   params: { courseID: string };
 }) {
+  const router = useRouter();
+  const pathName = usePathname();
   const searchParams = useSearchParams();
-  const { toast } = useToast();
   const [learnData, setLearnData] = useState<CourseLearn | null | undefined>(
     undefined,
   );
@@ -35,32 +48,83 @@ export default function CourseLearnLayout({
     useState<number>(0);
   const [progressNormalizedQuiz, setProgressNormalizedQuiz] =
     useState<number>(0);
-  const [progressNormalizedVideo, setProgresNormalizedVideo] =
+  const [progressNormalizedVideo, setProgressNormalizedVideo] =
     useState<number>(0);
   const [progressQuiz, setProgressQuiz] = useState<ProgressType[] | undefined>(
     undefined,
   );
-  const [progressVideo, setProgresVideo] = useState<ProgressType[] | undefined>(
+  const [progressVideo, setProgressVideo] = useState<ProgressType[] | undefined>(
     undefined,
   );
+  const [sidebarImagesItems, setSidebarImagesItems] = useState<SidebarItem[]>(
+    [],
+  );
+  const [learnedItems, setLearnedItems] = useState<Record<string, boolean>>({});
 
-  async function fetchProgressTotal() {
-    const response = await getNormalizedProgress(params.courseID);
-    if (response === null) {
+  useEffect(() => {
+    console.log(learnedItems);
+  }, [learnedItems]);
+
+  async function fetchProgressNormalized() {
+    const totalprogress = await getProgressNormalized(params.courseID);
+    if (totalprogress === null) {
+      showErrorToast("Error", "Failed to fetch normalized progress");
+    return;
+    }
+    setProgressTotal(totalprogress);
+
+    const videoProgress = await getProgressVideoNormalized(params.courseID);
+    if (videoProgress === null) {
+      showErrorToast("Error", "Failed to fetch normalized progress");
+      return;
+    }
+    setProgressNormalizedVideo(videoProgress);
+
+    const quizProgress = await getProgressQuizNormalized(params.courseID);
+    if (quizProgress === null) {
+      showErrorToast("Error", "Failed to fetch normalized progress");
+      return;
+    }
+    setProgressNormalizedQuiz(quizProgress);
+  }
+
+  async function updateLearnedItems() {
+    setLearnedItems({
+      ...learnedItems,
+      ...progressQuiz?.reduce((acc, item) => {
+        acc[item.id] = item.is_complete;
+        return acc;
+      }, {} as Record<string, boolean>),
+      ...progressVideo?.reduce((acc, item) => {
+        acc[item.id] = item.is_complete;
+        return acc;
+      }, {} as Record<string, boolean>),
+    });
+  }
+
+  async function fetchProgressIndividual() {
+    const videoProgress = await getProgressVideo(params.courseID);
+    if (videoProgress === null) {
       toast({
         title: "Error",
-        description: "Failed to fetch progress",
+        description: "Failed to fetch video progress",
         variant: "destructive",
       });
       return;
     }
-    setProgressTotal(response);
-  }
+    setProgressVideo(videoProgress);
 
-  useEffect(() => {
-    void fetchProgressTotal();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const quizProgress = await getProgressQuiz(params.courseID);
+    if (quizProgress === null) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch quiz progress",
+        variant: "destructive",
+      });
+      return;
+    }
+    setProgressQuiz(quizProgress);
+  }
 
   useEffect(() => {
     void getCourseLearnDataFromAPI(params.courseID).then((data) => {
@@ -88,73 +152,117 @@ export default function CourseLearnLayout({
   }, [learnData]);
 
   useEffect(() => {
+    void fetchProgressNormalized();
+    void fetchProgressIndividual();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    void updateLearnedItems();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progressQuiz, progressVideo]);
+
+  useEffect(() => {
     if (searchParams.get("fetchProgress") === "true") {
-      // void getCourseLearnDataFromAPI(params.courseID).then((data) => {
-      //   setLearnData(data);
-      //   if (data === null) {
-      //     toast({
-      //       title: "Error",
-      //       description: "Failed to fetch data",
-      //       variant: "destructive",
-      //     })}
-      // });
+      void fetchProgressNormalized();
+      void fetchProgressIndividual();
+      router.replace(pathName);
     }
-  }, [searchParams]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathName, router, searchParams]);
 
-  const sidebarImagesItems = learnData?.learn_materials_images.map(
-    (element): SidebarItem => {
-      return {
-        id: element.id,
-        name: element.name,
-        link: `/course/${params.courseID}/learn/image/${element.id}`,
-        learnedChangable: false,
-      };
-    },
-  );
-  const sidebarQuizItems = learnData?.learn_materials_quizes.map(
-    (element): SidebarItem => {
-      return {
-        id: element.id,
-        name: element.name,
-        link: `/course/${params.courseID}/learn/quiz/${element.id}`,
-        learnedChangable: false,
-      };
-    },
-  );
-  const sidebarVideosItems = learnData?.learn_materials_videos.map(
-    (element): SidebarItem => {
-      return {
-        id: element.id,
-        name: element.name,
-        link: `/course/${params.courseID}/learn/video/${element.id}`,
-        learnedChangable: true,
-      };
-    },
-  );
 
-  const sidebarCategories: SidebarCategory[] = [
-    {
-      name: "Images",
-      sidebarItems: sidebarImagesItems ?? [],
-      progressNormalized: progressNormalizedImage,
-      setProgressNormalized: setProgressNormalizedImage,
-      progressSavable: false,
-    },
-    {
-      name: "Quizes",
-      sidebarItems: sidebarQuizItems ?? [],
-      progressNormalized: progressNormalizedQuiz,
-      setProgressNormalized: setProgressNormalizedQuiz,
-      progressSavable: true,
-    },
-    {
-      name: "Videos",
-      sidebarItems: sidebarVideosItems ?? [],
-      progressNormalized: progressNormalizedVideo,
-      setProgressNormalized: setProgresNormalizedVideo,
-      progressSavable: true,
-    },
-  ];
+  const sidebarQuizItems = useMemo(() => {
+    return learnData?.learn_materials_quizes.map(
+      (element): SidebarItem => {
+        return {
+          id: element.id,
+          name: element.name,
+          link: `/course/${params.courseID}/learn/quiz/${element.id}`,
+          learnedChangable: false,
+          learned: learnedItems[element.id] ?? false,
+          setLearned: (learned: boolean) => {
+            setLearnedItems((prevItems) => ({
+              ...prevItems,
+              [element.id]: learned,
+            }));
+          },
+        };
+      }
+    );
+  }, [learnData?.learn_materials_quizes, params.courseID, learnedItems]);
+
+  const sidebarVideosItems = useMemo(() => {
+    return learnData?.learn_materials_videos.map(
+      (element): SidebarItem => {
+        return {
+          id: element.id,
+          name: element.name,
+          link: `/course/${params.courseID}/learn/video/${element.id}`,
+          learnedChangable: true,
+          learned: learnedItems[element.id] ?? false,
+          setLearned: (learned: boolean) => {
+            setLearnedItems((prevItems) => ({
+              ...prevItems,
+              [element.id]: learned,
+            }));
+          },
+        };
+      }
+    );
+  }, [learnData?.learn_materials_videos, params.courseID, learnedItems]);
+
+  useEffect(() => {
+    if (learnData) {
+      setSidebarImagesItems(
+        learnData.learn_materials_images.map(
+          (element): SidebarItem => {
+            return {
+              id: element.id,
+              name: element.name,
+              link: `/course/${params.courseID}/learn/image/${element.id}`,
+              learnedChangable: false,
+            };
+          }
+        )
+      );
+    }
+  }, [learnData, params.courseID]);
+
+  const sidebarCategories = useMemo(() => {
+    const categories: SidebarCategory[] = [
+      {
+        name: "Images",
+        sidebarItems: sidebarImagesItems ?? [],
+        progressNormalized: progressNormalizedImage,
+        setProgressNormalized: setProgressNormalizedImage,
+        progressSavable: false,
+      },
+      {
+        name: "Quizes",
+        sidebarItems: sidebarQuizItems ?? [],
+        progressNormalized: progressNormalizedQuiz,
+        setProgressNormalized: setProgressNormalizedQuiz,
+        progressSavable: true,
+      },
+      {
+        name: "Videos",
+        sidebarItems: sidebarVideosItems ?? [],
+        progressNormalized: progressNormalizedVideo,
+        setProgressNormalized: setProgressNormalizedVideo,
+        progressSavable: true,
+      },
+    ];
+
+    return categories;
+  }, [
+    sidebarImagesItems,
+    sidebarQuizItems,
+    sidebarVideosItems,
+    progressNormalizedImage,
+    progressNormalizedQuiz,
+    progressNormalizedVideo,
+  ]);
 
   return (
     <div className="flex h-full w-full justify-center">
@@ -185,7 +293,7 @@ export default function CourseLearnLayout({
             className="px-5"
             sidebarCategories={sidebarCategories}
             courseID={params.courseID}
-            updateProgressTotal={fetchProgressTotal}
+            updateProgressTotal={fetchProgressNormalized}
           />
         </div>
       </div>

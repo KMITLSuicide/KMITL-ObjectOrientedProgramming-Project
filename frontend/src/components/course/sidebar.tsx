@@ -25,8 +25,9 @@ export interface SidebarItem {
   id: string;
   name: string;
   link: string;
-  learned?: boolean;
   learnedChangable: boolean;
+  learned?: boolean;
+  setLearned?: (learned: boolean) => void;
 }
 
 export default function CourseLearnSidebar({
@@ -35,7 +36,7 @@ export default function CourseLearnSidebar({
   courseID,
   updateProgressTotal,
 }: SidebarProps) {
-  async function saveProgress(id: string, complete: boolean, progressSetter: (progress: number) => void) {
+  async function saveProgress(id: string, complete: boolean, setNormalizedProgress: (progress: number) => void) {
     const response = await completeVideo(courseID, {
       id: id,
       is_complete: complete,
@@ -48,10 +49,11 @@ export default function CourseLearnSidebar({
         variant: "destructive",
       });
     } else {
-      progressSetter(response);
+      setNormalizedProgress(response);
       updateProgressTotal();
     }
   }
+
   return (
     <ScrollArea className={cn("pb-12", className)}>
       <div className="space-y-4 py-4">
@@ -73,7 +75,12 @@ export default function CourseLearnSidebar({
                   <Checkbox
                     checked={item.learned}
                     disabled={!item.learnedChangable}
-                    onCheckedChange={(checked) => {void saveProgress(item.id, Boolean(checked), category.setProgressNormalized)}}
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      const checked = !item.learned;
+                      item.setLearned?.(checked);
+                      void saveProgress(item.id, checked, category.setProgressNormalized);
+                    }}
                   />
                 )}
               </div>
