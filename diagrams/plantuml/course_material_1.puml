@@ -1,0 +1,87 @@
+@startuml Udemy Sequence Diagram (Functions)
+
+actor "User" as UserActor
+
+participant "UI" as Server
+participant Controller
+participant Course
+participant "User" as UserClass
+
+UserActor -> Server: get_course_info(course_id)
+activate Server
+Server -> Controller: search_course_by_id(course_id)
+activate Controller
+Controller --> Server: course
+deactivate Controller
+Server --> UserActor: create_course_info(course)
+deactivate Server
+
+UserActor -> Server: get_learn_course_materials(course_id, current_user)
+activate Server
+Server -> Controller: search_course_by_id(course_id)
+activate Controller
+Controller --> Server: course
+deactivate Controller
+' Server --> User: have_access_to_course(course)
+Server --> UserActor: return_get_course_info(course_id)
+deactivate Server
+
+UserActor -> Server: get_image(course_id, image_id, current_user)
+activate Server
+Server -> Controller: search_course_by_id(course_id)
+activate Controller
+Controller --> Server: course
+deactivate Controller
+Server -> Course: search_image_by_id(image_id)
+activate Course
+Course --> Server: image
+deactivate Course
+' Server --> User: have_access_to_course(course)
+Server --> UserActor: return_CourseLearnMaterialImage
+deactivate Server
+
+UserActor -> Server: add_image_to_course(course_id, add_image_to_course_data, response, current_user)
+activate Server
+Server -> Controller: search_course_by_id(course_id)
+activate Controller
+Controller --> Server: course
+deactivate Controller
+Server -> UserClass: search_teacher_by_course(course)
+activate UserClass
+UserClass --> UserClass: check_authorization(current_user, teacher)
+UserClass --> Server: teacher
+deactivate UserClass
+Server -> Controller: create_CourseMaterialImage(url, name, description)
+activate Controller
+Controller -> Course: add_image(image)
+activate Course
+Course --> Controller: image_id
+deactivate Course
+Controller --> Server: image_id
+deactivate Controller
+Server --> UserActor: image_id
+deactivate Server
+
+UserActor -> Server: edit_image(course_id, image_id, course_material_data, response, current_user)
+activate Server
+Server -> Controller: search_course_by_id(course_id)
+activate Controller
+Controller --> Server: course
+deactivate Controller
+Server -> UserClass: search_teacher_by_course(course)
+activate UserClass
+UserClass --> UserClass: check_authorization(current_user, teacher)
+UserClass --> Server: teacher
+deactivate UserClass
+Server -> Course: search_image_by_id(image_id)
+activate Course
+Course --> Server: image
+deactivate Course
+Server --> Controller: get_image(course_id, image_id, current_user)
+activate Controller
+Controller --> Server: image
+deactivate Controller
+Server --> UserActor: image
+deactivate Server
+
+@enduml
