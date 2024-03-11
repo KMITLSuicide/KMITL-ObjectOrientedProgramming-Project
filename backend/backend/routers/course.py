@@ -84,7 +84,7 @@ def new_course(
     return convert_course_to_card_data(course)
 
 
-@router.put("/course/{course_id}/edit", tags=["Course"])
+@router.put("/course/{course_id}", tags=["Course"])
 def edit_course(
     post_course_data: Annotated[
         PostCourseData,
@@ -134,7 +134,7 @@ def edit_course(
         )
     return message
 
-@router.delete("/course/{course_id}/delete", tags=["Course"])
+@router.delete("/course/{course_id}", tags=["Course"])
 def delte_course(
     course_id: str,
     current_user: Annotated[User, Depends(get_current_user)],

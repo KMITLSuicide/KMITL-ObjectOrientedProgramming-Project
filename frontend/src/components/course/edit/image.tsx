@@ -16,18 +16,23 @@ import {
 } from "~/src/components/ui/form";
 import { Input } from "~/src/components/ui/input";
 import { toast } from "~/src/components/ui/use-toast";
+import { editMaterialImage } from "~/src/lib/data/course-edit";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
-  url: z.string().url(),
+  url: z.string().min(1),
 });
 
 export function CourseEditImage({
+  courseID,
   imageData: initImageData,
 }: {
+  courseID: string;
   imageData: CourseLearnMaterialImage;
 }) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -40,13 +45,20 @@ export function CourseEditImage({
   const watchedFields = useWatch({ control: form.control });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
+    void editMaterialImage(courseID, initImageData.id, data).then((response) => {
+      if (response === false) {
+        toast({
+          title: "Error",
+          description: "Failed to update image",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Image updated",
+        });
+        router.push(`/course/${courseID}/edit/image/${initImageData.id}?fetch=true`);
+      }
     });
   }
 
