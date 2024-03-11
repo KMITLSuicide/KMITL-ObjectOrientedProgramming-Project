@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from "~/src/components/ui/form";
 import { Config } from "~/src/config";
-import { cartCheckout, getMyCart, getPaymentMethods } from "~/src/lib/data/cart";
+import { buyNow, cartCheckout, getMyCart, getPaymentMethods } from "~/src/lib/data/cart";
 import type { CourseCardData } from "~/src/lib/definitions/course";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -24,7 +24,8 @@ import { RadioGroup, RadioGroupItem } from "~/src/components/ui/radio-group";
 import type { PaymentMethodWithID } from "~/src/lib/definitions/cart";
 import { v4 as uuidv4 } from "uuid";
 import { Checkbox } from "~/src/components/ui/checkbox";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { getCourseInfoFromAPI } from "~/src/lib/data/course";
 
 const FormSchema = z.object({
   billingCountry: z.string().min(1),
@@ -35,25 +36,49 @@ const FormSchema = z.object({
 export default function CheckoutPage() {
   const router = useRouter();
   const [cardsData, setCardsData] = useState<
-    CourseCardData[] | null | undefined
+  CourseCardData[] | null | undefined
   >(undefined);
   const [totalPrice, setTotalPrice] = useState<number | undefined>(undefined);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethodWithID[]>([]);
+  const searchParams = useSearchParams();
+
+  const buyNowCourseID = searchParams.get("buynow");
 
   async function fetchData() {
-    const apiData = await getMyCart();
-    setCardsData(apiData);
-    if (apiData === null) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch my cart",
-        variant: "destructive",
-      });
+    if (buyNowCourseID) {
+      const apiData = await getCourseInfoFromAPI(buyNowCourseID);
+      if (apiData === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch my cart",
+          variant: "destructive",
+        });
+      } else {
+        setCardsData([{
+          id: apiData.id,
+          name: apiData.name,
+          description: apiData.description,
+          price: apiData.price,
+          rating: apiData.rating,
+          banner_image: apiData.banner_image,
+        }]);
+      }
+    } else {
+      const apiData = await getMyCart();
+      setCardsData(apiData);
+      if (apiData === null) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch my cart",
+          variant: "destructive",
+        });
+      }
     }
   }
 
   useEffect(() => {
     void fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -87,33 +112,44 @@ export default function CheckoutPage() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    // toast({
-    //   title: "You submitted the following values:",
-    //   description: (
-    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-    //       <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-    //     </pre>
-    //   ),
-    // });
-    void cartCheckout({
+    const buyPostData = {
       address: data.billingCountry,
       is_paid: data.paid,
       payment_method: data.paymentMethod,
-    }).then((response) => {
-      if (response === null) {
-        toast({
-          title: "Error",
-          description: "Failed to checkout",
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Success",
-          description: "Checkout successful",
-        });
-        router.push(`/account/order/${response.id}`)
-      }
-    });
+    };
+    if (buyNowCourseID) {
+      void buyNow(buyPostData, buyNowCourseID).then((response) => {
+        if (response === null) {
+          toast({
+            title: "Error",
+            description: "Failed to buy now",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Success",
+            description: "Buy now successful",
+          });
+          router.push(`/account/order/${response.id}`)
+        }
+      });
+    } else {
+      void cartCheckout(buyPostData).then((response) => {
+        if (response === null) {
+          toast({
+            title: "Error",
+            description: "Failed to checkout",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Success",
+            description: "Checkout successful",
+          });
+          router.push(`/account/order/${response.id}`)
+        }
+      });
+    }
   }
 
   return (
