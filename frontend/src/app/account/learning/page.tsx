@@ -4,17 +4,21 @@ import { useEffect, useState } from "react";
 import { CourseCard } from "~/src/components/course/card";
 import { toast } from "~/src/components/ui/use-toast";
 import { getMyLearnings } from "~/src/lib/data/account/learning";
-import { type CourseCardData } from "~/src/lib/definitions/course";
+import { getProgressNormalized } from "~/src/lib/data/course-learn";
+import type { CourseCardDataWithProgress, CourseCardData } from "~/src/lib/definitions/course";
 
 export default function MyTeachings() {
-  const [cardsData, setCardsData] = useState<
+  const [baseCardsData, setBaseCardsData] = useState<
     CourseCardData[] | null | undefined
+  >(undefined);
+  const [cardsDataProgress, setCardsDataProgress] = useState<
+    CourseCardDataWithProgress[] | null | undefined
   >(undefined);
 
   useEffect(() => {
     async function fetchData() {
       const apiData = await getMyLearnings();
-      setCardsData(apiData);
+      setBaseCardsData(apiData);
 
       if (apiData === null) {
         toast({
@@ -26,13 +30,48 @@ export default function MyTeachings() {
     void fetchData();
   }, []);
 
+  async function addProgressToCard(course: CourseCardData) {
+    const progress = await getProgressNormalized(course.id);
+    if (progress === null) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch progress",
+        variant: "destructive",
+      });
+      return;
+    }
+    setCardsDataProgress((prev) => {
+      // Check if a card with the same course id already exists
+      if (prev?.some((card) => card.id === course.id)) {
+        return prev;
+      }
+      return [
+        ...(prev ?? []),
+        {
+          ...course,
+          progress: progress,
+        },
+      ];
+    });
+  }
+
+  useEffect(() => {
+    if (baseCardsData === undefined) {
+      return;
+    }
+
+    baseCardsData?.map((course) => {
+      void addProgressToCard(course);
+    });
+  }, [baseCardsData]);
+
   return (
     <div className="flex w-full justify-center">
       <div className="w-full max-w-screen-lg space-y-4">
         <h1 className="text-3xl font-bold">My Learnings</h1>
         <div className="grid grid-cols-4 gap-4">
-          {cardsData?.map((course) => {
-            return <CourseCard key={course.id} course={course} customLink={`/course/${course.id}/learn`} showPrice={false} />;
+          {cardsDataProgress?.map((course) => {
+            return <CourseCard key={course.id} course={course} customLink={`/course/${course.id}/learn`} showPrice={false} progress={course.progress} />;
           })}
         </div>
       </div>

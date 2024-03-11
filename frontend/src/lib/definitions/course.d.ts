@@ -49,6 +49,10 @@ export interface CourseCardData {
   banner_image: string;
 }
 
+export interface CourseCardDataWithProgress extends CourseCardData {
+  progress: number;
+}
+
 export interface CourseCardDataWithLabel {
   id: string;
   label: string;
