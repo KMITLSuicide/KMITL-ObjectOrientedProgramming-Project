@@ -21,7 +21,7 @@ class BuyCourseData(BaseModel):
 
 
 
-@router.post("/user/check_out/{course_id}", tags=route_tags)
+@router.post("/user/buy/now/{course_id}", tags=route_tags)
 def checkout(
     current_user: Annotated[User, Depends(get_current_user)],
     course_id: UUID,
@@ -37,18 +37,18 @@ def checkout(
     course = controller.search_course_by_id(course_id)
     if not isinstance(course, Course):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail= "Course not found")
-    
+
     if current_user.have_access_to_course(course):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail= "User already have the course")
-    
+
     payment_method = controller.search_payment_by_name(buy_course_data.payment_method)
     if not isinstance(payment_method, Payment):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail= "Payment method not found")
-    
+
 
     return current_user.try_to_buy_courses([course], buy_course_data.is_paid, payment_method, buy_course_data.address)
 
-@router.post("/user/buy_course_from_cart/{course_id}", tags=route_tags)
+@router.post("/user/buy/cart", tags=route_tags)
 def buy_course_from_cart(
     current_user: Annotated[User, Depends(get_current_user)],
     buy_course_data: Annotated[BuyCourseData, Body(
@@ -70,11 +70,11 @@ def buy_course_from_cart(
         if current_user.have_access_to_course(course):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User already has the course")
 
-    
+
     payment_method = controller.search_payment_by_name(buy_course_data.payment_method)
     if not isinstance(payment_method, Payment):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail= "Payment method not found")
-    
+
 
     return current_user.try_to_buy_courses(courses, buy_course_data.is_paid, payment_method, buy_course_data.address)
 
