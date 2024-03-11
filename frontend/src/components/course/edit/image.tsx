@@ -20,7 +20,7 @@ import { toast } from "~/src/components/ui/use-toast";
 const FormSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
-  url: z.string().url(),
+  url: z.string().min(1),
 });
 
 export function CourseEditImage({
