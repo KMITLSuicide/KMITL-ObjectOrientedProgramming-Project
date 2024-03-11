@@ -82,7 +82,7 @@ def get_normalized_progress_videos(
       raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
     return progress.get_normalized_progress_videos()
 
-@router.get("/user/progress/{progress_id}/quiz", tags=["Quiz"])
+@router.get("/user/progress/{progress_id}/quiz/normalized", tags=["Quiz"])
 def get_normalized_progress_quizes(
     current_user: Annotated[User, Depends(get_current_user)],
     progress_id: UUID
@@ -113,7 +113,7 @@ def get_progress_quizes(current_user: Annotated[User, Depends(get_current_user)]
 
     return create_progress_quiz_base_model(progress.get_progress_quizes())
 
-@router.get("/user/progress/{progress_id}/total", tags= ["Progress"])
+@router.get("/user/progress/{progress_id}/normalized", tags= ["Progress"])
 
 def get_normalized_total_progress(current_user: Annotated[User, Depends(get_current_user)],progress_id: UUID):
     progress = current_user.search_progress_by_id(progress_id)
