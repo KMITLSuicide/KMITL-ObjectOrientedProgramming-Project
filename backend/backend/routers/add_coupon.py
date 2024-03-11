@@ -4,9 +4,9 @@ from typing import List, Annotated, Literal, Annotated
 from fastapi import APIRouter, Depends, Response, status, Body, Depends
 from pydantic import BaseModel
 from backend.controller_instance import controller
+from backend.definitions.controller import CouponCourse,CouponTeacher
 from backend.definitions.progress import Progress
 from backend.definitions.course import Course
-from backend.definitions.order import Coupon, CouponTeacher, CouponCourse
 from backend.definitions.user import User,Teacher
 from backend.lib.authentication import get_current_user
 router = APIRouter()

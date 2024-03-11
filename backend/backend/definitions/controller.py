@@ -4,8 +4,38 @@ from uuid import UUID
 
 from backend.definitions.course import Course, CourseCategory
 from backend.definitions.user import User, Teacher
-from backend.definitions.order import Coupon, CouponCourse, CouponTeacher, Order
+from backend.definitions.order import Order
 from backend.definitions.progress import Progress
+
+
+class Coupon:
+    def __init__(self, coupon_id:str, discount, teacher:Teacher) -> None:
+        self.__coupon_id = coupon_id
+        self.__discount = discount
+        self.__teacher = teacher
+        
+    def get_id(self):
+        return self.__coupon_id    
+        
+    def get_discount(self):
+        return self.__discount
+    
+    def get_teacher(self):
+        return self.__teacher
+
+
+class CouponCourse(Coupon):
+    def __init__(self, coupon_id, discount, teacher, course:Course) -> None:
+        super().__init__(coupon_id, discount, teacher)
+        self.__course = course
+        
+    def get_course(self):
+        return self.__course
+    
+
+class CouponTeacher(Coupon):
+    def __init__(self, coupon_id, discount, teacher) -> None:
+        super().__init__(coupon_id, discount, teacher)
 
 
 class Controller:
@@ -151,7 +181,7 @@ class Controller:
                 return teacher
         return "Error: Teacher not found"
 
-    def buy_course(self, user: User, status: bool, course_id, coupon_id):
+    def buy_course(self, user: User, status: bool, course_id: UUID, coupon_id):
 
         if status != True:
             return "Error: You haven't paid for course yet"
@@ -160,51 +190,50 @@ class Controller:
             return "Error Enter course id"
 
         course = self.search_course_by_id(course_id)
-        if course == None or not isinstance(course, Course):
+        if not isinstance(course, Course):
             return "Error: Course not found"
 
         teacher = self.search_teacher_by_course(course)
-        if teacher == None or not isinstance(teacher, Teacher):
+        if not isinstance(teacher, Teacher):
             return "Error: Teacher not found"
 
-        if coupon_id != None:
+        if  coupon_id == None or coupon_id == "None":
+            discount = 0
+        else:
             coupon = self.search_coupon_by_id(coupon_id)
             if coupon == None or not isinstance(coupon, Coupon):
                 return "Error: Coupon not found"
 
-            if not self.validate_coupon(coupon, course, teacher):
-                return "Erorr: Coupon is invalid"
+            if self.validate_coupon(coupon, course, teacher) != True:
+                # return self.validate_coupon(coupon, course, teacher)
+                return f"{self.validate_coupon(coupon, course, teacher)}, {teacher.get_name()}"
 
             discount = coupon.get_discount()
-        if coupon_id == None:
-            discount = 0
         self.create_order(user, course, discount, status)
+        for progress_in_user in user.get_my_progresses():
+                if progress_in_user.get_course() == course:
+                    return "Error: You already have this course!"
         progress = Progress(course)
-        if progress in user.get_my_progresses():
-            return "Error: You already have this course"
         user.add_progress(progress)
         user.set_latest_progress(progress)
-        return {
-            "latest progress": user.get_latest_progress(),
-            "user order": user.get_orders(),
-        }
+        return True
 
     def search_coupon_by_id(self, coupon_id):
         for coupon in self.__coupons:
             if coupon.get_id() == coupon_id:
                 return coupon
         return None
+    
+    def validate_coupon(self, coupon: Coupon | CouponCourse | CouponTeacher, course: Course, teacher: Teacher):
+        if coupon is None:
+            return "coupon is none"
+        
+        if isinstance(coupon, CouponCourse) and coupon.get_course() == course:
+            return True
+        elif isinstance(coupon, CouponTeacher) and coupon.get_teacher() == teacher:
+            return True
+        return f"error{coupon.get_teacher().get_name()} is not {teacher.get_name()}"
 
-    def validate_coupon(self, coupon: Coupon, course: Course, teacher: Teacher):
-        if coupon != None:
-            if isinstance(coupon, CouponCourse):
-                if coupon.get_course() == course:
-                    return True
-            if isinstance(coupon, CouponTeacher):
-                if coupon.get_teacher() == teacher:
-                    return True
-            return False
-        return False
 
     def search_teacher_by_course(self, course: Course):
         for teacher in self.get_all_teacher():

@@ -13,6 +13,7 @@ from backend.definitions.course import (
 )
 from backend.definitions.progress import Progress
 from backend.definitions.user import User, Teacher
+# from backend.definitions.order import Coupon, CouponCourse, CouponTeacher
 from typing import Dict, List, Any
 
 password_hasher = PasswordHasher()
@@ -152,6 +153,9 @@ def seed(controller: Controller):
             )
         )
 
+    for teacher in controller.get_all_teacher():
+        controller.add_coupon_teacher(str(teacher.get_name()), 1000, teacher)
+
     for name in users_name:
         controller.add_user(
             User(
@@ -222,3 +226,5 @@ def seed(controller: Controller):
                 if isinstance(user, User):
                     user.add_progress(Progress(course))
         controller.add_category(category)
+    
+    # coupon1 = CouponCourse(c, 999, )

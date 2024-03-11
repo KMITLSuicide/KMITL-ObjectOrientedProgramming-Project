@@ -19,7 +19,7 @@ from backend.routers import (
     teacher,
     get_teacher_by_course_id,
     add_coupon,
-    course_material
+    course_material,
 )
 
 app = FastAPI()
