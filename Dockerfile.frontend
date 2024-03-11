@@ -7,6 +7,9 @@ WORKDIR /app
 # Add the current directory contents into the container at /app
 ADD frontend /app
 
+# Add the .env file to the container at /app
+ADD frontend/.env.example /app/.env
+
 # Install pnpm
 RUN npm install -g pnpm
 
