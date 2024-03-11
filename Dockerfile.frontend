@@ -1,0 +1,20 @@
+# Use an official Node.js runtime as a parent image
+FROM node:20
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Add the current directory contents into the container at /app
+ADD frontend /app
+
+# Install pnpm
+RUN npm install -g pnpm
+
+# Install frontend dependencies
+RUN pnpm install
+
+# Make port 3000 available to the world outside this container
+EXPOSE 3000
+
+# Run the command to start the server
+CMD ["pnpm", "run", "dev"]
