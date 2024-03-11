@@ -68,6 +68,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.10.0",
     "@iconify/json": "^2.2.190",
     "@svgr/core": "^8.1.0",
     "@svgr/plugin-jsx": "^8.1.0",
