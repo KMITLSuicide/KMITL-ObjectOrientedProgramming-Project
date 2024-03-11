@@ -6,13 +6,11 @@ import CourseLearnSidebar, {
   type SidebarItem,
 } from "~/src/components/course/sidebar";
 import type { CourseInfo } from "~/src/lib/definitions/course";
-import type { SidebarItem as APISidebarItem } from "~/src/lib/definitions/course-learn";
 import { toast } from '~/src/components/ui/use-toast';
 import Link from "next/link";
 import { Button } from "~/src/components/ui/button";
 import { Book } from "lucide-react";
 import {
-  getCourseLearnDataFromAPI,
   getProgressNormalized,
   getProgressQuiz,
   getProgressQuizNormalized,
@@ -25,6 +23,7 @@ import {
 import { Progress as ProgressBar } from "~/src/components/ui/progress";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { Progress as ProgressType } from "~/src/lib/definitions/course-learn";
+import { getCourseInfoFromAPI } from "~/src/lib/data/course";
 
 function showErrorToast(title: string, description: string) {
   toast({
@@ -133,7 +132,7 @@ export default function CourseLearnLayout({
   }
 
   useEffect(() => {
-    void getCourseLearnDataFromAPI(params.courseID).then((data) => {
+    void getCourseInfoFromAPI(params.courseID).then((data) => {
       setCourseInfo(data);
       if (data === null) {
         toast({
