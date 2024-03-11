@@ -63,6 +63,36 @@ export async function getNormalizedProgress(courseID: string) {
   }
 }
 
+export async function getProgressVideo(courseID: string) {
+  try {
+    const response = await api.get<Progress[]>(`/user/progress/${courseID}/video`);
+
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export async function getProgressQuiz(courseID: string) {
+  try {
+    const response = await api.get<Progress[]>(`/user/progress/${courseID}/quiz`);
+
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
 export async function getVideoInfo(courseID: string, videoID: string) {
   try {
     const response = await api.get<VideoInfo>(`/course/${courseID}/video/${videoID}`);

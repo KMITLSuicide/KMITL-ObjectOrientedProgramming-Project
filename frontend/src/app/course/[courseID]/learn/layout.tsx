@@ -10,9 +10,13 @@ import { useToast } from "~/src/components/ui/use-toast";
 import Link from "next/link";
 import { Button } from "~/src/components/ui/button";
 import { Book } from "lucide-react";
-import { getCourseLearnDataFromAPI, getNormalizedProgress } from "~/src/lib/data/course-learn";
-import { Progress } from "~/src/components/ui/progress";
+import {
+  getCourseLearnDataFromAPI,
+  getNormalizedProgress,
+} from "~/src/lib/data/course-learn";
+import { Progress as ProgressBar } from "~/src/components/ui/progress";
 import { useSearchParams } from "next/navigation";
+import type { Progress as ProgressType } from "~/src/lib/definitions/course-learn";
 
 export default function CourseLearnLayout({
   children,
@@ -25,31 +29,40 @@ export default function CourseLearnLayout({
   const { toast } = useToast();
   const [learnData, setLearnData] = useState<CourseLearn | null | undefined>(
     undefined,
-    );
-    const [progressTotal, setProgressTotal] = useState<number>(0);
-    const [progressNormalizedImage, setProgressNormalizedImage] = useState<number>(0);
-    const [progressNormalizedQuiz, setProgressNormalizedQuiz] = useState<number>(0);
-    const [progressNormalizedVideo, setProgresNormalizedVideo] = useState<number>(0);
+  );
+  const [progressTotal, setProgressTotal] = useState<number>(0);
+  const [progressNormalizedImage, setProgressNormalizedImage] =
+    useState<number>(0);
+  const [progressNormalizedQuiz, setProgressNormalizedQuiz] =
+    useState<number>(0);
+  const [progressNormalizedVideo, setProgresNormalizedVideo] =
+    useState<number>(0);
+  const [progressQuiz, setProgressQuiz] = useState<ProgressType[] | undefined>(
+    undefined,
+  );
+  const [progressVideo, setProgresVideo] = useState<ProgressType[] | undefined>(
+    undefined,
+  );
 
-    async function fetchProgressTotal() {
-      const response = await getNormalizedProgress(params.courseID);
-      if (response === null) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch progress",
-          variant: "destructive",
-        });
-        return;
-      }
-      setProgressTotal(response);
+  async function fetchProgressTotal() {
+    const response = await getNormalizedProgress(params.courseID);
+    if (response === null) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch progress",
+        variant: "destructive",
+      });
+      return;
     }
+    setProgressTotal(response);
+  }
 
-    useEffect(() => {
-      void fetchProgressTotal();
+  useEffect(() => {
+    void fetchProgressTotal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+  }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     void getCourseLearnDataFromAPI(params.courseID).then((data) => {
       setLearnData(data);
       if (data === null) {
@@ -57,7 +70,8 @@ export default function CourseLearnLayout({
           title: "Error",
           description: "Failed to fetch data",
           variant: "destructive",
-        })}
+        });
+      }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -151,23 +165,19 @@ export default function CourseLearnLayout({
         <div className="h-full w-1/5">
           <Button
             asChild
-            className="w-full justify-normal rounded-lg bg-primary px-4 py-2 text-left text-xl font-bold space-x-2"
+            className="w-full justify-normal space-x-2 rounded-lg bg-primary px-4 py-2 text-left text-xl font-bold"
           >
             <Link href={`/course/${learnData?.id}/learn`}>
               <Book />
-              <p>
-                {learnData?.name}
-              </p>
+              <p>{learnData?.name}</p>
             </Link>
           </Button>
 
           <div className="mt-4 space-y-1">
             <p className="text-sm">Course progress</p>
             <div className="flex flex-row items-center space-x-2">
-              <p className="text-xs">{(progressTotal * 100)}%</p>
-              <Progress
-                value={progressTotal * 100}
-              />
+              <p className="text-xs">{progressTotal * 100}%</p>
+              <ProgressBar value={progressTotal * 100} />
             </div>
           </div>
 
