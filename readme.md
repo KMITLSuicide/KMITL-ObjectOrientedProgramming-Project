@@ -11,3 +11,8 @@
 KMITL Computer Engineering #62, class of 2023
 
 Made for Object Oriented Programming Class, ID: 01076105 and 01076106
+
+# Run with docker
+1. Install docker and docker compose
+2. Run `docker compose --build`
+3. Profit.
