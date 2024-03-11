@@ -1,0 +1,20 @@
+@startuml Answer Quiz
+actor "User" as UserActor
+
+participant "UI" as Server
+participant Controller
+participant "User" as UserClass
+
+UserActor -> Server: Answer_quiz
+Server -> Controller: answer_quiz(current_user, progress_id, quiz_id, answers_data)
+activate Controller
+Controller -> UserClass: evaluate_answer(answer_list)
+activate UserClass
+UserClass --> Controller: quiz_evaluation_result
+deactivate UserClass
+Controller --> Server: quiz_evaluation_result
+deactivate Controller
+
+Server --> UserActor: return quiz_result
+
+@enduml

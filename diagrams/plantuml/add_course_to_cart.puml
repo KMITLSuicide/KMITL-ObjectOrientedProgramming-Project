@@ -31,7 +31,7 @@ deactivate Cart
 Controller --> Server: return_cart
 deactivate Controller
 
-Server -> UserActor : return_cart
+Server --> UserActor : return_cart
 
 @enduml
 
