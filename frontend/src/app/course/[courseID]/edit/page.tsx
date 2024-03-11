@@ -4,18 +4,19 @@ import { useEffect, useState } from "react";
 import { toast } from "~/src/components/ui/use-toast";
 import { getCourseInfoFromAPI } from "~/src/lib/data/course";
 import type { CourseInfo } from "~/src/lib/definitions/course";
+import { CourseEdit } from "~/src/components/course/edit/course";
 
-export default function CourseEdit({
+export default function CourseEditPage({
   params,
 }: {
   params: { courseID: string };
 }) {
-  const [learnData, setLearnData] = useState<CourseInfo | null | undefined>(
+  const [courseInfo, setCourseInfo] = useState<CourseInfo | null | undefined>(
     undefined,
   );
   useEffect(() => {
     void getCourseInfoFromAPI(params.courseID).then((data) => {
-      setLearnData(data);
+      setCourseInfo(data);
       if (data === null) {
         toast({
           title: "Error",
@@ -25,11 +26,10 @@ export default function CourseEdit({
     });
   }, [params.courseID]);
 
+
   return (
     <div className="flex flex-col space-y-2">
-      <h4 className="text-lg bg-destructive text-destructive-foreground w-fit p-2 rounded-md">Editing</h4>
-      <h1 className="text-4xl font-bold">{learnData?.name}</h1>
-      <p className="text-lg">{learnData?.description}</p>
+      {courseInfo && <CourseEdit courseInfo={courseInfo} />}
     </div>
   );
 }

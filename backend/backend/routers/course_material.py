@@ -30,7 +30,7 @@ router = APIRouter()
 
 route_tags: List[str | Enum] = ["Course Material"]
 
-@router.get("/course/{course_id}", tags=["Course Material"])
+@router.get("/course/{course_id}", tags=["Course"])
 def get_course_info(course_id: str):
     course = controller.search_course_by_id(uuid.UUID(course_id))
     if course is None:
