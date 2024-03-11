@@ -139,8 +139,8 @@ class User:
             price = order.get_price(),
             address= order.get_address(),
             payment_method= order.get_payment_method().get_name(),
-            status=
-             order.get_status()
+            status= order.get_status(),
+            time_stamp= str(order.get_time_stamp().timestamp())
             )
         
         if is_paid:

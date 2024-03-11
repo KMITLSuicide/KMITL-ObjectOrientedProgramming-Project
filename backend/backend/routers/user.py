@@ -242,8 +242,8 @@ def get_order_by_id(current_user: Annotated[User, Depends(get_current_user)],ord
                 price = order.get_price(),
                 address= order.get_address(),
                 payment_method= order.get_payment_method().get_name(),
-                status=
-                order.get_status()
+                status= order.get_status(),
+                time_stamp= str(order.get_time_stamp().timestamp())
             )
     return get_order_data
 

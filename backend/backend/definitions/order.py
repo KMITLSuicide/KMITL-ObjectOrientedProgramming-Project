@@ -1,5 +1,6 @@
 # from backend.definitions.user import User, Teacher
 from backend.definitions.course import Course
+from datetime import datetime   
 import uuid
 # from backend.definitions.order import Payment
 
@@ -19,6 +20,7 @@ class Order:#บิล
         self.__courses = courses
         self.__price = sum((course.get_price() for course in courses))
         self.__status = status
+        self.__time_stamp = datetime.now()
         
     def create_payment(self, payment_method):
         payment = Payment(payment_method)
@@ -41,6 +43,9 @@ class Order:#บิล
     
     def get_payment_method(self):
         return self.__payment_method
+    
+    def get_time_stamp(self):
+        return self.__time_stamp
 
 # class Coupon:
 #     def __init__(self, coupon_id:str, discount, teacher:"Teacher") -> None:

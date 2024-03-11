@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from uuid import UUID
-
+from datetime import datetime
 class CourseCardData(BaseModel):
     id: str
     name: str
@@ -26,6 +26,7 @@ class GetOrderData(OrderData):
     address: str
     payment_method: str
     status:bool
+    time_stamp:str
 
 class CourseInfo(BaseModel):
     id: str
