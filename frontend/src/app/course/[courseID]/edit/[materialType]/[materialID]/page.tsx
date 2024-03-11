@@ -1,4 +1,5 @@
 'use client';
+export const runtime = 'edge';
 
 import { useEffect, useState } from "react";
 import { CourseEditImage } from "~/src/components/course/edit/image";
