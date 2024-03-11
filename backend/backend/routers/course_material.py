@@ -39,7 +39,7 @@ def get_course_info(course_id: str):
     return create_course_info(course)
 
 
-@router.get("/course/{course_id}/learn", tags=["Course Material"])
+@router.get("/course/{course_id}/learn", tags=["Debug Purposes"])
 def get_learn_course_materials(
     course_id: str,
     current_user: Annotated[User, Depends(get_current_user)],
@@ -88,7 +88,7 @@ def get_images(course_id:uuid.UUID,current_user: Annotated[User, Depends(get_cur
 
     if not isinstance(course, Course):
         raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "course not found")
-    
+
     if not current_user.have_access_to_course(course):
         raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "User doesn't have access")
     return create_course_materials_data(course.get_images())
@@ -96,10 +96,10 @@ def get_images(course_id:uuid.UUID,current_user: Annotated[User, Depends(get_cur
 @router.get("/course/{course_id}/video", tags=["Course Material"])
 def get_videos(course_id:uuid.UUID,current_user: Annotated[User, Depends(get_current_user)]):
     course = controller.search_course_by_id(course_id)
-    
+
     if not isinstance(course, Course):
         raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "course not found")
-    
+
     if not current_user.have_access_to_course(course):
         raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "User doesn't have access")
     return create_course_materials_data(course.get_videos())
@@ -107,10 +107,10 @@ def get_videos(course_id:uuid.UUID,current_user: Annotated[User, Depends(get_cur
 @router.get("/course/{course_id}/quiz", tags=["Course Material"])
 def get_quizes(course_id:uuid.UUID,current_user: Annotated[User, Depends(get_current_user)]):
     course = controller.search_course_by_id(course_id)
-    
+
     if not isinstance(course, Course):
         raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "course not found")
-    
+
     if not current_user.have_access_to_course(course):
         raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "User doesn't have access")
     return create_course_materials_data(course.get_quizes())
@@ -244,10 +244,10 @@ def get_video(course_id:uuid.UUID, video_id : uuid.UUID,current_user: Annotated[
     video = course.search_video_by_id(video_id)
     if not isinstance(video, CourseMaterialVideo):
         raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST, detail=" video not found")
-    
+
     if not current_user.have_access_to_course(course):
         raise HTTPException(status_code= status.HTTP_400_BAD_REQUEST,detail= "User doesn't have access")
-    
+
     course_learn_video: CourseLearnMaterialVideo = CourseLearnMaterialVideo(
                             id=str(video.get_id()),
                             name=video.get_name(),
