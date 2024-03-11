@@ -113,7 +113,7 @@ def get_progress_quizes(current_user: Annotated[User, Depends(get_current_user)]
 
     return create_progress_quiz_base_model(progress.get_progress_quizes())
 
-@router.get("/user/total_progress/{progress_id}", tags= ["Progress"])
+@router.get("/user/progress/{progress_id}/total", tags= ["Progress"])
 
 def get_normalized_total_progress(current_user: Annotated[User, Depends(get_current_user)],progress_id: UUID):
     progress = current_user.search_progress_by_id(progress_id)
@@ -121,7 +121,7 @@ def get_normalized_total_progress(current_user: Annotated[User, Depends(get_curr
       raise HTTPException(status_code= status.HTTP_404_NOT_FOUND, detail="Error, progress_id not found. Please check your progress_id")
 
     return progress.get_normalized_total_progress()
-    
+
 @router.get("/course/{course_id}/quiz/{quiz_id}/key", tags=["Quiz"])
 
 def get_quiz_key(current_user:Annotated[User, Depends(get_current_user)], course_id: UUID, quiz_id: UUID):
