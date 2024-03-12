@@ -19,7 +19,8 @@ import { toast } from "~/src/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import type { CourseLearnMaterialQuizWithKey } from "~/src/lib/definitions/course";
 import { useRef } from "react";
-import { createQuestion, deleteQuiz, editQuestion } from "~/src/lib/data/course-edit";
+import { createQuestion, deleteQuestion, deleteQuiz, editQuestion } from "~/src/lib/data/course-edit";
+import { Trash } from "lucide-react";
 
 const CourseLearnMaterialQuizQuestionsWithKey = z.object({
   id: z.string(),
@@ -112,6 +113,24 @@ export function CourseEditQuiz({
     });
   }
 
+  function onDeleteQuestion(questionID: string) {
+    void deleteQuestion(courseID, initQuizData.id, questionID).then((response) => {
+      if (response === false) {
+        toast({
+          title: "Error",
+          description: "Failed to delete question",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Question deleted",
+        });
+        router.push(`/course/${courseID}/edit/quiz/${initQuizData.id}?fetch=true`);
+      }
+    });
+  }
+
   return (
     <>
       <h2 className="text-3xl font-extrabold">Editing</h2>
@@ -195,6 +214,17 @@ export function CourseEditQuiz({
                               value={field.value}
                               onChange={field.onChange}
                             />
+                          </FormControl>
+                          <FormControl>
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              onClick={() => {
+                                onDeleteQuestion(question.id ?? '');
+                              }}
+                            >
+                              <Trash />
+                            </Button>
                           </FormControl>
                         </FormItem>
                       );
