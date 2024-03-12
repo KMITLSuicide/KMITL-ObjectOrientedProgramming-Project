@@ -17,7 +17,7 @@ export function ReviewCard({
 }) {
   return (
     <Card
-      className={`w-full cursor-pointer transition-colors ${className}`}
+      className={`w-full transition-colors ${className}`}
     >
       <div className="flex h-full w-full flex-col items-start pr-6 space-x-2">
           <CardHeader className="pb-2">

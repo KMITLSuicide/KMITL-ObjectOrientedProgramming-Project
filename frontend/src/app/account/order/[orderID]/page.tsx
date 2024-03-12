@@ -1,10 +1,12 @@
 'use client';
 export const runtime = 'edge';
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Button } from "~/src/components/ui/button";
 import { toast } from "~/src/components/ui/use-toast";
 import { Config } from "~/src/config";
-import { getOrder } from "~/src/lib/data/order";
+import { getOrder, setOrderPaid } from "~/src/lib/data/order";
 import type { Order } from "~/src/lib/definitions/order";
 
 export default function ViewOrder({
@@ -12,6 +14,7 @@ export default function ViewOrder({
   } : {
   params: { orderID: string }
 }) {
+  const router = useRouter();
   const [order, setOrder] = useState<Order | null | undefined>(undefined);
   const [date, setDate] = useState<Date | null>(null);
   useEffect(() => {
@@ -64,8 +67,32 @@ export default function ViewOrder({
                 minimumFractionDigits: 0,
               })}</p>
           </div>
+          {order?.status == false && (
+            <div>
+              <Button variant="secondary" onClick={() => {
+                void setOrderPaid(order?.id).then((data) => {
+                  setOrder(data);
+                  if (data === null) {
+                    toast({
+                      title: "Error",
+                      description: "Failed to fetch data",
+                      variant: "destructive",
+                    });
+                  } else {
+                    toast({
+                      title: "Success",
+                      description: "Payment success",
+                    });
+                    router.push(`/account/order/${order?.id}`)
+                  }
+                });
+              }}>
+                Pay remaining
+              </Button>
+            </div>
+          )}
           <div>
-            <p>Paid via {order?.payment_method}</p>
+            <p>via {order?.payment_method}</p>
           </div>
           <h3 className="text-lg font-semibold">Billing address:</h3>
           <p>{order?.address}</p>

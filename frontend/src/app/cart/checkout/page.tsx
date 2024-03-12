@@ -123,6 +123,11 @@ function CheckoutPage() {
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      billingCountry: "",
+      paid: false,
+      paymentMethod: "",
+    },
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
@@ -236,7 +241,7 @@ function CheckoutPage() {
                     <FormItem className="flex flex-row items-start space-x-3 space-y-0 ">
                       <FormControl>
                         <Checkbox
-                          checked={field.value}
+                          checked={field.value ?? false}
                           onCheckedChange={field.onChange}
                         />
                       </FormControl>

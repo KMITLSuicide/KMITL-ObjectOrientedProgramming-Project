@@ -75,7 +75,7 @@ export default function SearchResults({
       if (params.type === "course") {
         setCards(
           (searchResults as CourseCardData[]).map((course) => (
-            <CourseCard course={course} key={course.id} />
+            <CourseCard course={course} key={course.id} showPrice showReviewScore />
           )) ?? [],
         );
       } else {

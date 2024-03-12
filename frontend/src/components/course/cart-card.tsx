@@ -98,7 +98,7 @@ export function CourseCardInCart({
             <Button
               variant="outline"
               size="icon"
-              className="hover:bg-destructive"
+              className="hover:bg-destructive hover:text-destructive-foreground"
               type="submit"
               >
               <Trash size={24} />
