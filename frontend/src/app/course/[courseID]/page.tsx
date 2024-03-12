@@ -21,7 +21,7 @@ import {
 } from "~/src/components/ui/form";
 import { toast } from "~/src/components/ui/use-toast";
 import { Config } from "~/src/config";
-import { createReviews, getCourseInfoFromAPI, getReviews } from "~/src/lib/data/course";
+import { createReviews, deleteReview, getCourseInfoFromAPI, getReviews } from "~/src/lib/data/course";
 import type { Review, CourseInfo } from "~/src/lib/definitions/course";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -78,6 +78,20 @@ export default function CourseView({
 
   async function onSubmitReview(data: z.infer<typeof ReviewSchema>) {
     const result = await createReviews(params.courseID, data);
+    if (result === null) {
+      toast({
+        title: "Error",
+        description: "Failed to add review",
+        variant: "destructive",
+      });
+    } else {
+      setReviews(result);
+    }
+  }
+
+  async function onDeleteReview() {
+    const result = await deleteReview(params.courseID);
+    console.log(result);
     if (result === null) {
       toast({
         title: "Error",
@@ -279,6 +293,8 @@ export default function CourseView({
                   <Button variant="default" type="submit">Leave a review</Button>
                 </form>
               </Form>
+
+              <Button variant="destructive" className="mt-2" onClick={onDeleteReview}>Delete your review</Button>
             </div>
           </div>
 
