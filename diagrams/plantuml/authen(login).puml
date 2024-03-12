@@ -1,19 +1,19 @@
-@startuml Authentication
-actor User
+@startuml
 
-participant "Web Server" as Server
+actor User
+participant "UI" as Server
 participant Controller
 
 
-User -> Server: login_for_access_token
-activate Server
-
-Server -> Controller: login_for_access_token(form_data)
+User -> Server: authenticate_user(username, password)
+Server -> Controller: authenticate_user(username, password)
 activate Controller
-Controller -> Controller: authenticate_user(form_data.username, form_data.password)
-activate Controller
-Controller --> Server: User instance
-deactivate Controller
-Server --> User: return_access_token
+alt User authentication successful
+    Controller --> Server: user_object
+    Server --> User: user_object
+else User authentication failed
+    Controller --> Server: 401 Unauthorized
+    Server --> User: 401 Unauthorized
+end
 
 @enduml

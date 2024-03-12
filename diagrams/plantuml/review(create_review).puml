@@ -1,0 +1,76 @@
+@startuml
+
+actor User
+participant Controller
+' participant Course
+participant Review
+participant "User" as UserClass
+
+User -> Controller: create_review(course_id, create_review_post_data, response, UserClass)
+activate Controller
+
+Controller -> Controller: search_course_by_id(course_uuid)
+
+alt Course found
+    Controller -> UserClass: UserClass.have_access_to_course(course)
+    activate UserClass
+    UserClass --> Controller: access_check_result
+    deactivate UserClass
+
+    alt User has access to the course
+        Controller -> Review: create_review_post_data.star
+        activate Review
+        Review --> Controller: star
+        deactivate Review
+
+        alt Star within the valid range
+            Controller -> Review: CourseReview(UserClass, star, create_review_post_data.comment)
+            activate Review
+            Review --> Controller: review
+            deactivate Review
+
+            Controller -> course: course.add_review(review)
+            activate course
+            course --> Controller: review_adding_result
+            deactivate course
+
+            alt Review added successfully
+                Controller -> course: course.get_reviews()
+                activate course
+                course --> Controller: reviews_list
+                deactivate course
+
+                loop for each review in reviews_list
+                    Controller -> Review: GetReviewData(user_id, user_name, star, comment)
+                    activate Review
+                    Review --> Controller: review_data
+                    deactivate Review
+
+                    Controller -> UserClass: UserClass.get_id(), UserClass.get_name()
+                    activate UserClass
+                    UserClass --> Controller: user_id, user_name
+                    deactivate UserClass
+
+                    
+                    Controller --> User: review_data
+                end
+            else Duplicate review
+                
+                Controller --> User: "Duplicate reviews"
+            end
+
+        else Star not within the valid range
+            
+            Controller --> User: "Review range is 1 to 5. Please try again"
+        end
+
+    else User does not have access to the course
+        
+    end
+
+else Course not found
+    
+    Controller --> User: "Course ID not found"
+end
+
+@enduml

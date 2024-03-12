@@ -8,7 +8,7 @@ participant Category
 User -> Server: Get All Category
 activate Server
 
-Server -> Controller: get_all_categories()
+Server -> Controller: get_all_categories
 activate Controller
 Controller --> Server: List of categories
 deactivate Controller
@@ -16,13 +16,13 @@ deactivate Controller
 ' Server --> User: return category 
 
 ' User -> Server: Get All Category
-Server -> Controller: get_category_by_id(category_id)
+Server -> Controller: get_category_by_id
 activate Controller
-Controller -> Category: search_category_by_id(category_id)
+Controller -> Category: search_category_by_id
 activate Category
 Category --> Controller: category
 deactivate Category
-Controller --> Server: CategoryInfo
+Controller --> Server: category
 deactivate Controller
 
 Server --> User: return category 

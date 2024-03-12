@@ -1,0 +1,62 @@
+@startuml
+
+actor User
+participant Controller
+participant Course
+participant "User" as UserClass
+
+User -> Controller: remove_review(UseClass, Course_id)
+activate Controller
+
+Controller -> Controller: search_Course_by_id(Course_uuid)
+
+alt Course found
+    Controller -> UserClass: UserClass.have_access_to_Course(Course)
+    activate UserClass
+    UserClass --> Controller: access_check_result
+    deactivate UserClass
+
+    alt User has access to the Course
+        Controller -> Course: Course.search_review_by_user(UseClass)
+        activate Course
+        Course --> Controller: review
+        deactivate Course
+
+        alt User has reviewed the Course
+            Controller -> Course: Course.remove_review(review)
+            Controller -> Course: Course.get_reviews()
+            activate Course
+            Course --> Controller: reviews_list
+            deactivate Course
+
+            loop for each review in reviews_list
+                Controller -> Review: GetReviewData(user_id, user_name, star, comment)
+                activate Review
+                Review --> Controller: review_data
+                deactivate Review
+
+                Controller -> UserClass: UserClass.get_id(), UseClass.get_name()
+                activate UserClass
+                UserClass --> Controller: user_id, user_name
+                deactivate UserClass
+
+                Controller --> User: review_data
+            end
+        else User hasn't reviewed the Course
+
+            Controller --> User: "You haven't reviewed yet"
+
+        end
+
+    else User does not have access to the Course
+
+        Controller --> User: "User does not have access to Course"
+
+    end
+
+else Course not found
+    Controller --> User: "Course not found."
+
+end
+
+@enduml

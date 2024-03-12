@@ -1,20 +1,41 @@
-@startuml Home Page
+@startuml
+
 actor User
-
-participant "UI" as Server
 participant Controller
+participant Course
 
-
-User -> Server: suggest_course
-Server -> Controller: suggest_course()
+User -> Controller: suggest_course()
 activate Controller
+
 Controller -> Controller: sort_course_by_rating()
-activate Controller
-Controller -> Controller: generate CourseCardData for sorted courses with reviews
-activate Controller
-Controller --> Server: suggest_course result
-deactivate Controller
 
-Server --> User: return_suggest_course
+loop for each course in sorted_courses
+    Controller -> Course: course.get_id()
+    activate Course
+    Course --> Controller: course_info
+    deactivate Course
+
+    alt Course is an instance of Course
+        Controller -> Course: course.get_reviews()
+        activate Course
+        Course --> Controller: reviews_list
+        deactivate Course
+
+        alt Course has reviews
+            Controller -> CourseCardData: CourseCardData(id, name, description, price, rating, banner_image)
+            activate CourseCardData
+            CourseCardData --> Controller: course_card_data
+            deactivate CourseCardData
+
+            Controller --> User: course_card_data
+        else Course has no reviews
+            Controller --> Controller: Skip course without reviews
+        end
+    else Course is not an instance of Course
+        Controller --> Controller: Skip invalid course
+    end
+end
+
+Controller --> User: return_data
 
 @enduml
