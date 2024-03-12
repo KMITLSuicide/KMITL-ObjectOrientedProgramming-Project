@@ -95,7 +95,7 @@ export default function Index() {
           </div>
           <div className="grid grid-cols-3 gap-4">
             {cardsData?.map((course) => {
-              return <CourseCard key={course.id} course={course} />;
+              return <CourseCard key={course.id} course={course} showPrice showReviewScore />;
             })}
           </div>
         </div>

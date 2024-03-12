@@ -11,6 +11,7 @@ import Image from "next/image";
 import { Config } from "~/src/config";
 import Link from "next/link";
 import { Progress } from "~/src/components/ui/progress";
+import { Star } from "lucide-react";
 
 export function CourseCard({
   course,
@@ -18,12 +19,14 @@ export function CourseCard({
   className,
   customLink,
   showPrice = true,
+  showReviewScore = false,
 }: {
   course: CourseCardData;
   progress?: number;
   className?: string;
   customLink?: string;
   showPrice?: boolean;
+  showReviewScore?: boolean;
 }) {
   return (
     <Card
@@ -47,8 +50,9 @@ export function CourseCard({
           <CardTitle>{course.name}</CardTitle>
           <CardDescription>{course.description}</CardDescription>
         </CardContent>
-        {showPrice && (
-          <CardFooter>
+        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
+        {(progress || showReviewScore || showPrice) && (<CardFooter className="flex flex-row justify-between">
+          {showPrice && (
             <div className="flex w-fit items-center justify-center rounded-md p-2 outline outline-1">
               {course.price.toLocaleString(Config.locale, {
                 style: "currency",
@@ -56,20 +60,25 @@ export function CourseCard({
                 minimumFractionDigits: 0,
               })}
             </div>
-          </CardFooter>
-        )}
-        {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
-        {(progress || progress === 0) && (
-          <CardFooter>
-            <div className="flex flex-row items-center space-x-2 w-full">
-              <p className="text-sm">{(progress * 100)}%</p>
-              <Progress
-                value={progress * 100}
-                className="flex-grow outline outline-1 outline-offset-1 outline-muted-foreground rounded-md h-2"
-              />
+          )}
+          {(showReviewScore && course.rating !== 0) && (
+            <div className="flex flex-row w-fit items-center">
+
+              <p>{course.rating.toFixed(2)}</p>
+              <Star size={16} className="text-yellow-400 flex flex-row ml-1" />
             </div>
-          </CardFooter>
-        )}
+          )}
+          {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing */}
+          {(progress || progress === 0) && (
+              <div className="flex flex-row items-center space-x-2 w-full">
+                <p className="text-sm">{(progress * 100)}%</p>
+                <Progress
+                  value={progress * 100}
+                  className="flex-grow outline outline-1 outline-offset-1 outline-muted-foreground rounded-md h-2"
+                />
+              </div>
+          )}
+        </CardFooter>)}
       </Link>
     </Card>
   );

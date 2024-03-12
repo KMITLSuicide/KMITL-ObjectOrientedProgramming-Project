@@ -43,7 +43,7 @@ export default function MyTeachings() {
         </div>
         <div className="grid grid-cols-4 gap-4">
           {cardsData?.map((course) => {
-            return <CourseCard key={course.id} course={course} customLink={`/course/${course.id}/edit`} />;
+            return <CourseCard key={course.id} course={course} customLink={`/course/${course.id}/edit`} showPrice showReviewScore />;
           })}
         </div>
       </div>

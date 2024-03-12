@@ -37,7 +37,7 @@ export default function CategoryIDPage({
         <h1 className="text-3xl font-bold">{categoryIDData?.name}</h1>
         <div className="grid grid-cols-4 gap-4">
           {categoryIDData?.courses?.map((course) => {
-            return <CourseCard key={course.id} course={course} />;
+            return <CourseCard key={course.id} course={course} showPrice showReviewScore/>;
           })}
         </div>
       </div>
