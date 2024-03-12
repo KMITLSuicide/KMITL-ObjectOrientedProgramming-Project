@@ -1,0 +1,43 @@
+@startuml
+
+actor User
+
+participant Controller
+participant Course
+participant "User" as UserClass
+
+User -> Controller: get_reviews(course_id, response)
+activate Controller
+
+Controller -> Controller: search_course_by_id(course_uuid)
+
+alt Course found
+    Controller -> Course: course.get_reviews()
+    activate Course
+    Course --> Controller: reviews_list
+    deactivate Course
+
+    loop for each review in reviews_list
+        Controller -> Course: review.get_reviewer()
+        activate Course
+        Course --> Controller: reviewer
+        deactivate Course
+
+        alt Reviewer is a User
+
+            Controller -> UserClass: reviewer.get_id(), reviewer.get_name()
+            activate UserClass
+            UserClass --> Controller: user_id, user_name
+            deactivate UserClass
+
+            Controller --> User: review_data
+        else Reviewer is not a User
+            Controller --> User: "reviewer is not user"
+        end
+    end
+
+else Course not found
+    Controller --> User: "Course ID not found"
+end
+
+@enduml

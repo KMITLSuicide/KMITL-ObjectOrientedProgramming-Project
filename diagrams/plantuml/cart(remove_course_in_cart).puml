@@ -1,28 +1,46 @@
-@startuml Remove Course From Cart
-actor "User" as UserActor
+@startuml
 
-participant "UI" as Server
+actor User
 participant Controller
-participant "User" as UserClass
 participant Cart
+participant Course
+participant "User" as UserClass
 
-
-UserActor -> Server: Remove Course
-Server -> Controller: remove_course_from_cart(current_user, course_id_query)
+User -> Controller: remove_course_to_cart(UserClass, course_id)
 activate Controller
-Controller -> UserClass: search_course_by_id(course_id_query)
-activate UserClass
-UserClass --> Controller: return_course
-deactivate UserClass
-Controller -> UserClass: get_cart()
-activate UserClass
-UserClass --> Controller: return_cart
-deactivate UserClass
-Controller -> Cart: remove_course(course)
-activate Cart
-Cart --> Controller: Course removed from cart
-deactivate Cart
-Controller --> Server: return_cart
-deactivate Controller
 
-Server -> UserActor : return_cart
+
+Controller -> Controller: search_course_by_id(course_uuid)
+
+Controller -> UserClass: UserClass.get_cart()
+activate UserClass
+UserClass --> Controller: Cart
+deactivate UserClass
+
+alt Course is in the cart
+    Controller -> Cart: Cart.get_courses()
+    activate Cart
+    Cart --> Controller: courses_list
+    deactivate Cart
+
+    Controller -> Course: Course in courses_list
+    activate Course
+    Course --> Controller: is_in_cart
+    deactivate Course
+
+    alt Course is in the cart
+        Controller -> Cart: Cart.remove_course(Course)
+        activate Cart
+        Cart --> Controller: course_removed
+        deactivate Cart
+
+        Controller --> User: "Succeed"
+    else Course is not in the cart
+        Controller --> User: "Fail"
+    end
+else Course not found
+    Controller --> User: raise HTTPException(status_code=400)
+
+end
+
+@enduml

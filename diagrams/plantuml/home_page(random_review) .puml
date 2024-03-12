@@ -1,23 +1,45 @@
-@startuml Home Page
+@startuml
+
 actor User
-
-participant "UI" as Server
 participant Controller
+participant Course
 
 
-User -> Server: random_reviewed_course
-Server -> Controller: random_reviewed_course()
+User -> Controller: random_reviewed_course()
 activate Controller
+
 Controller -> Controller: get_all_courses()
-activate Controller
-Controller -> Controller: generate CourseCardData for reviewed courses
-activate Controller
-Controller -> Controller: random.sample(return_data, 3)
-activate Controller
-Controller --> Server: random_reviewed_course result
-deactivate Controller
 
-Server --> User: return_random_reviewed_course
+loop for each course in all_course
+    Controller -> Course: course.get_id()
+    Course --> Controller: course_info
+    deactivate Course
 
+    alt Course has reviews
+        Controller -> Course: course.get_reviews()
+        activate Course
+        Course --> Controller: reviews_list
+        deactivate Course
+
+        alt Course has reviews
+            Controller -> CourseCardData: CourseCardData(id, name, description, price, rating, banner_image)
+            activate CourseCardData
+            CourseCardData --> Controller: course_card_data
+            deactivate CourseCardData
+
+            Controller --> User: course_card_data
+        else Course has no reviews
+            Controller --> Controller: Skip course without reviews
+        end
+    else Course has no reviews
+        Controller --> Controller: Skip course without reviews
+    end
+end
+
+alt Number of reviewed courses is less than the random amount
+    Controller --> User: "There is no reviewed course, yet"
+else Sufficient reviewed courses available
+    Controller --> User: random_reviewed_course
+end
 
 @enduml

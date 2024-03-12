@@ -1,20 +1,31 @@
-@startuml Authentication
+@startuml
+
 actor User
 
-participant "Web Server" as Server
+participant "UI" as Server
 participant Controller
+participant "User" as UserClass
+participant Teacher
 
-
-User -> Server: register
+User -> Server: register(form_data)
 Server -> Controller: register(form_data)
 activate Controller
-Controller -> Controller: get_password_hash(form_data.password)
-activate Controller
-Controller -> Controller: add_user(user)
-activate Controller
-Controller -> Controller: authenticate_user(form_data.username, form_data.password)
-activate Controller
-Controller --> Server: User instance or None
-deactivate Controller
-Server --> User: return_user_instance
+
+alt User registration
+    Controller -> UserClass: User(name, email, hashed_password)
+    activate UserClass
+    UserClass --> Controller: user_object
+    deactivate UserClass
+else Teacher registration
+    Controller -> Teacher: Teacher(name, email, hashed_password)
+    activate Teacher
+    Teacher --> Controller: teacher_object
+    deactivate Teacher
+end
+
+Controller --> Server: return success
+Server --> User: return success
+
+
+
 @enduml
