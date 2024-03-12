@@ -32,7 +32,7 @@ import type { CategoryNames } from "~/src/lib/definitions/category";
 import type { CourseInfo } from "~/src/lib/definitions/course";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "~/src/lib/utils";
-import { editCourseInfo } from "~/src/lib/data/course-edit";
+import { deleteCourse, editCourseInfo } from "~/src/lib/data/course-edit";
 
 const FormSchema = z.object({
   name: z.string().min(1),
@@ -80,6 +80,23 @@ export function CourseEdit({
   });
 
   const watchedFields = useWatch({ control: form.control });
+
+  async function onDeleteCourse() {
+    const response = await deleteCourse(courseInfo.id);
+    if (response === false) {
+      toast({
+        title: "Error",
+        description: "Failed to delete course",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Course deleted",
+      });
+      router.push("/account/teaching");
+    }
+  }
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     void editCourseInfo(courseInfo.id, data).then((response) => {
@@ -223,6 +240,10 @@ export function CourseEdit({
             </Button>
           </form>
         </Form>
+
+        <Button variant="destructive" onClick={onDeleteCourse} className="mt-2">
+          Delete
+        </Button>
       </div>
     </>
   );

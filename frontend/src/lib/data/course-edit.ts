@@ -76,3 +76,18 @@ export async function editMaterialVideo(courseID: string, videoID: string, data:
     return false;
   }
 }
+
+export async function deleteCourse(courseID: string) {
+  try {
+    const response = await api.delete<string>(`/course/${courseID}`);
+
+    if (response.status == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
