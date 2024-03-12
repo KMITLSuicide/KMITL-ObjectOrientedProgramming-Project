@@ -5,7 +5,10 @@ import NavBar from "~/src/components/navbar/navbar";
 import { Toaster } from "~/src/components/ui/toaster";
 
 export const metadata = {
-  title: '"Udemy"',
+  title: {
+    template: '%s | "Udemy"',
+    default: '"Udemy"',
+  },
   description: "THE very real udemy",
   icons: [{ rel: "icon", url: "/favicon.jpg" }],
 };

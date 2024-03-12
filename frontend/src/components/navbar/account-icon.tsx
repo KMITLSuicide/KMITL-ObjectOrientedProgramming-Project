@@ -56,9 +56,9 @@ export default function AccountIcon() {
           <Avatar className="h-8 w-8  items-center justify-center flex  ">
             <AvatarImage src="/default_avatar.png" asChild>
               {accountData ? (
-                <UserRoundCheck color="#6ee7b7" className="m-[6px]" size={24} />
+                <UserRoundCheck className="m-[6px] dark:text-green-300 text-green-600" size={24} />
               ) : (
-                <UserRoundX color="#fca5a5" className="m-[6px]" size={24} />
+                <UserRoundX className="m-[6px] dark:text-red-300 text-red-600" size={24} />
               )}
             </AvatarImage>
             <AvatarFallback asChild>

@@ -1,4 +1,5 @@
 "use client";
+export const runtime = 'edge';
 
 import { useEffect, useState } from "react";
 import { getCategoryDataWithIDFromAPI } from "~/src/lib/data/category";
@@ -28,7 +29,7 @@ export default function CategoryIDPage({
         })}
     }
     void fetchData();
-  }, []);
+  }, [params.categoryID]);
 
   return (
     <div className="flex w-full justify-center">

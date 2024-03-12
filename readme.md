@@ -14,6 +14,20 @@ Made for Object Oriented Programming Class, ID: 01076105 and 01076106
 
 # Run with docker
 1. Install docker and docker compose
-2. Run `docker compose --build`
+2. Run `docker compose up --build`
 3. Frontend is on http://localhost:3000 and Backend is on http://localhost:4000
 4. Profit.
+
+# Seed credentials
+Password: `password`
+- Learners
+  - `alice@example.com`
+  - `bob@example.com`
+  - `charlie@example.com`
+  - `david@example.com`
+  - `eve@example.com`
+  - `frank@example.com`
+- Teachers
+  - `gertrude@example.com`
+  - `harry@example.com`
+  - `irene@example.com`

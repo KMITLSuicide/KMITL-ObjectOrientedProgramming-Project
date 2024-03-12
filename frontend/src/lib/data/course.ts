@@ -99,3 +99,18 @@ export async function createReviews(courseID: string, data: PostReviewData) {
     return null;
   }
 }
+
+export async function deleteReview(courseID: string) {
+  try {
+    const response = await api.delete<Review[]>(`/course/${courseID}/review`);
+
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
