@@ -117,11 +117,27 @@ class User:
             if progress.get_course() == course:
                 return True
         return False
+    
+    def have_access_to_courses(self, courses: list[Course]):
+        for course in courses:
+            if not self.have_access_to_course(course):
+                return False
+        return True
+
+    def get_courses_without_access(self, courses: list[Course]) -> list[Course]:
+        courses_without_access = []
+        for course in courses:
+            if not self.have_access_to_course(course):
+                courses_without_access.append(course)
+        return courses_without_access
 
     def remove_course(self, course:Course):
         progress = self.search_progress_by_course(course)
         if isinstance(progress, Progress):
             self.__my_progresses.remove(progress)
+    
+    def remove_order(self, order: Order):
+        self.__orders.remove(order)
 
     def try_to_buy_courses(self, courses:list[Course], is_paid: bool, payment_method: Payment, address : str):
         if is_paid:
@@ -163,8 +179,6 @@ class Teacher(User):
         if isinstance(course, Course):
             self.__my_teachings.append(course)
             return True
-
-
     def have_access_to_course(self, course: Course):
         
         for my_course in self.get_my_teachings():

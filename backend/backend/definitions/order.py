@@ -22,9 +22,6 @@ class Order:#บิล
         self.__status = status
         self.__time_stamp = datetime.now()
         
-    def create_payment(self, payment_method):
-        payment = Payment(payment_method)
-        return payment
 
     def get_id(self):
         return self.__id
@@ -46,7 +43,10 @@ class Order:#บิล
     
     def get_time_stamp(self):
         return self.__time_stamp
-
+    
+    def set_status(self, status : bool):
+        self.__status = status
+        
 # class Coupon:
 #     def __init__(self, coupon_id:str, discount, teacher:"Teacher") -> None:
 #         self.__coupon_id = coupon_id
