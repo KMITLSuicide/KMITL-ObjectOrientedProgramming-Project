@@ -38,7 +38,7 @@ app.include_router(teacher.router)
 # app.include_router(add_coupon.router)
 app.include_router(course_material.router)
 
-origins = ["http://localhost:3000", "https://localhost:3000", "*"]
+origins = ["http://localhost:3000", "https://localhost:3000", "*", "http://udemy.acceptablemess.com/", "https://udemy.acceptablemess.com/"]
 
 app.add_middleware(
     CORSMiddleware,
