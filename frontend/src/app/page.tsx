@@ -3,29 +3,48 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { CourseCard } from "~/src/components/course/card";
+import { Button } from "~/src/components/ui/button";
 import { toast } from "~/src/components/ui/use-toast";
-import { getReccommendedCourses } from "~/src/lib/data/homepage";
+import { getReccommendedRandom, getReccommendedRandomReviewed, getReccommendedReviewScore } from "~/src/lib/data/homepage";
 import { type CourseCardData } from "~/src/lib/definitions/course";
+
+const fetchFunctions = [
+  {
+    label: "Random Course",
+    function: getReccommendedRandom,
+  },
+  {
+    label: "Random Reviewed Course",
+    function: getReccommendedRandomReviewed,
+  },
+  {
+    label: "Review Score",
+    function: getReccommendedReviewScore,
+  },
+];
 
 export default function Index() {
   const [cardsData, setCardsData] = useState<
     CourseCardData[] | null | undefined
   >(undefined);
 
-  useEffect(() => {
-    async function fetchData() {
-      const apiData = await getReccommendedCourses();
-      setCardsData(apiData);
+  async function fetchData(fetchFunction: () => Promise<CourseCardData[] | null>) {
+    const apiData = await fetchFunction();
+    setCardsData(apiData);
 
-      if (apiData === null) {
-        toast({
-          title: "Error",
-          description: "Failed to fetch recommended courses",
-          variant: "destructive",
-        });
-      }
+    if (apiData === null) {
+      toast({
+        title: "Error",
+        description: "Failed to fetch recommended courses",
+        variant: "destructive",
+      });
     }
-    void fetchData();
+  }
+
+  useEffect(() => {
+    if (fetchFunctions[0]?.function) {
+      void fetchData(fetchFunctions[0]?.function);
+    }
   }, []);
 
   return (
@@ -59,6 +78,21 @@ export default function Index() {
           <h2 className="text-center text-3xl font-semibold">
             Recommended courses
           </h2>
+          <div className="flex justify-center space-x-2">
+            {fetchFunctions.map((fetchFunction) => {
+              return (
+                <Button
+                  key={fetchFunction.label}
+                  onClick={async () => {
+                    void fetchData(fetchFunction.function);
+                  }}
+                  variant="outline"
+                >
+                  {fetchFunction.label}
+                </Button>
+              );
+            })}
+          </div>
           <div className="grid grid-cols-3 gap-4">
             {cardsData?.map((course) => {
               return <CourseCard key={course.id} course={course} />;
