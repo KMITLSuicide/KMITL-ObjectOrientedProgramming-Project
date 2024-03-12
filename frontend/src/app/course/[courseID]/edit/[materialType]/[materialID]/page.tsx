@@ -63,11 +63,15 @@ export default function CourseViewMaterial({
         toastErrorFetchingData();
         return;
       }
+      if (quizKey === undefined || quizKey === null) {
+        void fetchQuizKey(courseID, materialID);
+        return;
+      }
       const quizWithKey: CourseLearnMaterialQuizWithKey = {
         id: quiz.id,
         name: quiz.name,
         description: quiz.description,
-        questions: quizKey ?? [],
+        questions: quizKey,
       };
       return (<CourseEditQuiz courseID={params.courseID} quizData={quizWithKey} />);
     } else if (type === "image") {
@@ -101,7 +105,7 @@ export default function CourseViewMaterial({
       void fetchData(params.materialType, params.courseID, params.materialID).then(setMaterialComponent);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [courseData, params.courseID, params.materialID, params.materialType]);
+  }, [courseData, params.courseID, params.materialID, params.materialType, quizKey]);
 
   return (
     <div className="flex h-full flex-col space-y-2">
