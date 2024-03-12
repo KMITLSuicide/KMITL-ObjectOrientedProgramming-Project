@@ -14,7 +14,7 @@ Made for Object Oriented Programming Class, ID: 01076105 and 01076106
 
 # Run with docker
 1. Install docker and docker compose
-2. Run `docker compose --build`
+2. Run `docker compose up --build`
 3. Frontend is on http://localhost:3000 and Backend is on http://localhost:4000
 4. Profit.
 
