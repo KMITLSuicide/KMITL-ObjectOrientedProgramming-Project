@@ -53,7 +53,7 @@ export default function CourseLearnLayout({
       })}
   }
 
-  useEffect(() => {
+  useEffect(() => {\
     void fetchData(params.courseID);
     console.log(pathName);
     router.replace(pathName);

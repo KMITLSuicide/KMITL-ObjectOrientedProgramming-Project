@@ -91,3 +91,63 @@ export async function deleteCourse(courseID: string) {
     return false;
   }
 }
+
+export async function deleteMaterialImage(courseID: string, imageID: string) {
+  try {
+    const response = await api.delete<string>(`/course/${courseID}/image/${imageID}`);
+
+    if (response.status == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export async function deleteMaterialVideo(courseID: string, videoID: string) {
+  try {
+    const response = await api.delete<string>(`/course/${courseID}/video/${videoID}`);
+
+    if (response.status == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export async function deleteQuestion(courseID: string, quizID: string, questionID: string) {
+  try {
+    const response = await api.delete<string>(`/course/${courseID}/quiz/${quizID}/question/${questionID}`);
+
+    if (response.status == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+export async function deleteQuiz(courseID: string, quizID: string) {
+  try {
+    const response = await api.delete<string>(`/course/${courseID}/quiz/${quizID}`);
+
+    if (response.status == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}

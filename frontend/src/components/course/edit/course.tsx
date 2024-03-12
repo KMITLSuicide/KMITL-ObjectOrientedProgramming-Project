@@ -241,8 +241,8 @@ export function CourseEdit({
           </form>
         </Form>
 
-        <Button variant="destructive" onClick={onDeleteCourse} className="mt-2">
-          Delete
+        <Button variant="destructive" onClick={onDeleteCourse} className="mt-6">
+          Delete Course
         </Button>
       </div>
     </>

@@ -16,7 +16,7 @@ import {
 } from "~/src/components/ui/form";
 import { Input } from "~/src/components/ui/input";
 import { toast } from "~/src/components/ui/use-toast";
-import { editMaterialImage } from "~/src/lib/data/course-edit";
+import { deleteMaterialImage, editMaterialImage } from "~/src/lib/data/course-edit";
 import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
@@ -58,6 +58,24 @@ export function CourseEditImage({
           description: "Image updated",
         });
         router.push(`/course/${courseID}/edit/image/${initImageData.id}?fetch=true`);
+      }
+    });
+  }
+
+  function onDeleteImage() {
+    void deleteMaterialImage(courseID, initImageData.id).then((response) => {
+      if (response === false) {
+        toast({
+          title: "Error",
+          description: "Failed to delete image",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Image deleted",
+        });
+        router.push(`/course/${courseID}/edit?fetch=true`);
       }
     });
   }
@@ -136,6 +154,10 @@ export function CourseEditImage({
             </Button>
           </form>
         </Form>
+
+        <Button variant="destructive" onClick={onDeleteImage} className="mt-6">
+          Delete Image
+        </Button>
       </div>
     </>
   );
