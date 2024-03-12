@@ -19,7 +19,7 @@ import { toast } from "~/src/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import type { CourseLearnMaterialQuizWithKey } from "~/src/lib/definitions/course";
 import { useRef } from "react";
-import { createQuestion, editQuestion } from "~/src/lib/data/course-edit";
+import { createQuestion, deleteQuiz, editQuestion } from "~/src/lib/data/course-edit";
 
 const CourseLearnMaterialQuizQuestionsWithKey = z.object({
   id: z.string(),
@@ -93,6 +93,24 @@ export function CourseEditQuiz({
   }
 
   const watchedFields = useWatch({ control: form.control });
+
+  function onDeleteQuiz() {
+    void deleteQuiz(courseID, initQuizData.id).then((response) => {
+      if (response === false) {
+        toast({
+          title: "Error",
+          description: "Failed to delete quiz",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Quiz deleted",
+        });
+        router.push(`/course/${courseID}/edit?fetch=true`);
+      }
+    });
+  }
 
   return (
     <>
@@ -207,6 +225,13 @@ export function CourseEditQuiz({
       >
         Add question
       </Button>
+      <Button
+        variant="destructive"
+        onClick={onDeleteQuiz}
+        className="mt-6 w-fit"
+      >
+        Delete Quiz
+        </Button>
     </>
   );
 }
