@@ -30,3 +30,18 @@ export async function getOrder(orderID: string) {
     return null;
   }
 }
+
+export async function setOrderPaid(orderID: string) {
+  try {
+    const response = await api.put<Order>(`/user/order/${orderID}`);
+
+    if (response.status == 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
