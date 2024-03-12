@@ -6,13 +6,13 @@ from pydantic import BaseModel
 from backend.controller_instance import controller
 from backend.definitions.progress import Progress
 from backend.definitions.course import Course
-from backend.definitions.order import Payment
+from backend.definitions.order import Payment, Order
 from backend.definitions.user import User,Teacher
 from backend.lib.authentication import get_current_user
 from backend.definitions.api_data_model import PaymentData
 router = APIRouter()
 
-route_tags: List[str | Enum] = ["Course"]
+route_tags: List[str | Enum] = ["Buy Course"]
 
 class BuyCourseData(BaseModel):
     address: str
@@ -83,3 +83,25 @@ def buy_course_from_cart(
 def get_all_payment_method():
     payments = controller.get_payments()
     return [PaymentData(name=str(payment.get_name()))for payment in payments if isinstance(payment, Payment)]
+
+@router.put("/user/order/{order_id}", tags= route_tags)
+def edit_order( current_user: Annotated[User, Depends(get_current_user)], order_id: UUID):
+    order = current_user.search_order_by_id(order_id)
+
+    if not isinstance(order, Order):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail= "Order not found")
+    
+    if order.get_status == True:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail= "Order not found")
+    
+    unpaid_courses = current_user.get_courses_without_access(order.get_courses())
+    if not unpaid_courses:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail= "You alreay have all of the course")
+    
+    order.set_status(True)
+    clone_order = order
+
+    current_user.remove_order(order)
+    return current_user.try_to_buy_courses(unpaid_courses, clone_order.get_status(), clone_order.get_payment_method(), clone_order.get_address()) 
+
+    #todo add time_stamp to 
