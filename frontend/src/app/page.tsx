@@ -43,7 +43,7 @@ export default function Index() {
           <div className="flex flex-col">
             <div className="flex flex-grow">
             </div>
-            <div className="w-full space-y-2 bg-primary p-8">
+            <div className="w-full space-y-2 bg-primary p-8 text-primary-foreground">
               <h1 className="fle text-4xl font-bold">
                 Welcome to &quot;Udemy&quot;
               </h1>

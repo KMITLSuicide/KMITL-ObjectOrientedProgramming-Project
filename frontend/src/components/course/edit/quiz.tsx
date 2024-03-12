@@ -19,7 +19,8 @@ import { toast } from "~/src/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import type { CourseLearnMaterialQuizWithKey } from "~/src/lib/definitions/course";
 import { useRef } from "react";
-import { createQuestion, editQuestion } from "~/src/lib/data/course-edit";
+import { createQuestion, deleteQuestion, deleteQuiz, editQuestion } from "~/src/lib/data/course-edit";
+import { Trash } from "lucide-react";
 
 const CourseLearnMaterialQuizQuestionsWithKey = z.object({
   id: z.string(),
@@ -93,6 +94,42 @@ export function CourseEditQuiz({
   }
 
   const watchedFields = useWatch({ control: form.control });
+
+  function onDeleteQuiz() {
+    void deleteQuiz(courseID, initQuizData.id).then((response) => {
+      if (response === false) {
+        toast({
+          title: "Error",
+          description: "Failed to delete quiz",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Quiz deleted",
+        });
+        router.push(`/course/${courseID}/edit?fetch=true`);
+      }
+    });
+  }
+
+  function onDeleteQuestion(questionID: string) {
+    void deleteQuestion(courseID, initQuizData.id, questionID).then((response) => {
+      if (response === false) {
+        toast({
+          title: "Error",
+          description: "Failed to delete question",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Question deleted",
+        });
+        router.push(`/course/${courseID}/edit/quiz/${initQuizData.id}?fetch=true`);
+      }
+    });
+  }
 
   return (
     <>
@@ -178,6 +215,17 @@ export function CourseEditQuiz({
                               onChange={field.onChange}
                             />
                           </FormControl>
+                          <FormControl>
+                            <Button
+                              variant="destructive"
+                              size="icon"
+                              onClick={() => {
+                                onDeleteQuestion(question.id ?? '');
+                              }}
+                            >
+                              <Trash />
+                            </Button>
+                          </FormControl>
                         </FormItem>
                       );
                     }}
@@ -207,6 +255,13 @@ export function CourseEditQuiz({
       >
         Add question
       </Button>
+      <Button
+        variant="destructive"
+        onClick={onDeleteQuiz}
+        className="mt-6 w-fit"
+      >
+        Delete Quiz
+        </Button>
     </>
   );
 }

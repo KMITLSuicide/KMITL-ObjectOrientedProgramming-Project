@@ -16,7 +16,7 @@ import {
 } from "~/src/components/ui/form";
 import { Input } from "~/src/components/ui/input";
 import { toast } from "~/src/components/ui/use-toast";
-import { editMaterialVideo } from "~/src/lib/data/course-edit";
+import { deleteMaterialVideo, editMaterialVideo } from "~/src/lib/data/course-edit";
 import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
@@ -58,6 +58,24 @@ export function CourseLearnVideo ({
           description: "Video updated",
         });
         router.push(`/course/${courseID}/edit/video/${initVideoData.id}?fetch=true`);
+      }
+    });
+  }
+
+  function onDeleteVideo() {
+    void deleteMaterialVideo(courseID, initVideoData.id).then((response) => {
+      if (response === false) {
+        toast({
+          title: "Error",
+          description: "Failed to delete video",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Video deleted",
+        });
+        router.push(`/course/${courseID}/edit?fetch=true`);
       }
     });
   }
@@ -132,6 +150,12 @@ export function CourseLearnVideo ({
             </Button>
           </form>
         </Form>
+        <Button
+          onClick={onDeleteVideo}
+          variant="destructive"
+        >
+          Delete Video
+        </Button>
       </div>
     </>
   );
