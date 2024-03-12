@@ -1,5 +1,6 @@
 # KMITL-ObjectOrientedProgramming-Project
 ### A very good [udemy dot com](https://www.udemy.com) clone
+live version at https://udemy.acceptablemess.com (api needs to be running locally on http://localhost:4000)
 
 # Made with 🔥 and 🧯 and 🚒 by
 ### Team KMITL Suicide
