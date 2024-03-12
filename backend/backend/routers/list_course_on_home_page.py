@@ -57,18 +57,19 @@ def random_reviewed_course():
                     rating = course.get_average_rating(),
                     banner_image = course.get_banner_image_url()
                 ))
-    if len(return_data) <= random_amount:
-        raise HTTPException(status_code=404, detail="There is no reviewd course, yet")
+    if not return_data:
+        return_data = []
     random_reviewed_course = random.sample(return_data, random_amount)
     return random_reviewed_course
 
-@router.get("/course/homepage/suggestion", tags= route_tags)
+@router.get("/course/homepage/suggestion", tags=route_tags)
 def suggest_course():
-    return_data: List[CourseCardData] = []
+    return_data: list[CourseCardData] = []
     
     # Call the sort_course_by_rating method
     sorted_courses = controller.sort_course_by_rating()
-    
+    if not sorted_courses:
+        return []
     for course in sorted_courses:
         if not isinstance(course, Course):
             return 'Error'
@@ -79,7 +80,13 @@ def suggest_course():
                     name=course.get_name(),
                     description=course.get_description(),
                     price=course.get_price(),
-                    rating= course.get_average_rating(),
+                    rating=course.get_average_rating(),
                     banner_image=course.get_banner_image_url()
                 ))
+            
+            # Limit the number of suggested courses to 3
+            if len(return_data) == 3:
+                break
+    
     return return_data
+

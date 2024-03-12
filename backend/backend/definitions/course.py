@@ -2,7 +2,7 @@ from __future__ import annotations
 import uuid
 from typing import List, Literal, Optional
 from pydantic import UUID4
-
+from datetime import datetime   
 
 
 class QuizQuestion:
@@ -193,7 +193,6 @@ class CourseReview:
         self.__reviewer = reviewer
         self.__star: Literal[1, 2, 3, 4, 5] = star
         self.__comment = comment
-
     def get_reviewer(self):
         return self.__reviewer
 
