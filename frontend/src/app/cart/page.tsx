@@ -13,7 +13,7 @@ export default function Cart() {
   const [cardsData, setCardsData] = useState<
     CourseCardData[] | null | undefined
   >(undefined);
-  const [totalPrice, setTotalPrice] = useState<number | undefined>(undefined);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
   async function fetchData() {
     const apiData = await getMyCart();
