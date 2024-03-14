@@ -1,0 +1,25 @@
+@startuml
+
+actor User
+participant Controller
+participant Course
+
+User -> Controller: get_quiz(course_id, quiz_id, current_user)
+activate Controller
+
+
+Controller -> Controller: search_course_by_id(course_uuid)
+
+alt Course found
+    alt Course is not None
+        Controller -> Course: search_quiz_by_id(quiz_id)
+        
+        alt Quiz is found
+            Controller --> User: course_learn_quiz
+        else Quiz not found
+            Controller --> User: "Quiz not found"
+        end
+    else Course not found
+        Controller --> User: "Course not found"
+    end
+@enduml

@@ -1,0 +1,54 @@
+@startuml
+
+actor User
+participant Controller
+participant Cart
+participant "User" as UserClass
+
+User -> Controller: buy_course_from_Cart(UserClass, buy_course_data)
+activate Controller
+
+Controller -> UserClass: UserClass.get_Cart()
+activate UserClass
+UserClass --> Controller: Cart
+deactivate UserClass
+
+alt Cart is not empty
+    Controller -> Cart: Cart.get_courses()
+    activate Cart
+    Cart --> Controller: courses_list
+    deactivate Cart
+
+    alt User already has access to a course in the Cart
+        loop for each course in courses_list
+            Controller -> UserClass: UserClass.have_access_to_course(course)
+            activate UserClass
+            UserClass --> Controller: access_check_result
+            deactivate UserClass
+
+            alt User already has access to the course
+                Controller --> User: "User already has the course"
+            else User does not have access to the course
+                Controller --> Controller: Continue checking other courses in the Cart
+            end
+        end
+    else User does not have access to any course in the Cart
+        Controller -> Controller: search_payment_by_name(buy_course_data.payment_method)
+        alt Payment method found
+            alt Object is an instance of Payment
+                Controller -> UserClass: UserClass.try_to_buy_courses(courses, buy_course_data.is_paid, payment_method, buy_course_data.address)
+                activate UserClass
+                UserClass --> Controller: buy_result
+                deactivate UserClass
+
+                Controller --> User: buy_result
+            else Payment method not found
+                Controller --> User: "Payment method not found"
+            end
+        end
+    end
+else Cart is empty
+    Controller --> User: "You don't have any course in the Cart"
+end
+
+@enduml

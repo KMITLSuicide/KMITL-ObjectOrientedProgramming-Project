@@ -36,6 +36,5 @@ loop for each course in sorted_courses
     end
 end
 
-Controller --> User: return_data
 
 @enduml

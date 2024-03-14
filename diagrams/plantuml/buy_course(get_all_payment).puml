@@ -1,0 +1,19 @@
+@startuml
+
+actor User
+participant Controller
+participant Payment
+
+
+User -> Controller: get_all_payment_method()
+activate Controller
+
+Controller -> Payment: get_payments()
+
+loop for each payment in payments
+    Controller -> Payment: payment.get_name()
+end
+
+Controller --> User: [PaymentData(name=payment_name) for each valid payment]
+
+@enduml

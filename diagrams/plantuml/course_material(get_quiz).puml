@@ -1,0 +1,41 @@
+@startuml
+
+actor User
+participant Controller
+participant Course
+participant "User" as UserClass
+
+User -> Controller: get_quizes(course_id, current_user)
+activate Controller
+
+
+Controller -> Controller: search_course_by_id(course_uuid)
+
+alt Course found
+    alt Course is not None
+        Controller -> UserClass: current_user.have_access_to_course(course)
+        activate UserClass
+        UserClass --> Controller: access_check_result
+        deactivate UserClass
+
+        alt User has access to the course
+            Controller -> Course: course.get_quizes()
+            activate Course
+            Course --> Controller: quizes
+            deactivate Course
+
+            Controller -> Course: create_course_materials_data(quizes)
+            activate Course
+            Course --> Controller: course_materials_data
+            deactivate Course
+
+            Controller --> User: course_materials_data
+        else User does not have access to the course
+            Controller --> User: "User doesn't have access"
+        end
+    else Course not found
+        Controller --> User: "Course not found"
+    end
+end
+
+@enduml

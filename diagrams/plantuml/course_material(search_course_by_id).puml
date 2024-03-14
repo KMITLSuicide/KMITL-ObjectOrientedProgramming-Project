@@ -1,0 +1,21 @@
+@startuml
+
+actor User
+participant Controller
+participant Course
+
+
+User -> Controller: search_course_by_id(course_id)
+activate Controller
+
+Controller -> Controller: search_course_by_id(course_uuid)
+
+alt Course found
+    alt Course is not None
+        Controller --> User: course
+    else Course not found
+        Controller --> User: "Course not found"n
+    end
+end
+
+@enduml

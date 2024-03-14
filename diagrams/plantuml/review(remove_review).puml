@@ -5,26 +5,26 @@ participant Controller
 participant Course
 participant "User" as UserClass
 
-User -> Controller: remove_review(UseClass, Course_id)
+User -> Controller: remove_review(user, course_id)
 activate Controller
 
-Controller -> Controller: search_Course_by_id(Course_uuid)
+Controller -> Controller: search_course_by_id(course_uuid)
 
 alt Course found
-    Controller -> UserClass: UserClass.have_access_to_Course(Course)
+    Controller -> UserClass: user.have_access_to_course(course)
     activate UserClass
     UserClass --> Controller: access_check_result
     deactivate UserClass
 
     alt User has access to the Course
-        Controller -> Course: Course.search_review_by_user(UseClass)
+        Controller -> Course: course.search_review_by_user(UseClass)
         activate Course
         Course --> Controller: review
         deactivate Course
 
-        alt User has reviewed the Course
-            Controller -> Course: Course.remove_review(review)
-            Controller -> Course: Course.get_reviews()
+        alt User has reviewed the course
+            Controller -> Course: course.remove_review(review)
+            Controller -> Course: course.get_reviews()
             activate Course
             Course --> Controller: reviews_list
             deactivate Course
@@ -35,7 +35,7 @@ alt Course found
                 Review --> Controller: review_data
                 deactivate Review
 
-                Controller -> UserClass: UserClass.get_id(), UseClass.get_name()
+                Controller -> UserClass: user.get_id(), UseClass.get_name()
                 activate UserClass
                 UserClass --> Controller: user_id, user_name
                 deactivate UserClass
@@ -48,9 +48,9 @@ alt Course found
 
         end
 
-    else User does not have access to the Course
+    else User does not have access to the course
 
-        Controller --> User: "User does not have access to Course"
+        Controller --> User: "User does not have access to course"
 
     end
 

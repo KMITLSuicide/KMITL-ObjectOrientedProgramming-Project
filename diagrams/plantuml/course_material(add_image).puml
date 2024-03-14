@@ -1,0 +1,37 @@
+@startuml
+
+actor User
+participant Controller
+participant Course
+
+User -> Controller: add_image_to_course(course_id, add_image_to_course_data, response, current_user)
+activate Controller
+
+
+Controller -> Controller: search_course_by_id(course_uuid)
+
+alt Course found
+    alt Course is not None
+        Controller -> Controller: search_teacher_by_course(course)
+        activate Controller
+        Controller --> Controller: teacher
+        deactivate Controller
+        
+        alt User is the teacher of the course
+            Controller -> CourseMaterialImage: CourseMaterialImage(url, name, description)
+            activate CourseMaterialImage
+            CourseMaterialImage --> Controller: image
+            deactivate CourseMaterialImage
+
+            Controller -> Course: course.add_image(image)
+
+            Controller --> User: str(image.get_id())
+        else User is not the teacher of the course
+            Controller --> User: "Unauthorized"
+        end
+    else Course not found
+        Controller --> User: "Course not found"
+    end
+end
+
+@enduml

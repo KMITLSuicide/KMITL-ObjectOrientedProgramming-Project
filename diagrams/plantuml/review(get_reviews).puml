@@ -9,7 +9,10 @@ participant "User" as UserClass
 User -> Controller: get_reviews(course_id, response)
 activate Controller
 
-Controller -> Controller: search_course_by_id(course_uuid)
+Controller -> Course: search_course_by_id(course_uuid)
+activate Course
+Course --> Controller: course_id
+deactivate Course
 
 alt Course found
     Controller -> Course: course.get_reviews()

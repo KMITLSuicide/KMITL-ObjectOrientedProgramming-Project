@@ -1,0 +1,62 @@
+@startuml
+
+actor User
+participant Controller
+participant Course
+participant "User" as UserClass
+
+User -> Controller: edit_question(course_id, quiz_id, question_id, coures_material_data, response, current_user)
+activate Controller
+
+Controller -> Controller: search_course_by_id(course_uuid)
+
+alt Course found
+    alt Course is not None
+
+        alt User is authorized
+            Controller -> Controller: search_teacher_by_course(course)
+            
+            alt Teacher found
+                alt Teacher is not None
+                    Controller -> Course: search_quiz_by_id(quiz_id)
+                    Course --> Controller: quiz
+                    alt Quiz found
+                        alt Quiz is not None
+                            Controller -> quiz: search_question_by_id(question_id)
+                            quiz --> Controller: question
+                            alt Question found
+                                alt Question is not None
+                                    Controller -> quiz: edit_question(question, question_text, is_correct)
+                                    quiz --> Controller: success, message
+                                    alt Edit success
+                                        Controller --> User: question_learn
+                                    else Edit failed
+                                        Controller --> User: message
+                                    end
+                                else Question not found
+                                    Controller --> User: "question not found"
+                                end
+                            else QuizQuestion not found
+                                Controller --> User: "QuizQuestion not found"
+                            end
+                        else Quiz not found
+                            Controller --> User: "Quiz not found"
+                        end
+                    else Quiz is None
+                        Controller --> User: Quiz is None
+                    end
+                else Teacher not found
+                    Controller --> User: Teacher not found
+                end
+            else User not authorized
+                Controller --> User: User not authorized
+            end
+        else Course not found
+            Controller --> User: Course not found
+        end
+    else Course not found
+        Controller --> User: Course not found
+    end
+end
+
+@enduml

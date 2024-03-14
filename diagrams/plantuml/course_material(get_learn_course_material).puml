@@ -1,0 +1,59 @@
+@startuml
+
+actor User
+participant Controller
+participant Course
+participant "User" as UserClass
+
+User -> Controller: get_learn_course_materials(course_id, current_user)
+activate Controller
+
+Controller -> Controller: search_course_by_id(course_uuid)
+
+alt Course found
+    alt Course is not None
+        Controller -> UserClass: current_user.have_access_to_course(course)
+        activate UserClass
+        UserClass --> Controller: access_check_result
+        deactivate UserClass
+
+        alt User has access to the course
+            Controller -> Course: get_course_info(course_id)
+            activate Course
+            Course --> Controller: course_info
+            deactivate Course
+
+            alt CourseInfo retrieved successfully
+                Controller -> Course: create_quizes_base_model(course.get_quizes())
+                activate Course
+                Course --> Controller: quizes_base_model
+                deactivate Course
+
+                Controller -> Course: create_images_base_model(course.get_images())
+                activate Course
+                Course --> Controller: images_base_model
+                deactivate Course
+
+                Controller -> Course: create_videos_base_model(course.get_videos())
+                activate Course
+                Course --> Controller: videos_base_model
+                deactivate Course
+
+                Controller -> Course: CourseLearn()
+                activate Course
+                Course --> Controller: course_learn_data
+                deactivate Course
+
+                Controller --> User: course_learn_data
+            else CourseInfo retrieval failed
+                Controller --> User: "courseinfo error, please check your course_id"
+            end
+        else User does not have access to the course
+            Controller --> User: "User does not have access to course"
+        end
+    else Course not found
+        Controller --> User: "Course not found"
+    end
+end
+
+@enduml

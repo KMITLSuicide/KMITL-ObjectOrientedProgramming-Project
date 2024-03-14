@@ -9,7 +9,10 @@ participant "User" as UserClass
 User -> Controller: add_course_to_cart(UserClass, course_id)
 activate Controller
 
-Controller -> Controller: search_course_by_id(course_uuid)
+Controller -> Course: search_course_by_id(course_uuid)
+activate Course
+Course --> Controller: course_id
+deactivate Course
 
 alt Course found
     alt Object is an instance of Course

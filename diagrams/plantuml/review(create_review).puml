@@ -12,7 +12,7 @@ activate Controller
 Controller -> Controller: search_course_by_id(course_uuid)
 
 alt Course found
-    Controller -> UserClass: UserClass.have_access_to_course(course)
+    Controller -> UserClass: User.have_access_to_course(course)
     activate UserClass
     UserClass --> Controller: access_check_result
     deactivate UserClass
@@ -29,16 +29,16 @@ alt Course found
             Review --> Controller: review
             deactivate Review
 
-            Controller -> course: course.add_review(review)
-            activate course
-            course --> Controller: review_adding_result
-            deactivate course
+            Controller -> Course: course.add_review(review)
+            activate Course
+            Course --> Controller: review_adding_result
+            deactivate Course
 
             alt Review added successfully
-                Controller -> course: course.get_reviews()
-                activate course
-                course --> Controller: reviews_list
-                deactivate course
+                Controller -> Course: Course.get_reviews()
+                activate Course
+                Course --> Controller: reviews_list
+                deactivate Course
 
                 loop for each review in reviews_list
                     Controller -> Review: GetReviewData(user_id, user_name, star, comment)
@@ -64,8 +64,9 @@ alt Course found
             Controller --> User: "Review range is 1 to 5. Please try again"
         end
 
-    else User does not have access to the course
+    else User does not have access to the Course
         
+        Controller --> User: "User does not have access to the course"
     end
 
 else Course not found
