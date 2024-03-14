@@ -2,11 +2,9 @@
 
 class Controller {
     -users
-    -coupons
     -payment_methods
     -categories
     -course_progresses
-    +validate_coupon()
     +list_payment_method()
 }
 
@@ -79,17 +77,6 @@ class Order {
     -courses
 }
 
-class Coupon {
-    -amount
-}
-
-class CouponCourse {
-    -course
-}
-
-class CouponTeacher {
-    -teacher
-}
 
 class Review {
     -star
@@ -97,15 +84,11 @@ class Review {
 }
 
 Controller o-- User
-Controller *-- Coupon
 Controller o-- Category
 User <|-- Teacher
 User *-- Cart
 User --> Order
-Order --> Coupon
 Order --> Payment
-Coupon <|-- CouponCourse
-Coupon <|-- CouponTeacher
 Teacher *-- Course
 Progress o-- ProgressVideo
 Progress o-- ProgressQuiz
