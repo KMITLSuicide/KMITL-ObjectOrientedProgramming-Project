@@ -1,0 +1,11 @@
+@startuml log out
+left to right direction
+actor User as user
+actor System as system
+rectangle "Log Out" {
+  user -- (Log Out)
+  (Log Out) -- system
+  (Remove Access) -- system
+  user -- (Remove Access)
+ }
+@enduml

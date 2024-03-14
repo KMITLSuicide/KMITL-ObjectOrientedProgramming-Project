@@ -1,0 +1,13 @@
+@startuml register
+left to right direction
+actor User as user
+actor System as system
+rectangle "Register" {
+  user -- (Register)
+  (Register) <-- (Teacher Account)
+  (Register) <-- (Learner Account)
+  (Register) -- system
+  (Create Token) -- system
+  (Create Token) -- user
+ }
+@enduml

@@ -1,0 +1,34 @@
+@startuml search
+left to right direction
+actor Teacher as teacher
+actor System as system
+actor User as user
+rectangle "Buy Course" {
+
+  usecase "Add Course" as UC1
+  usecase "Log in" as UC2
+  usecase "Return Token" as UC3
+  usecase "Search Course" as UC4
+  usecase "Add Course to Cart" as UC4_1
+  usecase "Checkout" as UC5_1
+  usecase "Pay" as UC6
+  usecase "Return Order" as UC7
+
+ }
+ teacher -- UC1
+ user -- UC2
+ UC2 -- system
+ UC3 -- system
+ user -- UC3
+ user -- UC4
+ UC4 -- system
+ user -- UC4_1
+ UC4_1 -- system
+ user -- UC5_1
+ system -- UC5_1
+ user -- UC6
+ UC6 -- system
+ user -- UC7
+ system -- UC7
+
+@enduml

@@ -1,0 +1,19 @@
+@startuml search
+left to right direction
+actor Teacher as teacher
+actor System as system
+rectangle "Add Course" {
+
+  usecase "Log in Teacher Account" as UC2
+  usecase "Return Token" as UC3
+  usecase "Create Course" as UC4
+
+ }
+ teacher -- UC2
+ UC2 -- system
+ UC3 -- system
+ teacher -- UC3
+ teacher -- UC4
+ UC4 -- system
+
+@enduml
