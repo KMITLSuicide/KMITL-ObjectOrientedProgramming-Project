@@ -1,0 +1,11 @@
+@startuml view course
+left to right direction
+actor User as user
+actor System as system
+rectangle "View Course" {
+  user -- (View Course)
+  (View Course) -- system
+  user -- (Course Info)
+  (Course Info) -- system
+ }
+@enduml
