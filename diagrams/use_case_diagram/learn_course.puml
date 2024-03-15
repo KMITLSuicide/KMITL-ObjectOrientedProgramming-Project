@@ -10,7 +10,9 @@ rectangle "Learn Course" {
   usecase "Return Token" as UC3
   usecase "My Learning" as UC4
   usecase "My Course" as UC5
-  usecase "Learning" as UC6
+  usecase "Play Video" as UC6
+  usecase "View Image" as UC7
+  usecase "Take Quiz" as UC8
 
  }
  teacher -- UC1
@@ -23,6 +25,8 @@ rectangle "Learn Course" {
  user -- UC5
  UC5 -- system
  user -- UC6
- UC6 -- system
+'  UC6 -- system
+ user -- UC7
+ user -- UC8
 
 @enduml
