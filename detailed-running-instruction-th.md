@@ -1,0 +1,20 @@
+# วิธีการติดตั้งและรันโปรแกรม
+เราได้ทำการสร้าง Docker Container สำหรับโปรเจคนี้ เพื่อความมั่นใจว่าจะสามารถรันได้เหมือนกันทุกเครื่อง และความง่ายในการรัน จึงจำเป็นที่จะต้องมี Docker Engine ติดตั้งในเครื่อง โดยผู้อ่านสามารถทำตามวิธีที่เขียนไปข้างต้น และกดที่ลิงค์เพื่อความง่ายต่อการ download
+
+
+## การติดตั้ง Docker Desktop สำหรับระบบปฏิบัติการ Windows
+อ้างอิงจาก [Install Docker Desktop](https://docs.docker.com/desktop/install/windows-install/) และ [Install WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+1. ติดตั้ง Windows Subsystem for Linux โดยเปิด Powershell หรือ Command Prompt โดยการคลิกขวาแล้วเลือก **Run as Administrator** จากนั้นให้ใช้คำสั่ง
+`wsl --install`
+2. ระบบอาจทำการ Reboot จากนั้นให้เปิด Powershell หรือ Command Prompt โดยการคลิกขวาแล้วเลือก **Run as Administrator** เช่นเดิม จากนั้นใช้คำสั่ง
+`wsl --set-default-version 2`
+3. ดาวน์โหลดและเปิดไฟล์ Docker Desktop Installer จาก [Download Docker Desktop](https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe)
+4. ถ้ามีให้เลือกว่าจะใช้ Runtime Hyper-V หรือ WSL 2 **ให้เลือกเป็น WSL 2**
+5. ระบบจะทำการ Reboot เมื่อติดตั้งเสร็จสิ้น
+
+
+## การรันและใช้งานโปรแกรม
+1. ดาวน์โหลดและแตกไฟล์โปรเจค
+2. เปิด Command Prompt หรือ Powershell บนโฟลเดอร์ที่มีไฟล์ docker-compose.yml แล้วใช้คำสั่ง `docker compose up --build`
+3. สามารถเข้าถึงหน้าเว็บไซต์ได้ที่ http://localhost:3000 หรือ http://udemy.acceptablemess.com
+4. สามารถเข้าถึงเซอร์เวอร์ได้ที่ http://localhost:4000 และ OpenAPI documentation ได้ที่ http://localhost:4000/docs
