@@ -16,5 +16,17 @@
 ## การรันและใช้งานโปรแกรม
 1. ดาวน์โหลดและแตกไฟล์โปรเจค
 2. เปิด Command Prompt หรือ Powershell บนโฟลเดอร์ที่มีไฟล์ docker-compose.yml แล้วใช้คำสั่ง `docker compose up --build`
-3. สามารถเข้าถึงหน้าเว็บไซต์ได้ที่ http://localhost:3000 หรือ http://udemy.acceptablemess.com
-4. สามารถเข้าถึงเซอร์เวอร์ได้ที่ http://localhost:4000 และ OpenAPI documentation ได้ที่ http://localhost:4000/docs
+![media/dockerbuild.png](media/dockerbuild.png)
+
+3. รอจนกว่ากระบวนการสร้าง docker image เสร็จสิ้น จะสังเกตได้จาก
+    ```
+    [+] Running 3/3
+    ✔ Network kmitl-objectorientedprogramming-project-main_default       Created
+    ✔ Container kmitl-objectorientedprogramming-project-main-frontend-1  Created
+    ✔ Container kmitl-objectorientedprogramming-project-main-backend-1   Created
+    Attaching to backend-1, frontend-1
+    ```
+    และสังเกตได้จากมี address ของ frontend `http://localhost:3000` **และ** backend `http://0.0.0.0:4000` ขึ้นบน Terminal
+    ![media/dockerready.png](media/dockerready.png)
+1. สามารถเข้าถึงหน้าเว็บไซต์ได้ที่ http://localhost:3000 หรือ http://udemy.acceptablemess.com
+2. สามารถเข้าถึงเซอร์เวอร์ได้ที่ http://localhost:4000 และ OpenAPI documentation ได้ที่ http://localhost:4000/docs
