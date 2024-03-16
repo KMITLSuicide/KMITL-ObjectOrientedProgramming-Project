@@ -1,0 +1,35 @@
+@startuml
+
+actor User
+participant Controller
+participant Course
+
+User -> Controller: delete_video(course_id, video_id, response, current_user)
+activate Controller
+
+
+Controller -> Controller: search_course_by_id(course_uuid)
+alt Course found
+    alt Course is not None
+        Controller -> Controller: search_teacher_by_course(course)
+        
+        alt User is the teacher of the course
+            Controller -> Course: search_video_by_id(video_id)
+            activate Course
+            Course --> Controller: video
+            deactivate Course
+            
+            alt Video is found
+                Controller -> Course: remove_video(video)
+                
+                Controller --> User: "Video deleted successfully"
+            else Video not found
+                Controller --> User: "Video not found"
+            end
+        else User is not the teacher of the course
+            Controller --> User: "Unauthorized"
+        end
+    else Course not found
+        Controller --> User: "Course not found"
+    end
+@enduml

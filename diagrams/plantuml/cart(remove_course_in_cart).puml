@@ -39,7 +39,7 @@ alt Course is in the cart
         Controller --> User: "Fail"
     end
 else Course not found
-    Controller --> User: raise HTTPException(status_code=400)
+    Controller --> User: "Fail"
 
 end
 

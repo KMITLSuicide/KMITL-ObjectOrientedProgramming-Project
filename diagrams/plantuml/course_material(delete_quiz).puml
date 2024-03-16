@@ -1,0 +1,38 @@
+@startuml
+
+actor User
+participant Controller
+participant Course
+participant "User" as UserClass
+
+User -> Controller: delete_quiz(course_id, quiz_id, response, current_user)
+activate Controller
+
+Controller -> Controller: search_course_by_id(course_uuid)
+
+alt Course found
+    alt Course is not None
+        Controller -> Controller: search_teacher_by_course(course)
+        Controller -> UserClass: Depends(get_current_user)
+        activate UserClass
+        UserClass --> Controller: user
+        deactivate UserClass
+        Controller --> User: "Unauthorized"
+        
+        Controller -> Course: search_quiz_by_id(quiz_id)
+        Course --> Controller: quiz
+        alt Quiz found
+            alt Quiz is not None
+                Controller -> Course: remove_quiz(quiz)
+                Controller -> Controller: get_learn_course_materials(course_id, current_user)
+                Controller --> User: course_learn_materials
+            else Quiz not found
+                Controller --> User: "quiz not found"
+            end
+        end
+    else Course not found
+        Controller --> User: "Course not found"
+    end
+end
+
+@enduml

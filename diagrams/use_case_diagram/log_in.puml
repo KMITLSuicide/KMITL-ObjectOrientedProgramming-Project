@@ -1,0 +1,11 @@
+@startuml log in
+left to right direction
+actor User as user
+actor System as system
+rectangle "Log In" {
+  user -- (Log In)
+  (Log In) -- system
+  (Return Token) -- system
+  user -- (Return Token)
+ }
+@enduml

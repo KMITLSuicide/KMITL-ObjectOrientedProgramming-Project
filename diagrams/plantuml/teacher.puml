@@ -1,0 +1,63 @@
+@startuml
+
+actor User
+participant Controller
+participant Teacher
+participant Course
+
+User -> Controller: get_courses_for_teacher(teacher_id)
+activate Controller
+
+
+Controller -> Controller: get_teacher_by_id(teacher_uuid)
+
+alt Teacher found
+    alt Teacher is not None
+        Controller -> Teacher: get_my_teachings()
+        activate Teacher
+        Teacher --> Controller: courses
+        deactivate Teacher
+        
+        Controller --> User: search_results
+        
+        loop Iterate over courses
+            Controller -> Course: get_id()
+            activate Course
+            Course --> Controller: course_id
+            deactivate Course
+            
+            Controller -> Course: get_name()
+            activate Course
+            Course --> Controller: course_name
+            deactivate Course
+            
+            Controller -> Course: get_description()
+            activate Course
+            Course --> Controller: course_description
+            deactivate Course
+            
+            Controller -> Course: get_price()
+            activate Course
+            Course --> Controller: course_price
+            deactivate Course
+            
+            Controller -> Course: get_average_rating()
+            activate Course
+            Course --> Controller: course_rating
+            deactivate Course
+            
+            Controller -> Course: get_banner_image_url()
+            activate Course
+            Course --> Controller: banner_image_url
+            deactivate Course
+            
+            Controller --> User: course_card_data
+        end
+
+        Controller --> User: search_results
+    else Teacher not found
+        Controller --> User: status 403 Forbidden
+    end
+end
+
+@enduml

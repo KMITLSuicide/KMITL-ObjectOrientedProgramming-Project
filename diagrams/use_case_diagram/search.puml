@@ -1,0 +1,15 @@
+@startuml search
+left to right direction
+actor Teacher as teacher
+actor System as system
+actor User as user
+rectangle "Search Course" {
+  teacher -- (Add Course)
+  user -- (Search)
+  (Search) <|-- (Search Course)
+  (Search) <|-- (Search Category)
+  (Search) <|-- (Search Teacher)
+  (Show Result) -- system
+  user -- (Show Result)
+ }
+@enduml

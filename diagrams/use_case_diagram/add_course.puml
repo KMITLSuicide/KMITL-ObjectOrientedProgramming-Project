@@ -1,0 +1,28 @@
+@startuml search
+left to right direction
+actor Teacher as teacher
+actor System as system
+rectangle "Add Course" {
+
+  usecase "Log in Teacher Account" as UC2
+  usecase "Return Token" as UC3
+  usecase "Create Course" as UC4
+  usecase "Return New Course" as UC8
+  usecase "Add Quiz" as UC5
+  usecase "Add Video" as UC6
+  usecase "Add Image" as UC7
+
+ }
+ teacher -- UC2
+ UC2 -- system
+ UC3 -- system
+ teacher -- UC3
+ teacher -- UC4
+ UC4 -- system
+ teacher -- UC8
+ UC8 -- system
+ teacher -- UC5
+ teacher -- UC6
+ teacher -- UC7
+
+@enduml

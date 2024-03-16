@@ -1,0 +1,36 @@
+@startuml
+
+actor User
+participant Controller
+participant Course
+
+User -> Controller: get_video(course_id, video_id, current_user)
+activate Controller
+
+Controller -> Controller: search_course_by_id(course_uuid)
+
+alt Course found
+    alt Course is not None
+        Controller -> Course: search_video_by_id(video_id)
+        activate Course
+        Course --> Controller: video
+        deactivate Course
+        
+        alt Video is found
+            Controller -> CourseMaterialVideo: video.get_id(), video.get_name(), video.get_description(), video.get_url()
+            activate CourseMaterialVideo
+            CourseMaterialVideo --> Controller: course_learn_video
+            deactivate CourseMaterialVideo
+
+            alt User has access to course
+                Controller --> User: course_learn_video
+            else User doesn't have access
+                Controller --> User: Exception message
+            end
+        else Video not found
+            Controller --> User: Exception message
+        end
+    else Course not found
+        Controller --> User: Exception message
+    end
+@enduml
