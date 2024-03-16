@@ -28,5 +28,5 @@
     ```
     และสังเกตได้จากมี address ของ frontend `http://localhost:3000` **และ** backend `http://0.0.0.0:4000` ขึ้นบน Terminal
     ![media/dockerready.png](media/dockerready.png)
-1. สามารถเข้าถึงหน้าเว็บไซต์ได้ที่ http://localhost:3000 หรือ http://udemy.acceptablemess.com
-2. สามารถเข้าถึงเซอร์เวอร์ได้ที่ http://localhost:4000 และ OpenAPI documentation ได้ที่ http://localhost:4000/docs
+4. สามารถเข้าถึงหน้าเว็บไซต์ได้ที่ http://localhost:3000 หรือ http://udemy.acceptablemess.com
+5. สามารถเข้าถึงเซอร์เวอร์ได้ที่ http://localhost:4000 และ OpenAPI documentation ได้ที่ http://localhost:4000/docs
